@@ -198,7 +198,7 @@ target_include_directories(${PROJECT_NAME}.elf PRIVATE
     Library/StdDriver/inc)
 
 target_link_libraries(${PROJECT_NAME}.elf LoRaMac-node)
-
+ 
 # Generate version.h
 find_package(Git)
 if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
