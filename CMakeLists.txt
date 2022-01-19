@@ -80,6 +80,55 @@ set(HEX_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.hex)
 set(BIN_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.bin)
 set(DUMP_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.S)
 
+add_library(LoRaMac-node
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/region/Region.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/region/RegionBaseUS.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/region/RegionCommon.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/region/RegionUS915.c
+
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/LoRaMac.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/LoRaMacAdr.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/LoRaMacClassB.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/LoRaMacCommands.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/LoRaMacConfirmQueue.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/LoRaMacCrypto.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/LoRaMacParser.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/LoRaMacSerializer.c
+
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/radio/sx126x/radio.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/radio/sx126x/sx126x.c
+
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/system/adc.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/system/delay.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/system/fifo.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/system/gpio.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/system/gps.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/system/i2c.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/system/nvmm.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/system/systime.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/system/timer.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/system/uart.c
+
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/peripherals/soft-se/aes.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/peripherals/soft-se/cmac.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/peripherals/soft-se/soft-se-hal.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/peripherals/soft-se/soft-se.c
+    )
+
+target_include_directories(LoRaMac-node PRIVATE
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/system/
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/boards/
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/radio/
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/region
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/peripherals/soft-se
+    )
+
+target_compile_definitions(LoRaMac-node PUBLIC 
+    REGION_US915
+    SOFT_SE
+    )
+
 file(GLOB_RECURSE USB_CORE_SRC ${PROJECT_SOURCE_DIR}/Library/UsbHostLib/src_core/*.c)
 file(GLOB_RECURSE NUVOTON0_SRC ${PROJECT_SOURCE_DIR}/Library/Device/Nuvoton/GCC/*.c)
 file(GLOB_RECURSE NUVOTON1_SRC ${PROJECT_SOURCE_DIR}/Library/Device/Nuvoton/M480/Source/*.c)
@@ -133,6 +182,8 @@ target_include_directories(${PROJECT_NAME}.elf PRIVATE
     Library/UsbHostLib/src_msc
     Library/UsbHostLib/src_uac
     Library/StdDriver/inc)
+
+target_link_libraries(${PROJECT_NAME}.elf LoRaMac-node)
 
 # Generate version.h
 find_package(Git)
