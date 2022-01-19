@@ -35,7 +35,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 extern "C" {
     void EPWM0P1_IRQHandler(void);
     void EPWM1P1_IRQHandler(void);
-};
+}
 
 class Leds {
 public:

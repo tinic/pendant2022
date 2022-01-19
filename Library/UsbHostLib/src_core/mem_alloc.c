@@ -44,7 +44,7 @@ UDEV_T * g_udev_list;
 uint8_t  _dev_addr_pool[128];
 static volatile int  _device_addr;
 
-static  int  _sidx = 0;;
+static  int  _sidx = 0;
 
 /*--------------------------------------------------------------------------*/
 /*   Memory alloc/free recording                                            */

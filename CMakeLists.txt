@@ -34,6 +34,9 @@ set(CC_FLAGS
     -ffunction-sections
     -Wall
     -Wextra
+    -pedantic 
+    -Wfloat-conversion 
+    -Wdouble-promotion
     -Wno-sign-compare
     -Wno-unused-parameter
     -Wno-strict-aliasing 
@@ -42,11 +45,9 @@ set(CC_FLAGS
     -fallow-store-data-races)
 
 set(CXX_FLAGS 
-    -Wall 
-    -Wextra
-    -Wdouble-promotion
     -Wshadow 
-    -Wfloat-conversion 
+    -Wsign-compare
+    -Wstrict-aliasing 
     -Wno-volatile
     -Wformat=2 
     -std=c++20 
