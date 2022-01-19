@@ -81,6 +81,14 @@ set(BIN_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.bin)
 set(DUMP_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.S)
 
 add_library(LoRaMac-node
+
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandler/packages/FragDecoder.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandler/packages/LmhpClockSync.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandler/packages/LmhpCompliance.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandler/packages/LmhpFragmentation.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandler/packages/LmhpRemoteMcastSetup.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandler/LmHandler.c
+
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/region/Region.c
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/region/RegionBaseUS.c
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/region/RegionCommon.c
@@ -116,6 +124,10 @@ add_library(LoRaMac-node
     )
 
 target_include_directories(LoRaMac-node PRIVATE
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandler/packages/
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandler/
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/system/
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/boards/
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/radio/
@@ -127,6 +139,9 @@ target_include_directories(LoRaMac-node PRIVATE
 target_compile_definitions(LoRaMac-node PUBLIC 
     REGION_US915
     SOFT_SE
+    SECURE_ELEMENT_PRE_PROVISIONED
+    ACTIVE_REGION=LORAMAC_REGION_US915
+    LORAWAN_DEFAULT_CLASS=CLASS_A
     )
 
 file(GLOB_RECURSE USB_CORE_SRC ${PROJECT_SOURCE_DIR}/Library/UsbHostLib/src_core/*.c)
