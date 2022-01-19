@@ -37,7 +37,6 @@ set(CC_FLAGS
     -pedantic 
     -Wfloat-conversion 
     -Wdouble-promotion
-    -Wno-sign-compare
     -Wno-unused-parameter
     -Wno-strict-aliasing 
     -Wno-format
@@ -46,7 +45,6 @@ set(CC_FLAGS
 
 set(CXX_FLAGS 
     -Wshadow 
-    -Wsign-compare
     -Wstrict-aliasing 
     -Wno-volatile
     -Wformat=2 

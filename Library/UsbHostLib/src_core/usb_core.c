@@ -894,7 +894,8 @@ static int  usbh_parse_configuration(UDEV_T *udev, uint8_t *desc_buff)
 {
     DESC_CONF_T  *config = (DESC_CONF_T *)desc_buff;
     DESC_HDR_T   *hdr;
-    int    i, ret, len;
+    int           i, ret;
+    uint32_t      len;
 
     len = config->wTotalLength;
 

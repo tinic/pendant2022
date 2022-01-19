@@ -176,7 +176,7 @@ static int  get_port_status(HUB_DEV_T *hub, int port, uint16_t *wPortStatus, uin
 static void hub_status_irq(UTR_T *utr)
 {
     HUB_DEV_T   *hub;
-    int         i;
+    uint32_t     i;
 
     // HUB_DBGMSG("hub_read_irq - %d\n", utr->xfer_len);
 
@@ -390,7 +390,7 @@ static int  hub_status_change(HUB_DEV_T *hub)
 static int do_port_reset(HUB_DEV_T *hub, int port)
 {
     int         retry;
-    int         reset_time;
+    uint32_t    reset_time;
     uint32_t    t0;
     uint16_t    wPortStatus, wPortChange;
     int         ret;

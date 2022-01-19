@@ -1154,7 +1154,7 @@ static UDEV_T * ehci_find_device_by_port(int port)
 static int ehci_rh_port_reset(int port)
 {
     int       retry;
-    int       reset_time;
+    uint32_t  reset_time;
     uint32_t  t0;
 
     reset_time = PORT_RESET_TIME_MS;
@@ -1195,7 +1195,8 @@ static int ehci_rh_polling(void)
 {
     UDEV_T    *udev;
     int       ret;
-    int       connect_status, t0;
+    uint32_t  connect_status;
+    uint32_t  t0;
 
     if (!(_ehci->UPSCR[0] & HSUSBH_UPSCR_CSC_Msk))
         return 0;

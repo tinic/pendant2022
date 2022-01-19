@@ -819,7 +819,7 @@ static UDEV_T * ohci_find_device_by_port(int port)
 static int ohci_rh_port_reset(int port)
 {
     int       retry;
-    int       reset_time;
+    uint32_t  reset_time;
     uint32_t  t0;
 
     reset_time = PORT_RESET_TIME_MS;
