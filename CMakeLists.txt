@@ -74,11 +74,20 @@ set(DEBUG_FLAGS
 set(RELEASE_FLAGS   
     -Os)
 
-set(DEFINITIONS NDEBUG ARM_MATH_CM4 __FPU_PRESENT ${MAINCPU_DEFINITIONS})
-
 set(HEX_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.hex)
 set(BIN_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.bin)
 set(DUMP_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.S)
+
+add_compile_definitions(
+    ${MAINCPU_DEFINITIONS}
+    NDEBUG 
+    ARM_MATH_CM4 
+    __FPU_PRESENT 
+    REGION_US915
+    SOFT_SE
+    SECURE_ELEMENT_PRE_PROVISIONED
+    ACTIVE_REGION=LORAMAC_REGION_US915
+    LORAWAN_DEFAULT_CLASS=CLASS_A)
 
 add_library(LoRaMac-node
 
@@ -120,8 +129,7 @@ add_library(LoRaMac-node
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/peripherals/soft-se/aes.c
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/peripherals/soft-se/cmac.c
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/peripherals/soft-se/soft-se-hal.c
-    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/peripherals/soft-se/soft-se.c
-    )
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/peripherals/soft-se/soft-se.c)
 
 target_include_directories(LoRaMac-node PRIVATE
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandler/packages/
@@ -133,16 +141,7 @@ target_include_directories(LoRaMac-node PRIVATE
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/radio/
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/region
-    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/peripherals/soft-se
-    )
-
-target_compile_definitions(LoRaMac-node PUBLIC 
-    REGION_US915
-    SOFT_SE
-    SECURE_ELEMENT_PRE_PROVISIONED
-    ACTIVE_REGION=LORAMAC_REGION_US915
-    LORAWAN_DEFAULT_CLASS=CLASS_A
-    )
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/peripherals/soft-se)
 
 file(GLOB_RECURSE USB_CORE_SRC ${PROJECT_SOURCE_DIR}/Library/UsbHostLib/src_core/*.c)
 file(GLOB_RECURSE NUVOTON0_SRC ${PROJECT_SOURCE_DIR}/Library/Device/Nuvoton/GCC/*.c)
