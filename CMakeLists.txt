@@ -45,6 +45,14 @@ set(CC_FLAGS
 
 set(CXX_FLAGS 
     -Wshadow 
+    -Wnon-virtual-dtor
+    -Wunused
+    -Woverloaded-virtual
+    -Wmisleading-indentation
+    -Wduplicated-cond
+    -Wduplicated-branches
+    -Wlogical-op
+    -Wnull-dereference
     -Wstrict-aliasing 
     -Wno-volatile
     -Wformat=2 
