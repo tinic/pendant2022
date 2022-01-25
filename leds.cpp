@@ -145,12 +145,12 @@ void Leds::transfer() {
 #else  // #ifdef USE_DMA
 
     for(size_t c = 0; c < ledsDMABuf[0].size(); c++) {
-        while(SPI_GET_TX_FIFO_FULL_FLAG(SPI0) == 1) {}
+        while(SPI_GET_TX_FIFO_FULL_FLAG(SPI1) == 1) {}
         SPI_WRITE_TX(SPI1, ledsDMABuf[0].data()[c]);
     }
 
     for(size_t c = 0; c < ledsDMABuf[1].size(); c++) {
-        while(SPI_GET_TX_FIFO_FULL_FLAG(SPI1) == 1) {}
+        while(SPI_GET_TX_FIFO_FULL_FLAG(SPI2) == 1) {}
         SPI_WRITE_TX(SPI2, ledsDMABuf[1].data()[c]);
     }
 

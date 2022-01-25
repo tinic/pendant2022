@@ -95,10 +95,26 @@ namespace color {
     };
 
     template<> inline rgba<uint16_t> rgba<uint16_t>::fix_for_ws2816() {
-        return rgba<uint16_t>(  r < 384 ? ( ( r * 256 ) / 384 ) : r,
-                                g < 384 ? ( ( g * 256 ) / 384 ) : g,
-                                b < 384 ? ( ( b * 256 ) / 384 ) : b,
-                                a < 384 ? ( ( a * 256 ) / 384 ) : a);
+        auto fix = [](uint16_t f) {
+            if (f > 65535 - (256 - 32)) {
+                f = 65535 - (256 - 32);
+            }
+            if (f >= 32) {
+                f += 256 - 32;
+                if (f > 512) {
+                    if (f > 512 + 32) {
+                        f -= 32;
+                    } else {
+                        f = 512;
+                    }
+                }
+            }
+            return f;
+        };
+        return rgba<uint16_t>(  fix(r),
+                                fix(g),
+                                fix(b),
+                                    a);
     }
 
     template<> constexpr rgba<uint8_t>::rgba(uint32_t color) {
