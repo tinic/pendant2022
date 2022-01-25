@@ -149,7 +149,7 @@ void MSC_ClassRequest(void);
 void MSC_SetConfig(void);
 
 void MSC_ReadMedia(uint32_t addr, uint32_t size, uint8_t *buffer);
-void MSC_WriteMedia(uint32_t addr, uint32_t size, uint8_t *buffer);
+void MSC_WriteMedia(uint32_t addr, uint32_t size, const uint8_t *buffer);
 
 /*-------------------------------------------------------------*/
 void MSC_AckCmd(void);

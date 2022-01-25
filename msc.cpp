@@ -716,7 +716,7 @@ void MSC_Write(void)
             /* Buffer full. Writer it to storage first. */
             if (g_u32Address >= (STORAGE_DATA_BUF + STORAGE_BUFFER_SIZE))
             {
-                MSC_WriteMedia(g_u32DataFlashStartAddr, STORAGE_BUFFER_SIZE, (uint8_t *)STORAGE_DATA_BUF);
+                MSC_WriteMedia(g_u32DataFlashStartAddr, STORAGE_BUFFER_SIZE, (const uint8_t *)STORAGE_DATA_BUF);
 
                 g_u32Address = STORAGE_DATA_BUF;
                 g_u32DataFlashStartAddr += STORAGE_BUFFER_SIZE;
@@ -739,7 +739,7 @@ void MSC_Write(void)
 
                 len = lba * UDC_SECTOR_SIZE + g_sCBW.dCBWDataTransferLength - g_u32DataFlashStartAddr;
                 if (len)
-                    MSC_WriteMedia(g_u32DataFlashStartAddr, len, (uint8_t *)STORAGE_DATA_BUF);
+                    MSC_WriteMedia(g_u32DataFlashStartAddr, len, (const uint8_t *)STORAGE_DATA_BUF);
             }
 
             g_u8BulkState = BULK_IN;
@@ -1296,7 +1296,7 @@ void MSC_ReadMedia(uint32_t addr, uint32_t size, uint8_t *buffer)
     SDH_Read(SDH0, buffer, addr/UDC_SECTOR_SIZE, size/UDC_SECTOR_SIZE);
 }
 
-void MSC_WriteMedia(uint32_t addr, uint32_t size, uint8_t *buffer)
+void MSC_WriteMedia(uint32_t addr, uint32_t size, const uint8_t *buffer)
 {
     SDH_Write(SDH0, buffer, addr/UDC_SECTOR_SIZE, size/UDC_SECTOR_SIZE);
 }

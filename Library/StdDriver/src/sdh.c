@@ -1209,7 +1209,7 @@ uint32_t SDH_Read(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_
  *  @retval   SDH_CRC7_ERROR CRC7 error happen.
  *  @retval   Successful Write data to SD card success.
  */
-uint32_t SDH_Write(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_t u32SecCount)
+uint32_t SDH_Write(SDH_T *sdh, const uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_t u32SecCount)
 {
     uint32_t volatile bIsSendCmd = FALSE;
     uint32_t volatile reg;
