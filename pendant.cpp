@@ -54,27 +54,27 @@ void Pendant::init() {
     Timeline::instance();
     Leds::instance();
     Effects::instance();
-    SDCard::instance();
+//    SDCard::instance();
 
-    I2CManager::instance();
-    SDD1306::instance();
-    STM32WL::instance();
+//    I2CManager::instance();
+//    SDD1306::instance();
+//    STM32WL::instance();
 
-    Input::instance();
-    UI::instance();
+//    Input::instance();
+//    UI::instance();
 }
 
 void Pendant::Run() {
     Model::instance().IncBootCount();
     while (1) {
         __WFI();
-        SDCard::instance().process();
+        //SDCard::instance().process();
         if (Timeline::instance().CheckIdleReadyAndClear()) {
-            I2CManager::instance().reprobeCritial();
+            //I2CManager::instance().reprobeCritial();
             Model::instance().save();
         }
         if (Timeline::instance().CheckBackgroundReadyAndClear()) {
-            STM32WL::instance().update();
+            //STM32WL::instance().update();
         }
         if (Timeline::instance().CheckEffectReadyAndClear()) {
             Timeline::instance().ProcessInterval();
