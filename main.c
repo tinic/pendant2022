@@ -193,7 +193,7 @@ int main(void)
 {
     SYS_Init();
 
-    UART_Open(UART1, 115200);
+    UART_Open(UART5, 115200);
 
     SYS_UnlockReg();
     FMC_Open();
