@@ -29,13 +29,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cmath>
 
 #define USE_SPI_DMA 1
-//#define USE_PWM_DMA 1
-#define USE_PWM 1
-
-extern "C" {
-    void EPWM0P1_IRQHandler(void);
-    void EPWM1P1_IRQHandler(void);
-}
 
 class Leds {
 public:
@@ -153,11 +146,7 @@ public:
     void setCircle(auto _circleLeds) { circleLeds = _circleLeds; }
     void setBird(auto _birdLeds) { birdLeds = _birdLeds; }
 
-    void forceStop();
-
 private:
-    friend void EPWM0P1_IRQHandler(void);
-    friend void EPWM1P1_IRQHandler(void);
 
     static const struct lut_table {
         consteval lut_table() {
@@ -182,13 +171,7 @@ private:
     static constexpr size_t bitsPerComponent = 16;
     static constexpr size_t bitsPerLed = bitsPerComponent * 3;
 
-#ifdef USE_PWM
-    static constexpr size_t extraBirdPadding = bitsPerLed * 2; // Need padding for PWM
-    std::array<std::array<uint8_t, birdLedsN * bitsPerLed + extraBirdPadding>, sidesN> birdsLedsDMABuf __attribute__ ((aligned (16)));
-#else  // #ifdef USE_PWM
-    std::array<std::array<uint8_t, (birdLedsN * bitsPerLed) / 2>, sidesN> birdsLedsDMABuf __attribute__ ((aligned (16)));
-#endif  // #ifdef USE_PWM
-    std::array<std::array<uint8_t, (circleLedsN * bitsPerLed) / 2>, sidesN> circleLedsDMABuf __attribute__ ((aligned (16)));
+    std::array<std::array<uint8_t, ((birdLedsN + circleLedsN) * bitsPerLed) / 2>, sidesN> ledsDMABuf __attribute__ ((aligned (16)));
 
     void transfer();
     void prepare();

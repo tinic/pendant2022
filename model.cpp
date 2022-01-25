@@ -75,8 +75,6 @@ void Model::save() {
 
     printf("Saving model.\r\n");
 
-    Leds::instance().forceStop();
-
     dirty = false;
 
     version = currentVersion;
