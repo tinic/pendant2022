@@ -1,19 +1,6 @@
-/***************************************************************************//**
- * @file     MassStorage.c
- * @brief    M480 series USBD driver Sample file
- *
- * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
-
-/*!<Includes */
 #include <string.h>
-
 #include "M480.h"
-
-#include "./sdcard.h"
-#include "./msc.h"
-
-#ifndef BOOTLOADER
+#include "msc.h"
 
 #if 1
 #define DBG_PRINTF      printf
@@ -22,38 +9,38 @@
 #endif
 /*--------------------------------------------------------------------------*/
 /* Global variables for Control Pipe */
-int32_t g_TotalSectors = 0;
+static int32_t g_TotalSectors = 0;
 
-uint8_t volatile g_u8EP2Ready = 0;
-uint8_t volatile g_u8EP3Ready = 0;
-uint8_t volatile g_u8Remove = 0;
+static uint8_t volatile g_u8EP2Ready = 0;
+static uint8_t volatile g_u8EP3Ready = 0;
+static uint8_t volatile g_u8Remove = 0;
 
 /* USB flow control variables */
-uint8_t g_u8BulkState;
-uint8_t g_u8Prevent = 0;
-uint8_t g_u8Size;
+static uint8_t g_u8BulkState;
+static uint8_t g_u8Prevent = 0;
+static uint8_t g_u8Size;
 
-uint8_t g_au8SenseKey[4];
+static uint8_t g_au8SenseKey[4];
 
-uint32_t g_u32DataFlashStartAddr;
-uint32_t g_u32Address;
-uint32_t g_u32Length;
-uint32_t g_u32LbaAddress;
-uint32_t g_u32BytesInStorageBuf;
+static uint32_t g_u32DataFlashStartAddr;
+static uint32_t g_u32Address;
+static uint32_t g_u32Length;
+static uint32_t g_u32LbaAddress;
+static uint32_t g_u32BytesInStorageBuf;
 
-uint32_t g_u32BulkBuf0, g_u32BulkBuf1;
-uint32_t volatile g_u32OutToggle = 0, g_u32OutSkip = 0;
+static uint32_t g_u32BulkBuf0, g_u32BulkBuf1;
+static uint32_t volatile g_u32OutToggle = 0, g_u32OutSkip = 0;
 
 /* CBW/CSW variables */
-struct CBW g_sCBW;
-struct CSW g_sCSW;
+static struct CBW g_sCBW;
+static struct CSW g_sCSW;
 
 uint32_t MassBlock[MASS_BUFFER_SIZE / 4];
 uint32_t Storage_Block[STORAGE_BUFFER_SIZE / 4];
 extern uint8_t volatile g_u8SdInitFlag;
 
 /*--------------------------------------------------------------------------*/
-uint8_t g_au8InquiryID[36] =
+static uint8_t g_au8InquiryID[36] =
 {
     0x00,                   /* Peripheral Device Type */
     0x80,                   /* RMB */
@@ -97,6 +84,7 @@ static uint8_t g_au8ModePage_1C[8] =
     0x1C, 0x06, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00
 };
 
+
 void USBD_IRQHandler(void)
 {
     uint32_t u32IntSts = USBD_GET_INT_FLAG();
@@ -132,20 +120,20 @@ void USBD_IRQHandler(void)
             /* Bus reset */
             USBD_ENABLE_USB();
             USBD_SwReset();
-            DBG_PRINTF("Bus reset\n");
+            DBG_PRINTF("USBD_IRQHandler Bus reset\n");
             g_u32OutToggle = g_u32OutSkip = 0;
         }
         if(u32State & USBD_STATE_SUSPEND)
         {
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
-            DBG_PRINTF("Suspend\n");
+            DBG_PRINTF("USBD_IRQHandler Suspend\n");
         }
         if(u32State & USBD_STATE_RESUME)
         {
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
-            DBG_PRINTF("Resume\n");
+            DBG_PRINTF("USBD_IRQHandler Resume\n");
         }
     }
 
@@ -232,13 +220,11 @@ void USBD_IRQHandler(void)
     }
 }
 
-
 void EP2_Handler(void)
 {
     g_u8EP2Ready = 1;
     MSC_AckCmd();
 }
-
 
 void EP3_Handler(void)
 {
@@ -255,7 +241,6 @@ void EP3_Handler(void)
         g_u32OutSkip = 0;
     }
 }
-
 
 void MSC_Init(void)
 {
@@ -293,11 +278,21 @@ void MSC_Init(void)
     g_u32BulkBuf1 = EP2_BUF_BASE;
 
     g_sCSW.dCSWSignature = CSW_SIGNATURE;
-
-    g_TotalSectors = SDCard::instance().blocks();
-    g_au8SenseKey[0] = 0x0;
-    g_au8SenseKey[1] = 0x0;
-    g_au8SenseKey[2] = 0x0;
+    if (g_u8SdInitFlag)
+    {
+        g_TotalSectors = SD0.totalSectorN;
+        g_au8SenseKey[0] = 0x0;
+        g_au8SenseKey[1] = 0x0;
+        g_au8SenseKey[2] = 0x0;
+    }
+    else
+    {
+        g_TotalSectors = 0;
+        g_au8SenseKey[0] = 0x03;
+        g_au8SenseKey[1] = 0x30;
+        g_au8SenseKey[2] = 0x01;
+    }
+    printf("MSC_Init total sectors %d\n", SD0.totalSectorN);
 }
 
 void MSC_ClassRequest(void)
@@ -332,7 +327,7 @@ void MSC_ClassRequest(void)
         {
             /* Setup error, stall the device */
             USBD_SetStall(0);
-            DBG_PRINTF("Unknow MSC req(0x%x). stall ctrl pipe\n", buf[1]);
+            DBG_PRINTF("MSC_ClassRequest Unknow MSC req(0x%x). stall ctrl pipe\n", buf[1]);
             break;
         }
         }
@@ -382,7 +377,7 @@ void MSC_ClassRequest(void)
             // Stall
             /* Setup error, stall the device */
             USBD_SetStall(0);
-            DBG_PRINTF("Unknown MSC req (0x%x). stall ctrl pipe\n", buf[1]);
+            DBG_PRINTF("MSC_ClassRequest Unknown MSC req (0x%x). stall ctrl pipe\n", buf[1]);
             break;
         }
         }
@@ -403,15 +398,22 @@ void MSC_RequestSense(void)
     else
         tmp[0] = 0xf0;
 
-    g_au8SenseKey[0] = 0;
-    g_au8SenseKey[1] = 0;
-    g_au8SenseKey[2] = 0;
-
+    if (SD0.IsCardInsert)
+    {
+        g_au8SenseKey[0] = 0x0;
+        g_au8SenseKey[1] = 0x0;
+        g_au8SenseKey[2] = 0x0;
+    }
+    else
+    {
+        g_au8SenseKey[0] = 0x02;
+        g_au8SenseKey[1] = 0x3a;
+        g_au8SenseKey[2] = 0x00;
+    }
     tmp[2] = g_au8SenseKey[0];
     tmp[7] = 0x0a;
     tmp[12] = g_au8SenseKey[1];
     tmp[13] = g_au8SenseKey[2];
-
     USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2)), tmp, 20);
 }
 
@@ -495,7 +497,7 @@ void MSC_Read(void)
             if(u32Len > STORAGE_BUFFER_SIZE)
                 u32Len = STORAGE_BUFFER_SIZE;
 
-            MSC_ReadMedia(uint64_t(g_u32LbaAddress), uint64_t(u32Len), (uint8_t *)STORAGE_DATA_BUF);
+            MSC_ReadMedia(g_u32LbaAddress, u32Len, (uint8_t *)STORAGE_DATA_BUF);
             g_u32BytesInStorageBuf = u32Len;
             g_u32LbaAddress += u32Len;
             g_u32Address = STORAGE_DATA_BUF;
@@ -539,7 +541,7 @@ void MSC_ReadTrig(void)
             if(u32Len > STORAGE_BUFFER_SIZE)
                 u32Len = STORAGE_BUFFER_SIZE;
 
-            MSC_ReadMedia(uint64_t(g_u32LbaAddress), uint64_t(u32Len), (uint8_t *)STORAGE_DATA_BUF);
+            MSC_ReadMedia(g_u32LbaAddress, u32Len, (uint8_t *)STORAGE_DATA_BUF);
             g_u32BytesInStorageBuf = u32Len;
             g_u32LbaAddress += u32Len;
             g_u32Address = STORAGE_DATA_BUF;
@@ -1057,7 +1059,7 @@ void MSC_ProcessCmd(void)
                 if (i > STORAGE_BUFFER_SIZE)
                     i = STORAGE_BUFFER_SIZE;
 
-                MSC_ReadMedia(uint64_t(g_u32Address) * UDC_SECTOR_SIZE, uint64_t(i), (uint8_t *)STORAGE_DATA_BUF);
+                MSC_ReadMedia(g_u32Address * UDC_SECTOR_SIZE, i, (uint8_t *)STORAGE_DATA_BUF);
                 g_u32BytesInStorageBuf = i;
                 g_u32LbaAddress += i;
 
@@ -1269,14 +1271,13 @@ void MSC_AckCmd(void)
         }
         }
 
-        if (!SDCard::instance().inserted())
+        if (SD0.IsCardInsert == 0)
         {
             if ((g_sCBW.u8OPCode == UFI_INQUIRY) || (g_sCBW.u8OPCode == UFI_REQUEST_SENSE))
                 g_sCSW.bCSWStatus = 0x00;
             else
                 g_sCSW.bCSWStatus = 0x01;
         }
-
         /* Return the CSW */
         USBD_SET_EP_BUF_ADDR(EP2, g_u32BulkBuf1);
 
@@ -1288,19 +1289,18 @@ void MSC_AckCmd(void)
     }
 }
 
-void MSC_ReadMedia(uint64_t addr, uint64_t size, uint8_t *buffer)
+void MSC_ReadMedia(uint32_t addr, uint32_t size, uint8_t *buffer)
 {
-    SDCard::instance().readBlock(addr / UDC_SECTOR_SIZE, buffer, size / UDC_SECTOR_SIZE);
+    SDH_Read(SDH0, buffer, addr/UDC_SECTOR_SIZE, size/UDC_SECTOR_SIZE);
 }
 
-void MSC_WriteMedia(uint64_t addr, uint64_t size, uint8_t *buffer)
+void MSC_WriteMedia(uint32_t addr, uint32_t size, uint8_t *buffer)
 {
-    SDCard::instance().writeBlock(addr / UDC_SECTOR_SIZE, buffer, size / UDC_SECTOR_SIZE);
+    SDH_Write(SDH0, buffer, addr/UDC_SECTOR_SIZE, size/UDC_SECTOR_SIZE);
 }
 
 void MSC_SetConfig(void)
 {
-    DBG_PRINTF("MSC_SetConfig\n");
     // Clear stall status and ready
     USBD->EP[2].CFGP = 1;
     USBD->EP[3].CFGP = 1;
@@ -1322,7 +1322,5 @@ void MSC_SetConfig(void)
 
     g_u8BulkState = BULK_CBW;
 
-    DBG_PRINTF("Set config\n");
+    DBG_PRINTF("MSC_SetConfig\n");
 }
-
-#endif // #ifndef BOOTLOADER
