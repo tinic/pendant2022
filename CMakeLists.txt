@@ -170,7 +170,6 @@ add_executable(${PROJECT_NAME}.elf
     ${PROJECT_SOURCE_DIR}/ui.cpp
     ${PROJECT_SOURCE_DIR}/seed.cpp
     ${PROJECT_SOURCE_DIR}/stubs.c
-    ${PROJECT_SOURCE_DIR}/descriptors.c
     ${PROJECT_SOURCE_DIR}/msc.cpp
     ${PROJECT_SOURCE_DIR}/fatfs/ff.c
     ${PROJECT_SOURCE_DIR}/fatfs/ffsystem.c
