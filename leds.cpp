@@ -49,11 +49,10 @@ void Leds::init() {
 
     // LED_ON
     GPIO_SetMode(PC, BIT7, GPIO_MODE_OUTPUT);
-
-    half();
-
     // Turn Mosfet on
     PC7 = 0;
+
+    half();
 
     SPI_Open(SPI1, SPI_MASTER, SPI_MODE_0, 8, 4000000);
     SPI_Open(SPI2, SPI_MASTER, SPI_MODE_0, 8, 4000000);
@@ -135,12 +134,12 @@ void Leds::transfer() {
 
 #ifdef USE_SPI_DMA
 
-    PDMA_SetTransferCnt(PDMA,SPI1_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[0].size());
-    PDMA_SetTransferMode(PDMA,SPI1_MASTER_TX_DMA_CH, PDMA_SPI0_TX, FALSE, 0);
+    PDMA_SetTransferCnt(PDMA, SPI1_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[0].size());
+    PDMA_SetTransferMode(PDMA, SPI1_MASTER_TX_DMA_CH, PDMA_SPI1_TX, FALSE, 0);
     SPI_TRIGGER_TX_PDMA(SPI1);
 
-    PDMA_SetTransferCnt(PDMA,SPI2_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[1].size());
-    PDMA_SetTransferMode(PDMA,SPI2_MASTER_TX_DMA_CH, PDMA_SPI1_TX, FALSE, 0);
+    PDMA_SetTransferCnt(PDMA, SPI2_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[1].size());
+    PDMA_SetTransferMode(PDMA, SPI2_MASTER_TX_DMA_CH, PDMA_SPI2_TX, FALSE, 0);
     SPI_TRIGGER_TX_PDMA(SPI2);
 
 #else  // #ifdef USE_DMA
