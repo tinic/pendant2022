@@ -182,6 +182,7 @@ add_executable(${PROJECT_NAME}.elf
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/gpio.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/i2c.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/pdma.c
+    ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/sdh.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/spi.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/sys.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/timer.c

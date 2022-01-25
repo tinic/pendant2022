@@ -7,9 +7,11 @@
 #else
 #define DBG_PRINTF(...)
 #endif
+
+extern "C" SDH_INFO_T SD0, SD1;
+
 /*--------------------------------------------------------------------------*/
 /* Global variables for Control Pipe */
-static int32_t g_TotalSectors = 0;
 
 static uint8_t volatile g_u8EP2Ready = 0;
 static uint8_t volatile g_u8EP3Ready = 0;
@@ -37,7 +39,9 @@ static struct CSW g_sCSW;
 
 uint32_t MassBlock[MASS_BUFFER_SIZE / 4];
 uint32_t Storage_Block[STORAGE_BUFFER_SIZE / 4];
-extern uint8_t volatile g_u8SdInitFlag;
+
+uint8_t volatile g_u8SdInitFlag = 0;
+int32_t g_TotalSectors = 0;
 
 /*--------------------------------------------------------------------------*/
 static uint8_t g_au8InquiryID[36] =
@@ -83,7 +87,6 @@ static uint8_t g_au8ModePage_1C[8] =
 {
     0x1C, 0x06, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00
 };
-
 
 void USBD_IRQHandler(void)
 {
@@ -383,7 +386,6 @@ void MSC_ClassRequest(void)
         }
     }
 }
-
 
 void MSC_RequestSense(void)
 {

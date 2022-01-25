@@ -54,7 +54,7 @@ void Pendant::init() {
     Timeline::instance();
     Leds::instance();
     Effects::instance();
-//    SDCard::instance();
+    SDCard::instance();
 
 //    I2CManager::instance();
 //    SDD1306::instance();
@@ -68,7 +68,7 @@ void Pendant::Run() {
     Model::instance().IncBootCount();
     while (1) {
         __WFI();
-        //SDCard::instance().process();
+        SDCard::instance().process();
         if (Timeline::instance().CheckIdleReadyAndClear()) {
             //I2CManager::instance().reprobeCritial();
             Model::instance().save();

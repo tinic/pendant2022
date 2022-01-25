@@ -34,6 +34,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class SDCard {
 public:
     static SDCard &instance();
+    void process();
 private:
     void init();
     bool initialized = false;
