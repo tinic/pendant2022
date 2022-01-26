@@ -155,6 +155,7 @@ file(GLOB_RECURSE NUVOTON0_SRC ${PROJECT_SOURCE_DIR}/Library/Device/Nuvoton/GCC/
 file(GLOB_RECURSE NUVOTON1_SRC ${PROJECT_SOURCE_DIR}/Library/Device/Nuvoton/M480/Source/*.c)
 
 add_executable(${PROJECT_NAME}.elf 
+    ${PROJECT_SOURCE_DIR}/lorawan.cpp
     ${PROJECT_SOURCE_DIR}/i2cmanager.cpp
     ${PROJECT_SOURCE_DIR}/bq25895.cpp
     ${PROJECT_SOURCE_DIR}/ens210.cpp
@@ -206,7 +207,14 @@ target_include_directories(${PROJECT_NAME}.elf PRIVATE
     Library/UsbHostLib/inc
     Library/UsbHostLib/src_msc
     Library/UsbHostLib/src_uac
-    Library/StdDriver/inc)
+    Library/StdDriver/inc
+    LoRaMac-node/src/system
+    LoRaMac-node/src/boards
+    LoRaMac-node/src/mac
+    LoRaMac-node/src/mac/region
+    LoRaMac-node/src/apps/LoRaMac/common
+    LoRaMac-node/src/apps/LoRaMac/common/LmHandler
+    LoRaMac-node/src/apps/LoRaMac/common/LmHandler/packages)
 
 target_link_libraries(${PROJECT_NAME}.elf LoRaMac-node)
  
