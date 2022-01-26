@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Tinic Uro
+Copyright 2020 Tinic Uro
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
@@ -20,43 +20,33 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-#include "./bootloader.h"
-#include "./main.h"
-#include "./leds.h"
-#include "./i2cmanager.h"
-#include "./sdcard.h"
+#ifndef _ICS43434_H_
+#define _ICS43434_H_
 
-#include "M480.h"
+#include <array>
+#include <memory.h>
+#include <stdint.h>
 
-extern "C" {
-#include "./msc.h"
-}
+class ICS43434 {
+public:
+    static ICS43434 &instance();
 
-#ifdef BOOTLOADER
+    void update();
+    void completeDMA();
 
-Bootloader &Bootloader::instance() {
-    static Bootloader bootloader;
-    if (!bootloader.initialized) {
-        bootloader.initialized = true;
-        bootloader.init();
-    }
-    return bootloader;
-}
+private:
 
-void Bootloader::init() {
-    Leds::instance();
-    i2c2::instance();
-    SDCard::instance();
-}
+    void init();
+    void startDMA();
 
-void Bootloader::Run() {
-    for(;;) {
-        __WFI();
-    }
-}
+    bool initialized = false;
+    bool startedDMA = false;
 
-void bootloader_entry(void) {
-    Bootloader::instance().Run();
-}
+    static constexpr size_t sampleSize = 3; // 24-bit samples
+    static constexpr size_t transferSamples = 2048; 
+    static constexpr size_t transferByteSize = transferSamples * sampleSize; 
 
-#endif  // #ifdef BOOTLOADER
+    std::array<uint8_t, transferByteSize> data;
+};
+
+#endif /* _ICS43434_H_ */

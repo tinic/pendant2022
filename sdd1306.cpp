@@ -168,7 +168,7 @@ void SDD1306::SetBootScreen(bool on, int32_t xpos) {
 void SDD1306::Display() {
     if (!devicePresent) return;
 
-    I2C2Manager::instance().prepareBatchWrite();
+    i2c2::instance().prepareBatchWrite();
 
     bool display_center_flip = false;
     if (center_flip_cache || center_flip_screen) {
@@ -196,7 +196,7 @@ void SDD1306::Display() {
         DisplayCenterFlip();
     }
 
-    I2C2Manager::instance().performBatchWrite();
+    i2c2::instance().performBatchWrite();
 }
     
 void SDD1306::SetVerticalShift(int8_t val) {
@@ -289,7 +289,7 @@ void SDD1306::DisplayBootScreen() {
             buf[x+1] = font_data[0x800*y + cx * 8 + (rx & 0x07)];
         }
 
-        I2C2Manager::instance().queueBatchWrite(i2c_addr,  buf, sizeof(buf));
+        i2c2::instance().queueBatchWrite(i2c_addr,  buf, sizeof(buf));
     }
 }
 
@@ -322,7 +322,7 @@ void SDD1306::DisplayCenterFlip() {
                 }
             }
         }
-        I2C2Manager::instance().queueBatchWrite(i2c_addr, buf, sizeof(buf));
+        i2c2::instance().queueBatchWrite(i2c_addr, buf, sizeof(buf));
     }
 }
     
@@ -381,15 +381,15 @@ void SDD1306::DisplayChar(uint32_t x, uint32_t y, uint16_t ch, uint8_t attr) {
         }
     }
 
-    I2C2Manager::instance().queueBatchWrite(i2c_addr,  buf, 9);
+    i2c2::instance().queueBatchWrite(i2c_addr,  buf, 9);
 }
 
 void SDD1306::BatchWriteCommand(uint8_t cmd_val) const {
     uint8_t cmd[2] = { 0x00, cmd_val };
-    I2C2Manager::instance().queueBatchWrite(i2c_addr, cmd, sizeof(cmd));
+    i2c2::instance().queueBatchWrite(i2c_addr, cmd, sizeof(cmd));
 }
 
 void SDD1306::WriteCommand(uint8_t cmd_val) const {
     uint8_t cmd[2] = { 0x00, cmd_val };
-    I2C2Manager::instance().write(i2c_addr, cmd, sizeof(cmd));
+    i2c2::instance().write(i2c_addr, cmd, sizeof(cmd));
 }

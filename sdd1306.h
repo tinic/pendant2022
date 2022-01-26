@@ -56,9 +56,10 @@ public:
     bool DevicePresent() const { return devicePresent; }
 
 private:
-    friend class I2C2Manager;
+    friend class i2c2;
 
     static constexpr uint32_t i2c_addr = 0x3C;
+    static constexpr const char *str_id = "SDD1306";
     static bool devicePresent;
 
     void Init();

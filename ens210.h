@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Tinic Uro
+Copyright 2020 Tinic Uro
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
@@ -20,43 +20,42 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-#include "./bootloader.h"
-#include "./main.h"
-#include "./leds.h"
-#include "./i2cmanager.h"
-#include "./sdcard.h"
+#ifndef ENS210_H_
+#define ENS210_H_
 
-#include "M480.h"
+#include <stdint.h>
 
-extern "C" {
-#include "./msc.h"
-}
+class ENS210 {
+public:
+    static ENS210 &instance();
 
-#ifdef BOOTLOADER
+    void update();
+    void stats();
 
-Bootloader &Bootloader::instance() {
-    static Bootloader bootloader;
-    if (!bootloader.initialized) {
-        bootloader.initialized = true;
-        bootloader.init();
-    }
-    return bootloader;
-}
+    float Temperature() const { return temperature; }
+    float Humidity() const { return humidity; }
 
-void Bootloader::init() {
-    Leds::instance();
-    i2c2::instance();
-    SDCard::instance();
-}
+private:
+    friend class i2c1;
+    friend class i2c2;
+    
+    static constexpr uint8_t i2c_addr = 0x43;
+    static constexpr const char *str_id = "ENS210";
+    static bool devicePresent;
 
-void Bootloader::Run() {
-    for(;;) {
-        __WFI();
-    }
-}
+    float temperature;
+    float humidity;
 
-void bootloader_entry(void) {
-    Bootloader::instance().Run();
-}
+    uint16_t temperatureRaw;
+    uint16_t humidityRaw;
 
-#endif  // #ifdef BOOTLOADER
+    void reset();
+    void read();
+    void measure();
+    void wait();
+
+    void init();
+    bool initialized = false;
+};
+
+#endif /* ENS210_H_ */

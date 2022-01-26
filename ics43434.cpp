@@ -20,43 +20,56 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-#include "./bootloader.h"
+#include "./ics43434.h"
 #include "./main.h"
-#include "./leds.h"
-#include "./i2cmanager.h"
-#include "./sdcard.h"
 
-#include "M480.h"
+#if 0
+#include <stdio.h>
 
 extern "C" {
-#include "./msc.h"
-}
-
-#ifdef BOOTLOADER
-
-Bootloader &Bootloader::instance() {
-    static Bootloader bootloader;
-    if (!bootloader.initialized) {
-        bootloader.initialized = true;
-        bootloader.init();
+    extern I2S_HandleTypeDef hi2s2;
+    void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *) {
+        // next block
+        ICS43434::instance().completeDMA();
     }
-    return bootloader;
+};
+
+ICS43434 &ICS43434::instance() {
+    static ICS43434 ics43434;
+    if (!ics43434.initialized) {
+        ics43434.initialized = true;
+        ics43434.init();
+    }
+    return ics43434;
 }
 
-void Bootloader::init() {
-    Leds::instance();
-    i2c2::instance();
-    SDCard::instance();
+void ICS43434::init() {
+    update();
 }
 
-void Bootloader::Run() {
-    for(;;) {
-        __WFI();
+void ICS43434::update() {
+    if (HAL_GPIO_ReadPin(VDD30_SW_GPIO_Port, VDD30_SW_Pin) == GPIO_PIN_RESET) {
+        startedDMA = false;
+    } else {
+        startDMA();
     }
 }
 
-void bootloader_entry(void) {
-    Bootloader::instance().Run();
+void ICS43434::completeDMA() {
+    if (!startedDMA) {
+        return;
+    }
+
+    HAL_I2S_Receive_DMA(&hi2s2, (uint16_t *)data.data(), transferSamples);
 }
 
-#endif  // #ifdef BOOTLOADER
+void ICS43434::startDMA() {
+    if (startedDMA) {
+        return;
+    }
+
+    startedDMA = true;
+
+    HAL_I2S_Receive_DMA(&hi2s2, (uint16_t *)data.data(), transferSamples);
+}
+#endif  // #if 0

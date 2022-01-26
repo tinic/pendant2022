@@ -55,8 +55,8 @@ void Pendant::init() {
     Effects::instance();
     SDCard::instance();
 
-//    I2C1Manager::instance();
-//    I2C2Manager::instance();
+    i2c1::instance();
+    i2c2::instance();
 //    SDD1306::instance();
 
 //    Input::instance();
@@ -69,8 +69,8 @@ void Pendant::Run() {
         __WFI();
         SDCard::instance().process();
         if (Timeline::instance().CheckIdleReadyAndClear()) {
-//            I2C1Manager::instance().reprobeCritial();
-//            I2C2Manager::instance().reprobeCritial();
+            i2c1::instance().update();
+            i2c2::instance().update();
             Model::instance().save();
         }
         if (Timeline::instance().CheckEffectReadyAndClear()) {

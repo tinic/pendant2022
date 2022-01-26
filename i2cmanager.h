@@ -25,12 +25,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "./color.h"
 
-class I2C1Manager {
+class i2c1 {
 public:
-    static I2C1Manager &instance();
+    static i2c1 &instance();
 
     void write(uint8_t peripheralAddr, uint8_t data[], size_t len);
     uint8_t read(uint8_t peripheralAddr, uint8_t data[], size_t len);
+
+    uint8_t writeRead(uint8_t peripheralAddr, uint8_t writeData[], size_t writeLen, uint8_t readData[], size_t readLen);
 
     void setReg8(uint8_t peripheralAddr, uint8_t reg, uint8_t dat);
     uint8_t getReg8(uint8_t peripheralAddr, uint8_t reg);
@@ -38,21 +40,22 @@ public:
     void setReg8Bits(uint8_t peripheralAddr, uint8_t reg, uint8_t mask);
     void clearReg8Bits(uint8_t peripheralAddr, uint8_t reg, uint8_t mask);
 
-    void reprobeCritial();
+    void update();
 
 private:
+    template<typename T> void checkReady();
+    template<typename T> void checkReadyReprobe();
+    template<class T> void update();
 
-    bool deviceReady(uint8_t u8PeripheralAddr);
-    void probe();
     void init();
 
     bool initialized = false;
 };
 
 
-class I2C2Manager {
+class i2c2 {
 public:
-    static I2C2Manager &instance();
+    static i2c2 &instance();
 
     void prepareBatchWrite();
     void queueBatchWrite(uint8_t peripheralAddr, uint8_t data[], size_t len);
@@ -67,15 +70,16 @@ public:
     void setReg8Bits(uint8_t peripheralAddr, uint8_t reg, uint8_t mask);
     void clearReg8Bits(uint8_t peripheralAddr, uint8_t reg, uint8_t mask);
 
-    void reprobeCritial();
+    void update();
 
     void I2C2_IRQHandler();
     void PDMA_IRQHandler();
 
 private:
+    template<typename T> void checkReady();
+    template<typename T> void checkReadyReprobe();
+    template<class T> void update();
 
-    bool deviceReady(uint8_t u8PeripheralAddr);
-    void probe();
     void init();
 
     bool initialized = false;
