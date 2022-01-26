@@ -691,9 +691,9 @@ int usbh_clear_halt(UDEV_T *udev, uint16_t ep_addr)
 
 static int  usbh_parse_endpoint(ALT_IFACE_T *alt, int ep_idx, uint8_t *desc_buff, int len)
 {
-    DESC_EP_T    *ep_desc;
+    DESC_EP_T    *ep_desc = NULL;
     int          parsed_len = 0;
-    int          pksz;
+    int          pksz = 0;
 
     while (len > 0)
     {
@@ -713,6 +713,11 @@ static int  usbh_parse_endpoint(ALT_IFACE_T *alt, int ep_idx, uint8_t *desc_buff
         desc_buff += ep_desc->bLength;
         parsed_len += ep_desc->bLength;
         len -= ep_desc->bLength;
+    }
+
+    if (ep_desc == NULL) {
+        USB_error("ERR DESCRIPTOR EP LEN IS ZERO\n");
+        return 0;
     }
 
     USB_vdebug("Descriptor Found - Alt: %d, Endpoint 0x%x, remaining len: %d\n", alt->ifd->bAlternateSetting, ep_desc->bEndpointAddress, len);
@@ -740,10 +745,10 @@ static int  usbh_parse_endpoint(ALT_IFACE_T *alt, int ep_idx, uint8_t *desc_buff
 static int  usbh_parse_interface(UDEV_T *udev, uint8_t *desc_buff, int len)
 {
     int         i, matched, parsed_len = 0;
-    DESC_HDR_T  *hdr;
-    DESC_IF_T   *if_desc;
+    DESC_HDR_T  *hdr = NULL;
+    DESC_IF_T   *if_desc = NULL;
     IFACE_T     *iface = NULL;
-    int         ret;
+    int         ret = 0;
 
     iface = usbh_alloc_mem(sizeof(*iface)); /* create an interface                        */
     if (iface == NULL)
@@ -820,6 +825,11 @@ static int  usbh_parse_interface(UDEV_T *udev, uint8_t *desc_buff, int len)
             desc_buff += hdr->bLength;
             parsed_len += hdr->bLength;
             len -= hdr->bLength;
+        }
+
+        if (hdr == NULL) {
+            USB_error("ERR DESCRIPTOR IF LEN IS ZERO\n");
+            return USBH_ERR_DATA_BUFF;
         }
 
         iface->alt[iface->num_alt].ifd = if_desc;

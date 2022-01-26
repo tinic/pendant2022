@@ -47,7 +47,7 @@ uint32_t SPI_Open(SPI_T *spi,
                   uint32_t u32DataWidth,
                   uint32_t u32BusClock)
 {
-    uint32_t u32ClkSrc = 0U, u32Div, u32HCLKFreq, u32RetValue=0U;
+    uint32_t u32ClkSrc = 0U, u32Div = 0U, u32HCLKFreq = 0U, u32RetValue=0U;
 
     /* Disable I2S mode */
     spi->I2SCTL &= ~SPI_I2SCTL_I2SEN_Msk;
@@ -346,8 +346,8 @@ void SPI_EnableAutoSS(SPI_T *spi, uint32_t u32SSPinMask, uint32_t u32ActiveLevel
   */
 uint32_t SPI_SetBusClock(SPI_T *spi, uint32_t u32BusClock)
 {
-    uint32_t u32ClkSrc, u32HCLKFreq;
-    uint32_t u32Div, u32RetValue;
+    uint32_t u32ClkSrc = 0U, u32HCLKFreq = 0U;
+    uint32_t u32Div = 0U, u32RetValue = 0U;
 
     /* Get system clock frequency */
     u32HCLKFreq = CLK_GetHCLKFreq();

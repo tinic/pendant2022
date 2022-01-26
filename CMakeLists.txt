@@ -41,6 +41,7 @@ set(CC_FLAGS
     -Wno-strict-aliasing 
     -Wno-format
     -ffast-math
+    -ffat-lto-objects
     -fallow-store-data-races)
 
 set(CXX_FLAGS 
@@ -212,6 +213,7 @@ target_include_directories(${PROJECT_NAME}.elf PRIVATE
     LoRaMac-node/src/boards
     LoRaMac-node/src/mac
     LoRaMac-node/src/mac/region
+    LoRaMac-node/src/peripherals/soft-se
     LoRaMac-node/src/apps/LoRaMac/common
     LoRaMac-node/src/apps/LoRaMac/common/LmHandler
     LoRaMac-node/src/apps/LoRaMac/common/LmHandler/packages)
@@ -247,6 +249,13 @@ endif(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 if(CMAKE_CXX_COMPILER_VERSION LESS "10.2")
     message(FATAL_ERROR "GCC must be version 10.2 or higher (found version '" ${CMAKE_CXX_COMPILER_VERSION} "')")
 endif(CMAKE_CXX_COMPILER_VERSION LESS "10.2")
+
+target_compile_definitions(LoRaMac-node PRIVATE ${DEFINITIONS})
+target_compile_options(LoRaMac-node PRIVATE ${CC_FLAGS})
+target_link_options(LoRaMac-node PRIVATE ${LD_FLAGS})
+target_compile_options(LoRaMac-node PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${CXX_FLAGS}>")
+target_compile_options(LoRaMac-node PRIVATE "$<$<CONFIG:DEBUG>:${DEBUG_FLAGS}>")
+target_compile_options(LoRaMac-node PRIVATE "$<$<CONFIG:RELEASE>:${RELEASE_FLAGS}>")
 
 target_compile_definitions(${PROJECT_NAME}.elf PRIVATE ${DEFINITIONS})
 target_compile_options(${PROJECT_NAME}.elf PRIVATE ${CC_FLAGS})

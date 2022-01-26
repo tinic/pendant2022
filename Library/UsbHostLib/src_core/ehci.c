@@ -413,7 +413,7 @@ static void append_to_qtd_list_of_QH(QH_T *qh, qTD_T *qtd)
  */
 static void  write_qh(UDEV_T *udev, EP_INFO_T *ep, QH_T *qh)
 {
-    uint32_t   chrst, cap;
+    uint32_t   chrst = 0, cap = 0;
 
     /*------------------------------------------------------------------------------------*/
     /*  Write QH DWord 1 - Endpoint Characteristics                                       */
@@ -460,7 +460,7 @@ static void  write_qh(UDEV_T *udev, EP_INFO_T *ep, QH_T *qh)
         /*
          *  Backtrace device tree until the USB 2.0 hub found
          */
-        HUB_DEV_T   *hub = 0;
+        HUB_DEV_T   *hub = NULL;
         int         port_num;
 
         port_num = udev->port_num;
@@ -472,8 +472,11 @@ static void  write_qh(UDEV_T *udev, EP_INFO_T *ep, QH_T *qh)
             hub = hub->iface->udev->parent;
         }
 
-        cap = (port_num << QH_HUB_PORT_Pos) |
-              (hub->iface->udev->dev_num << QH_HUB_ADDR_Pos);
+        if (hub != NULL) 
+        {
+            cap = (port_num << QH_HUB_PORT_Pos) |
+                (hub->iface->udev->dev_num << QH_HUB_ADDR_Pos);
+        }
     }
 
     qh->Cap = cap;

@@ -300,9 +300,9 @@ int32_t FMC_Erase_Bank(uint32_t u32BankAddr)
   */
 int32_t FMC_EraseXOM(uint32_t u32XomNum)
 {
-    uint32_t  u32Addr;
-    int32_t   i32Active, err = 0;
-    int32_t   tout;
+    uint32_t  u32Addr = 0;
+    int32_t   i32Active = 0, err = 0;
+    int32_t   tout = 0;
 
     if(u32XomNum >= 4UL)
     {
