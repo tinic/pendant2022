@@ -105,6 +105,10 @@ add_library(LoRaMac-node
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandler/packages/LmhpFragmentation.c
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandler/packages/LmhpRemoteMcastSetup.c
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandler/LmHandler.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandlerMsgDisplay.c
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/NvmDataMgmt.c
+
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/boards/mcu/utilities.c
 
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/region/Region.c
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/region/RegionBaseUS.c
@@ -144,7 +148,7 @@ target_include_directories(LoRaMac-node PRIVATE
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/LmHandler/
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/common/
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/apps/LoRaMac/
-    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/system/
+    ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/boards/
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/radio/
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/
@@ -156,6 +160,7 @@ file(GLOB_RECURSE NUVOTON0_SRC ${PROJECT_SOURCE_DIR}/Library/Device/Nuvoton/GCC/
 file(GLOB_RECURSE NUVOTON1_SRC ${PROJECT_SOURCE_DIR}/Library/Device/Nuvoton/M480/Source/*.c)
 
 add_executable(${PROJECT_NAME}.elf 
+    ${PROJECT_SOURCE_DIR}/lorawan_glue.cpp
     ${PROJECT_SOURCE_DIR}/lorawan.cpp
     ${PROJECT_SOURCE_DIR}/i2cmanager.cpp
     ${PROJECT_SOURCE_DIR}/bq25895.cpp
@@ -209,8 +214,9 @@ target_include_directories(${PROJECT_NAME}.elf PRIVATE
     Library/UsbHostLib/src_msc
     Library/UsbHostLib/src_uac
     Library/StdDriver/inc
-    LoRaMac-node/src/system
+    LoRaMac-node/src
     LoRaMac-node/src/boards
+    LoRaMac-node/src/radio
     LoRaMac-node/src/mac
     LoRaMac-node/src/mac/region
     LoRaMac-node/src/peripherals/soft-se

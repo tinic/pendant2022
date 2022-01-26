@@ -32,6 +32,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./ens210.h"
 #include "./lsm6dsm.h"
 #include "./mmc5633njl.h"
+#include "./lorawan.h"
 
 #include "./effects.h"
 #include "./ui.h"
@@ -63,6 +64,7 @@ void Pendant::init() {
 //    i2c1::instance();
 //    i2c2::instance();
 //    UI::instance();
+    LoraWAN::instance();
 }
 
 void Pendant::Run() {
@@ -74,6 +76,7 @@ void Pendant::Run() {
  //           i2c1::instance().update();
  //           i2c2::instance().update();
             Model::instance().save();
+            LoraWAN::instance().update();
         }
         if (Timeline::instance().CheckEffectReadyAndClear()) {
             Timeline::instance().ProcessInterval();

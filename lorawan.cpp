@@ -29,6 +29,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "M480.h"
 
 // LoraWAN-node
+#include "sx126x-board.h"
 #include "board.h"
 #include "Commissioning.h"
 
@@ -89,7 +90,7 @@ static LmHandlerCallbacks_t LmHandlerCallbacks =
 {
     .GetBatteryLevel = BoardGetBatteryLevel,
     .GetTemperature = NULL,
-    .GetRandomSeed = BoardGetRandomSeed,
+    .GetRandomSeed = NULL,
     .OnMacProcess = OnMacProcessNotify,
     .OnNvmDataChange = OnNvmDataChange,
     .OnNetworkParametersChange = OnNetworkParametersChange,
@@ -144,6 +145,8 @@ LoraWAN &LoraWAN::instance() {
 }
 
 void LoraWAN::init() {
+
+    SX126xIoInit();
 
     if (LmHandlerInit(&LmHandlerCallbacks, &LmHandlerParams) != LORAMAC_HANDLER_SUCCESS) {
         printf("LoRaMac wasn't properly initialized\n");

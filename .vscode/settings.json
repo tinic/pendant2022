@@ -82,6 +82,21 @@
         "locale": "cpp",
         "mutex": "cpp",
         "ratio": "cpp",
-        "delay-board.h": "c"
+        "delay-board.h": "c",
+        "fifo.h": "c",
+        "sysirqhandlers.h": "c",
+        "gpio.h": "c",
+        "timer.h": "c",
+        "loramactypes.h": "c",
+        "systime.h": "c",
+        "time.h": "c",
+        "sx126x.h": "c",
+        "sx126x-board.h": "c",
+        "radio.h": "c",
+        "lr1110.h": "c",
+        "nvmdatamgmt.h": "c",
+        "lmhpackage.h": "c",
+        "lmhpcompliance.h": "c",
+        "stdlib.h": "c"
     }
 }
