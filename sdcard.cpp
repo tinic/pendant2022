@@ -23,7 +23,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./sdcard.h"
 #include "./main.h"
 #include "./msc.h"
-#include "./stm32wl.h"
 #include "./timeline.h"
 #include "./version.h"
 
@@ -274,7 +273,7 @@ void SDH0_IRQHandler(void)
 }
 
 extern "C" DWORD get_fattime(void) {
-    return STM32WL::instance().DateTime();
+    return 0; // TODO
 }
 
 static constexpr uint8_t DEV_MMC = 0;

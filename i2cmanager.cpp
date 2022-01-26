@@ -21,7 +21,6 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include "./i2cmanager.h"
-#include "./stm32wl.h"
 #include "./sdd1306.h"
 #include "./timeline.h"
 
@@ -59,10 +58,6 @@ void I2CManager::reprobeCritial() {
         SDD1306::devicePresent = deviceReady(SDD1306::i2c_addr);
         if (SDD1306::devicePresent) printf("SDD1306 is ready on reprobe.\n");
     }
-    if (!STM32WL::devicePresent) {
-        STM32WL::devicePresent = deviceReady(STM32WL::i2c_addr);
-        if (STM32WL::devicePresent) printf("STM32WL is ready on reprobe.\n");
-    }
 }
 
 void I2CManager::probe() {
@@ -75,10 +70,6 @@ void I2CManager::probe() {
                 case SDD1306::i2c_addr: {
                     SDD1306::devicePresent = true;
                     printf("SDD1306 is ready.\n");
-                } break;
-                case STM32WL::i2c_addr: {
-                    STM32WL::devicePresent = true;
-                    printf("STM32WL is ready.\n");
                 } break;
             default: {
                     printf("Unknown I2C device 0x%02x is ready.\n", c);

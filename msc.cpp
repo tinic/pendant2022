@@ -1,6 +1,6 @@
 #include <string.h>
 #include "M480.h"
-#include "msc.h"
+#include "./msc.h"
 
 #if 1
 #define DBG_PRINTF      printf

@@ -36,6 +36,6 @@ Seed &Seed::instance() {
 }
 
 void Seed::init() {
-    // Get seed from STM32WL
+    // Get seed
 }
 

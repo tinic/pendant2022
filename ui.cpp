@@ -24,7 +24,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./timeline.h"
 #include "./sdd1306.h"
 #include "./model.h"
-#include "./stm32wl.h"
 
 #include <stdio.h>
 
@@ -50,11 +49,11 @@ void UI::init() {
             SDD1306::instance().PlaceUTF8String(0,0,str);
             sprintf(str,"D:%fs", Timeline::SystemTime());
             SDD1306::instance().PlaceUTF8String(0,1,str);
-            sprintf(str,"T:%6.1fC", double(STM32WL::instance().Temperature()));
+            sprintf(str,"T:%6.1fC", 0.0);
             SDD1306::instance().PlaceUTF8String(0,2,str);
-            sprintf(str,"H:%6.1f%%", double(STM32WL::instance().Humidity())*100.0);
+            sprintf(str,"H:%6.1f%%", 0.0);
             SDD1306::instance().PlaceUTF8String(0,3,str);
-            sprintf(str,"V:%6.1fV", double(STM32WL::instance().BatteryVoltage()));
+            sprintf(str,"V:%6.1fV", 0.0);
             SDD1306::instance().PlaceUTF8String(0,4,str);
         };
         mainUI.commitFunc = [=](Timeline::Span &) {

@@ -27,7 +27,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./timeline.h"
 #include "./sdcard.h"
 #include "./input.h"
-#include "./stm32wl.h"
 #include "./sdd1306.h"
 #include "./effects.h"
 #include "./ui.h"
@@ -58,7 +57,6 @@ void Pendant::init() {
 
 //    I2CManager::instance();
 //    SDD1306::instance();
-//    STM32WL::instance();
 
 //    Input::instance();
 //    UI::instance();
@@ -72,9 +70,6 @@ void Pendant::Run() {
         if (Timeline::instance().CheckIdleReadyAndClear()) {
             //I2CManager::instance().reprobeCritial();
             Model::instance().save();
-        }
-        if (Timeline::instance().CheckBackgroundReadyAndClear()) {
-            //STM32WL::instance().update();
         }
         if (Timeline::instance().CheckEffectReadyAndClear()) {
             Timeline::instance().ProcessInterval();

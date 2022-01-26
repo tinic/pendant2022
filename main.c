@@ -23,7 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./main.h"
 
 #include "M480.h"
-#include "version.h"
+#include "./version.h"
 
 #include <stdio.h>
 
