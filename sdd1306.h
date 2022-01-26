@@ -62,9 +62,7 @@ private:
     static constexpr const char *str_id = "SDD1306";
     static bool devicePresent;
 
-    void Init();
-
-    static void InitPins();
+    void init();
 
     void Clear();
     void DisplayBootScreen();

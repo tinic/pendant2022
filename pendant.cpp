@@ -28,6 +28,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./sdcard.h"
 #include "./input.h"
 #include "./sdd1306.h"
+#include "./bq25895.h"
+#include "./ens210.h"
+#include "./lsm6dsm.h"
+#include "./mmc5633njl.h"
+
 #include "./effects.h"
 #include "./ui.h"
 #include "./model.h"
@@ -54,13 +59,10 @@ void Pendant::init() {
     Leds::instance();
     Effects::instance();
     SDCard::instance();
-
+    Input::instance();
     i2c1::instance();
     i2c2::instance();
-//    SDD1306::instance();
-
-//    Input::instance();
-//    UI::instance();
+    UI::instance();
 }
 
 void Pendant::Run() {

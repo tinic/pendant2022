@@ -65,7 +65,7 @@ bool SDD1306::devicePresent = false;
 SDD1306 &SDD1306::instance() {
     if (!sdd1306.initialized) {
         sdd1306.initialized = true;
-        sdd1306.Init();
+        sdd1306.init();
     }
     return sdd1306;
 }
@@ -223,27 +223,18 @@ void SDD1306::DisplayOff() {
     displayOn = false;
 }
 
-void SDD1306::InitPins() {
-    // OLED_RESET
-    GPIO_SetMode(PB, BIT0, GPIO_MODE_OUTPUT);
-    // OLED_CS
-    GPIO_SetMode(PB, BIT1, GPIO_MODE_OUTPUT);
-    // Select OLED
-    PB1 = 0;
-}
-
-void SDD1306::Init() {
+void SDD1306::init() {
     if (!devicePresent) return;
 
-    InitPins();
+    // OLED_RESET
+    GPIO_SetMode(PB, BIT10, GPIO_MODE_OUTPUT);
 
     // Reset OLED screen
-    PB1 = 0; // OLED_CS
-    PB0 = 1; // OLED_RESET
+    PB10 = 1; // OLED_RESET
     delay_us(100);
-    PB0 = 0;
+    PB10 = 0;
     delay_us(1000);
-    PB0 = 1;
+    PB10 = 1;
     delay_us(2000);
 
     static uint8_t startup_sequence[] = {
