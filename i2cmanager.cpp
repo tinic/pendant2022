@@ -159,7 +159,6 @@ template<class T> void i2c2::update() {
     }
 }
 
-
 i2c2 &i2c2::instance() {
     static i2c2 i2c;
     if (!i2c.initialized) {
@@ -288,7 +287,6 @@ void i2c2::performBatchWrite() {
     I2C_DISABLE_RX_PDMA(I2C2);
     I2C_DisableInt(I2C2);
 }
-
 
 void i2c2::write(uint8_t _u8PeripheralAddr, uint8_t data[], size_t _u32wLen) {
     I2C_WriteMultiBytes(I2C2, _u8PeripheralAddr, data, _u32wLen);

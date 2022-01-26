@@ -28,37 +28,72 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 extern "C" {
 
-void GPF_IRQHandler(void)
+void GPA_IRQHandler(void)
 {
-    if(GPIO_GET_INT_FLAG(PF, BIT2))
+    // ACCEL_INT1
+    if(GPIO_GET_INT_FLAG(PA, BIT9))
     {
-        Timeline::instance().TopDisplay().ProcessSwitch1(PF2 ? true : false);
-        if (PF2) Model::instance().IncSwitch1Count();
-        GPIO_CLR_INT_FLAG(PF, BIT2);
+        GPIO_CLR_INT_FLAG(PA, BIT8);
     }
 
-    if(GPIO_GET_INT_FLAG(PF, BIT5))
+    // ACCEL_INT2
+    if(GPIO_GET_INT_FLAG(PA, BIT8))
     {
-        if (PF5) Model::instance().IncDselCount();
-        printf("(DSEL) PF.5 IRQ occurred.\n");
-        GPIO_CLR_INT_FLAG(PF, BIT5);
+        GPIO_CLR_INT_FLAG(PA, BIT8);
     }
 }
 
 void GPB_IRQHandler(void)
 {
-    if(GPIO_GET_INT_FLAG(PB, BIT5))
+    // SD0_NCD
+    if(GPIO_GET_INT_FLAG(PB, BIT12))
     {
-        Timeline::instance().TopDisplay().ProcessSwitch2(PB5 ? true : false);
-        if (PB5) Model::instance().IncSwitch2Count();
-        GPIO_CLR_INT_FLAG(PB, BIT5);
+        GPIO_CLR_INT_FLAG(PB, BIT12);
     }
 
+    // DSEL
     if(GPIO_GET_INT_FLAG(PB, BIT15))
     {
-        Timeline::instance().TopDisplay().ProcessSwitch3(PB15 ? true : false);
-        if (PB15) Model::instance().IncSwitch3Count();
         GPIO_CLR_INT_FLAG(PB, BIT15);
+    }
+
+    // SW1
+    if(GPIO_GET_INT_FLAG(PB, BIT9))
+    {
+        Timeline::instance().TopDisplay().ProcessSwitch1(PB9 ? true : false);
+        if (PB5) Model::instance().IncSwitch1Count();
+        GPIO_CLR_INT_FLAG(PB, BIT9);
+    }
+
+    // SW2
+    if(GPIO_GET_INT_FLAG(PB, BIT8))
+    {
+        Timeline::instance().TopDisplay().ProcessSwitch2(PB8 ? true : false);
+        if (PB5) Model::instance().IncSwitch2Count();
+        GPIO_CLR_INT_FLAG(PB, BIT8);
+    }
+
+    // SW3
+    if(GPIO_GET_INT_FLAG(PB, BIT7))
+    {
+        Timeline::instance().TopDisplay().ProcessSwitch3(PB7 ? true : false);
+        if (PB5) Model::instance().IncSwitch2Count();
+        GPIO_CLR_INT_FLAG(PB, BIT7);
+    }
+}
+
+void GPC_IRQHandler(void)
+{
+    // RF_DIO1
+    if(GPIO_GET_INT_FLAG(PC, BIT0))
+    {
+        GPIO_CLR_INT_FLAG(PC, BIT0);
+    }
+
+    // BQ_INT
+    if(GPIO_GET_INT_FLAG(PC, BIT14))
+    {
+        GPIO_CLR_INT_FLAG(PC, BIT14);
     }
 }
 
@@ -76,40 +111,64 @@ Input &Input::instance() {
 void Input::init() {
     GPIO_SET_DEBOUNCE_TIME(GPIO_DBCTL_DBCLKSRC_LIRC, GPIO_DBCTL_DBCLKSEL_256);
 
-    // BQ_INT
-    GPIO_SetMode(PF, BIT4, GPIO_MODE_INPUT);
-    GPIO_SetPullCtl(PF, BIT4, GPIO_PUSEL_PULL_UP);
-    GPIO_EnableInt(PF, 4, GPIO_INT_BOTH_EDGE);
+    // ACCEL_INT1
+    GPIO_SetMode(PA, BIT9, GPIO_MODE_INPUT);
+    GPIO_SetPullCtl(PA, BIT9, GPIO_PUSEL_PULL_UP);
+    GPIO_EnableInt(PA, 9, GPIO_INT_BOTH_EDGE);
+
+    // ACCEL_INT2
+    GPIO_SetMode(PA, BIT8, GPIO_MODE_INPUT);
+    GPIO_SetPullCtl(PA, BIT8, GPIO_PUSEL_PULL_UP);
+    GPIO_EnableInt(PA, 8, GPIO_INT_BOTH_EDGE);
+
+    // SD0_NCD
+    GPIO_SetMode(PB, BIT12, GPIO_MODE_INPUT);
+    GPIO_SetPullCtl(PB, BIT12, GPIO_PUSEL_PULL_UP);
+    GPIO_EnableInt(PB, 12, GPIO_INT_BOTH_EDGE);
 
     // DSEL
-    GPIO_SetMode(PF, BIT5, GPIO_MODE_INPUT);
-    GPIO_SetPullCtl(PF, BIT5, GPIO_PUSEL_PULL_UP);
-    GPIO_EnableInt(PF, 5, GPIO_INT_BOTH_EDGE);
-
-    // SW1
-    GPIO_SetMode(PF, BIT2, GPIO_MODE_INPUT);
-    GPIO_SetPullCtl(PF, BIT2, GPIO_PUSEL_PULL_UP);
-    GPIO_ENABLE_DEBOUNCE(PF, BIT2);
-    GPIO_CLR_INT_FLAG(PF, BIT2);
-    GPIO_EnableInt(PF, 2, GPIO_INT_BOTH_EDGE);
-
-    // SW2
-    GPIO_SetMode(PB, BIT5, GPIO_MODE_INPUT);
-    GPIO_SetPullCtl(PB, BIT5, GPIO_PUSEL_PULL_UP);
-    GPIO_ENABLE_DEBOUNCE(PB, BIT5);
-    GPIO_CLR_INT_FLAG(PB, BIT5);
-    GPIO_EnableInt(PB, 5, GPIO_INT_BOTH_EDGE);
-
-    // SW3
     GPIO_SetMode(PB, BIT15, GPIO_MODE_INPUT);
     GPIO_SetPullCtl(PB, BIT15, GPIO_PUSEL_PULL_UP);
-    GPIO_ENABLE_DEBOUNCE(PB, BIT15);
-    GPIO_CLR_INT_FLAG(PB, BIT15);
-    GPIO_EnableInt(PB, 15, GPIO_INT_BOTH_EDGE);
+    GPIO_EnableInt(PB, 5, GPIO_INT_BOTH_EDGE);
+
+    // SW1
+    GPIO_SetMode(PB, BIT9, GPIO_MODE_INPUT);
+    GPIO_SetPullCtl(PF, BIT9, GPIO_PUSEL_PULL_UP);
+    GPIO_ENABLE_DEBOUNCE(PB, BIT9);
+    GPIO_CLR_INT_FLAG(PB, BIT9);
+    GPIO_EnableInt(PB, 9, GPIO_INT_BOTH_EDGE);
+
+    // SW2
+    GPIO_SetMode(PB, BIT8, GPIO_MODE_INPUT);
+    GPIO_SetPullCtl(PB, BIT8, GPIO_PUSEL_PULL_UP);
+    GPIO_ENABLE_DEBOUNCE(PB, BIT8);
+    GPIO_CLR_INT_FLAG(PB, BIT8);
+    GPIO_EnableInt(PB, 8, GPIO_INT_BOTH_EDGE);
+
+    // SW3
+    GPIO_SetMode(PB, BIT7, GPIO_MODE_INPUT);
+    GPIO_SetPullCtl(PB, BIT7, GPIO_PUSEL_PULL_UP);
+    GPIO_ENABLE_DEBOUNCE(PB, BIT7);
+    GPIO_CLR_INT_FLAG(PB, BIT7);
+    GPIO_EnableInt(PB, 7, GPIO_INT_BOTH_EDGE);
+
+    // RF_DIO1
+    GPIO_SetMode(PC, BIT0, GPIO_MODE_INPUT);
+    GPIO_SetPullCtl(PC, BIT0, GPIO_PUSEL_PULL_UP);
+    GPIO_EnableInt(PC, 0, GPIO_INT_BOTH_EDGE);
+
+    // BQ_INT
+    GPIO_SetMode(PC, BIT14, GPIO_MODE_INPUT);
+    GPIO_SetPullCtl(PC, BIT14, GPIO_PUSEL_PULL_UP);
+    GPIO_EnableInt(PC, 14, GPIO_INT_BOTH_EDGE);
+
+    NVIC_EnableIRQ(GPA_IRQn);
+    NVIC_SetPriority(GPA_IRQn, 5);
 
     NVIC_EnableIRQ(GPB_IRQn);
     NVIC_SetPriority(GPB_IRQn, 5);
-    
-    NVIC_EnableIRQ(GPF_IRQn);
-    NVIC_SetPriority(GPF_IRQn, 5);
+
+    NVIC_EnableIRQ(GPC_IRQn);
+    NVIC_SetPriority(GPC_IRQn, 5);
+
 }

@@ -23,6 +23,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./ui.h"
 #include "./timeline.h"
 #include "./sdd1306.h"
+#include "./ens210.h"
+#include "./bq25895.h"
 #include "./model.h"
 
 #include <stdio.h>
@@ -49,11 +51,11 @@ void UI::init() {
             SDD1306::instance().PlaceUTF8String(0,0,str);
             sprintf(str,"D:%fs", Timeline::SystemTime());
             SDD1306::instance().PlaceUTF8String(0,1,str);
-            sprintf(str,"T:%6.1fC", 0.0);
+            sprintf(str,"T:%6.1fC", double(ENS210::instance().Temperature()));
             SDD1306::instance().PlaceUTF8String(0,2,str);
-            sprintf(str,"H:%6.1f%%", 0.0);
+            sprintf(str,"H:%6.1f%%", double(ENS210::instance().Humidity()));
             SDD1306::instance().PlaceUTF8String(0,3,str);
-            sprintf(str,"V:%6.1fV", 0.0);
+            sprintf(str,"V:%6.1fV", double(BQ25895::instance().SystemVoltage()));
             SDD1306::instance().PlaceUTF8String(0,4,str);
         };
         mainUI.commitFunc = [=](Timeline::Span &) {
