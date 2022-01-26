@@ -45,7 +45,7 @@ Bootloader &Bootloader::instance() {
 
 void Bootloader::init() {
     Leds::instance();
-    I2CManager::instance();
+    I2C2Manager::instance();
     SDCard::instance();
 }
 

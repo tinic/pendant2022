@@ -25,9 +25,34 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "./color.h"
 
-class I2CManager {
+class I2C1Manager {
 public:
-    static I2CManager &instance();
+    static I2C1Manager &instance();
+
+    void write(uint8_t peripheralAddr, uint8_t data[], size_t len);
+    uint8_t read(uint8_t peripheralAddr, uint8_t data[], size_t len);
+
+    void setReg8(uint8_t peripheralAddr, uint8_t reg, uint8_t dat);
+    uint8_t getReg8(uint8_t peripheralAddr, uint8_t reg);
+
+    void setReg8Bits(uint8_t peripheralAddr, uint8_t reg, uint8_t mask);
+    void clearReg8Bits(uint8_t peripheralAddr, uint8_t reg, uint8_t mask);
+
+    void reprobeCritial();
+
+private:
+
+    bool deviceReady(uint8_t u8PeripheralAddr);
+    void probe();
+    void init();
+
+    bool initialized = false;
+};
+
+
+class I2C2Manager {
+public:
+    static I2C2Manager &instance();
 
     void prepareBatchWrite();
     void queueBatchWrite(uint8_t peripheralAddr, uint8_t data[], size_t len);
@@ -44,7 +69,7 @@ public:
 
     void reprobeCritial();
 
-    void I2C0_IRQHandler();
+    void I2C2_IRQHandler();
     void PDMA_IRQHandler();
 
 private:
@@ -55,7 +80,7 @@ private:
 
     bool initialized = false;
 
-    static constexpr uint32_t I2C0_PDMA_TX_CH = 4;
+    static constexpr uint32_t I2C2_PDMA_TX_CH = 2;
 
     uint8_t qBufSeq[2048];
     uint8_t *qBufPtr = 0;

@@ -51,10 +51,6 @@ static void SYS_Init(void)
 
     // Set up pins
 
-    // I2C0 // TODO REMOVE
-    SYS->GPC_MFPL &= ~(SYS_GPC_MFPL_PC1MFP_Msk | SYS_GPC_MFPL_PC0MFP_Msk);
-    SYS->GPC_MFPL |= (SYS_GPC_MFPL_PC1MFP_I2C0_SCL | SYS_GPC_MFPL_PC0MFP_I2C0_SDA);
-
     // I2C1
     SYS->GPA_MFPL &= ~(SYS_GPA_MFPL_PA7MFP_Msk | SYS_GPA_MFPL_PA6MFP_Msk);
     SYS->GPA_MFPL |= (SYS_GPA_MFPL_PA7MFP_I2C1_SCL | SYS_GPA_MFPL_PA6MFP_I2C1_SDA);
@@ -133,7 +129,6 @@ static void SYS_Init(void)
     CLK->PCLKDIV = (CLK_PCLKDIV_PCLK0DIV8 | CLK_PCLKDIV_PCLK1DIV8);
 
     CLK_EnableModuleClock(FMCIDLE_MODULE); // HCLK 96Mhz
-    CLK_EnableModuleClock(I2C0_MODULE); // PCLK0 12Mhz
     CLK_EnableModuleClock(I2C1_MODULE); // PCLK1 12Mhz
     CLK_EnableModuleClock(I2C2_MODULE); // PCLK0 12Mhz
     CLK_EnableModuleClock(ISP_MODULE); // HIRC 12Mhz
@@ -175,7 +170,6 @@ static void SYS_Init(void)
 static void SYS_DeInit(void)
 {
     CLK_DisableModuleClock(FMCIDLE_MODULE);
-    CLK_DisableModuleClock(I2C0_MODULE);
     CLK_DisableModuleClock(I2C1_MODULE);
     CLK_DisableModuleClock(I2C2_MODULE);
     CLK_DisableModuleClock(ISP_MODULE);

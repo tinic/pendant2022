@@ -56,7 +56,8 @@ public:
     bool DevicePresent() const { return devicePresent; }
 
 private:
-    friend class I2CManager;
+    friend class I2C2Manager;
+
     static constexpr uint32_t i2c_addr = 0x3C;
     static bool devicePresent;
 
