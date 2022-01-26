@@ -30,23 +30,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class ICS43434 {
 public:
     static ICS43434 &instance();
-
     void update();
-    void completeDMA();
-
 private:
-
     void init();
-    void startDMA();
-
     bool initialized = false;
-    bool startedDMA = false;
-
-    static constexpr size_t sampleSize = 3; // 24-bit samples
-    static constexpr size_t transferSamples = 2048; 
-    static constexpr size_t transferByteSize = transferSamples * sampleSize; 
-
-    std::array<uint8_t, transferByteSize> data;
 };
 
 #endif /* _ICS43434_H_ */

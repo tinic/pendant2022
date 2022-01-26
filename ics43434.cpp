@@ -23,16 +23,34 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./ics43434.h"
 #include "./main.h"
 
-#if 0
+#include "M480.h"
+
 #include <stdio.h>
 
+static constexpr size_t buffLen = 4096;
+static uint32_t PcmBuff[buffLen] = {0};
+static uint32_t volatile u32BuffPos = 0;
+
 extern "C" {
-    extern I2S_HandleTypeDef hi2s2;
-    void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *) {
-        // next block
-        ICS43434::instance().completeDMA();
+
+void I2S0_IRQHandler(void) {
+    uint32_t u32Reg = I2S_GET_INT_FLAG(I2S0, I2S_STATUS0_TXTHIF_Msk | I2S_STATUS0_RXTHIF_Msk);
+    if (u32Reg & I2S_STATUS0_RXTHIF_Msk) {
+        if (u32BuffPos < (buffLen-8)) {
+            uint32_t *pBuffRx = &PcmBuff[u32BuffPos];
+            size_t u32Len = I2S_GET_RX_FIFO_LEVEL(I2S0);
+            for (size_t i = 0; i < u32Len; i++ ) {
+                pBuffRx[i] = I2S_READ_RX_FIFO(I2S0);
+            }
+            u32BuffPos += u32Len;
+            if (u32BuffPos >= buffLen) {
+                u32BuffPos =    0;
+            }
+        }
     }
-};
+}
+
+}
 
 ICS43434 &ICS43434::instance() {
     static ICS43434 ics43434;
@@ -44,32 +62,13 @@ ICS43434 &ICS43434::instance() {
 }
 
 void ICS43434::init() {
-    update();
+    I2S_Open(I2S0, I2S_MODE_SLAVE, 16000, I2S_DATABIT_24, I2S_ENABLE_MONO, I2S_FORMAT_I2S);
+    NVIC_EnableIRQ(I2S0_IRQn);
+
+    I2S_EnableMCLK(I2S0, 12000000);
+    I2S_EnableInt(I2S0, I2S_IEN_RXTHIEN_Msk);
+    I2S_ENABLE_RX(I2S0);
 }
 
 void ICS43434::update() {
-    if (HAL_GPIO_ReadPin(VDD30_SW_GPIO_Port, VDD30_SW_Pin) == GPIO_PIN_RESET) {
-        startedDMA = false;
-    } else {
-        startDMA();
-    }
 }
-
-void ICS43434::completeDMA() {
-    if (!startedDMA) {
-        return;
-    }
-
-    HAL_I2S_Receive_DMA(&hi2s2, (uint16_t *)data.data(), transferSamples);
-}
-
-void ICS43434::startDMA() {
-    if (startedDMA) {
-        return;
-    }
-
-    startedDMA = true;
-
-    HAL_I2S_Receive_DMA(&hi2s2, (uint16_t *)data.data(), transferSamples);
-}
-#endif  // #if 0
