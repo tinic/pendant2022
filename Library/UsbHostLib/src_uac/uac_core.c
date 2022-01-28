@@ -553,6 +553,9 @@ static void iso_in_irq(UTR_T *utr)
  */
 int usbh_uac_start_audio_in(UAC_DEV_T *uac, UAC_CB_FUNC *func)
 {
+    if (!uac)
+        return UAC_RET_DEV_NOT_FOUND;
+
     UDEV_T       *udev = uac->udev;
     AS_IF_T      *asif = &uac->asif_in;
     IFACE_T      *iface = uac->asif_in.iface;
@@ -563,7 +566,7 @@ int usbh_uac_start_audio_in(UAC_DEV_T *uac, UAC_CB_FUNC *func)
     uint8_t      bAlternateSetting;
     int          i, j, ret;
 
-    if (!uac || !iface)
+    if (!iface)
         return UAC_RET_DEV_NOT_FOUND;
 
     if (asif->flag_streaming)
@@ -795,6 +798,9 @@ static void iso_out_irq(UTR_T *utr)
  */
 int usbh_uac_start_audio_out(UAC_DEV_T *uac, UAC_CB_FUNC *func)
 {
+    if (!uac)
+        return UAC_RET_DEV_NOT_FOUND;
+
     UDEV_T       *udev = uac->udev;
     AS_IF_T      *asif = &uac->asif_out;
     IFACE_T      *iface = uac->asif_out.iface;
@@ -805,7 +811,7 @@ int usbh_uac_start_audio_out(UAC_DEV_T *uac, UAC_CB_FUNC *func)
     uint8_t      bAlternateSetting;
     int          i, j, ret;
 
-    if (!uac || !func || !iface)
+    if (!func || !iface)
         return UAC_RET_DEV_NOT_FOUND;
 
     if (asif->flag_streaming)

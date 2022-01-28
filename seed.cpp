@@ -26,6 +26,17 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "M480.h"
 #include "trng.h"
 
+static uint32_t g_u32AdcIntFlag = 0;
+
+extern "C" {
+
+void EADC00_IRQHandler(void) {
+    g_u32AdcIntFlag = 1;
+    EADC_CLR_INT_FLAG(EADC, EADC_STATUS2_ADIF0_Msk);      /* Clear the A/D ADINT0 interrupt flag */
+}
+
+}
+
 Seed &Seed::instance() {
     static Seed seed;
     if (!seed.initialized) {
@@ -36,6 +47,43 @@ Seed &Seed::instance() {
 }
 
 void Seed::init() {
-    // Get seed
-}
 
+    g_u32AdcIntFlag = 0;
+
+    CLK_EnableModuleClock(EADC_MODULE);
+    CLK_SetModuleClock(EADC_MODULE, 0, CLK_CLKDIV0_EADC(8));
+
+    PB->MODE &= ~(GPIO_MODE_MODE12_Msk);
+
+    SYS->GPB_MFPH &= ~(SYS_GPB_MFPH_PB12MFP_Msk);
+    SYS->GPB_MFPH |= (SYS_GPB_MFPH_PB12MFP_EADC0_CH12);
+
+    EADC_Open(EADC, EADC_CTL_DIFFEN_SINGLE_END);
+    EADC_ConfigSampleModule(EADC, 0, EADC_ADINT0_TRIGGER, 12);
+
+    EADC_CLR_INT_FLAG(EADC, EADC_STATUS2_ADIF0_Msk);
+
+    EADC_ENABLE_INT(EADC, BIT0);
+    EADC_ENABLE_SAMPLE_MODULE_INT(EADC, 0, BIT0);
+    NVIC_EnableIRQ(EADC00_IRQn);
+
+    EADC_START_CONV(EADC, BIT0);
+
+    __WFI();
+
+    EADC_DISABLE_SAMPLE_MODULE_INT(EADC, 0, BIT0);
+
+    while(EADC_GET_DATA_VALID_FLAG(EADC, BIT0) != BIT0);
+
+    printf("Seed::init %d\n", int(EADC_GET_CONV_DATA(EADC, 0)));
+
+    NVIC_DisableIRQ(EADC00_IRQn);
+    EADC_DISABLE_INT(EADC, BIT0);
+
+    EADC_Close(EADC);
+
+    CLK_DisableModuleClock(EADC_MODULE);
+
+    SYS->GPB_MFPH &= ~(SYS_GPB_MFPH_PB12MFP_Msk);
+    SYS->GPB_MFPH |= (SYS_GPB_MFPH_PB12MFP_SD0_nCD);
+}

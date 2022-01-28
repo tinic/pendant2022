@@ -112,7 +112,7 @@ void SDD1306::PlaceUTF8String(uint32_t x, uint32_t y, const char *s) {
         2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,4,4,4,4,5,5,5,5
     };
 
-    static const uint32_t offsetsFromUTF8[6] = {
+    static constexpr uint32_t offsetsFromUTF8[6] = {
         0x00000000UL, 0x00003080UL, 0x000E2080UL,
         0x03C82080UL, 0xFA082080UL, 0x82082080UL
     };
@@ -237,7 +237,7 @@ void SDD1306::init() {
     PB10 = 1;
     delay_us(2000);
 
-    static uint8_t startup_sequence[] = {
+    static constexpr uint8_t startup_sequence[] = {
         0xAE,           // Display off
         0xD5, 0x80,     // Set Display Clock Divide Ratio
         0xAD, 0x30,     // Internal IREF Setting

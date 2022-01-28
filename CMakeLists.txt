@@ -188,6 +188,7 @@ add_executable(${PROJECT_NAME}.elf
     ${PROJECT_SOURCE_DIR}/fatfs/ffunicode.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/retarget.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/clk.c
+    ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/eadc.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/fmc.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/gpio.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/i2c.c

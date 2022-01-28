@@ -235,7 +235,7 @@ void SC_SetBlockGuardTime(SC_T *sc, uint32_t u32BGT)
   */
 void SC_SetCharGuardTime(SC_T *sc, uint32_t u32CGT)
 {
-    u32CGT -= sc->CTL & SC_CTL_NSB_Msk ? 11UL: 12UL;
+    u32CGT -= (sc->CTL & SC_CTL_NSB_Msk) ? 11UL: 12UL;
     sc->EGT = u32CGT;
 }
 
