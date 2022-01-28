@@ -71,6 +71,7 @@ void Pendant::Run() {
     Model::instance().IncBootCount();
     while (1) {
         __WFI();
+        Timeline::instance().ProcessEvent();
  //       SDCard::instance().process();
         if (Timeline::instance().CheckIdleReadyAndClear()) {
  //           i2c1::instance().update();

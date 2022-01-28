@@ -74,7 +74,8 @@ public:
             None,
             Effect,
             Display,
-            Interval
+            Interval,
+            Event
         };
 
         Type type = None;
@@ -84,6 +85,12 @@ public:
         friend class Timeline;
         bool active = false;
         Span *next = 0;
+    };
+
+    struct Event : public Span {
+
+        Event() : Span() { type = Type::Event; }
+
     };
 
     struct Interval : public Span {
@@ -132,6 +139,9 @@ public:
     void Add(Timeline::Span &span);
     void Remove(Timeline::Span &span);
     bool Scheduled(Timeline::Span &span);
+
+    void ProcessEvent();
+    Event &TopEvent() const;
 
     void ProcessEffect();
     Effect &TopEffect() const;

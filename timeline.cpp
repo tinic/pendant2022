@@ -151,6 +151,19 @@ void Timeline::Process(Span::Type type) {
                 i->Start();
             }
             switch (type) {
+                case Span::Event: {
+                    Event *event = static_cast<Event *>(i);
+                    if (event->duration != std::numeric_limits<double>::infinity() && ((event->time + event->duration) < now)) {
+                        if (p) {
+                            p->next = event->next;
+                        } else {
+                            head = event->next;
+                        }
+                        if (collected_num < collected.size()) {
+                            collected[collected_num++] = event;
+                        }
+                    }
+                } break;
                 case Span::Display: {
                     Display *display = static_cast<Display *>(i);
                     if (display->duration != std::numeric_limits<double>::infinity() && ((display->time + display->duration) < now)) {
@@ -198,6 +211,7 @@ void Timeline::Process(Span::Type type) {
         p = i;
     }
     switch (type) {
+        case Span::Event:
         case Span::Display:
         case Span::Effect: {
             for (size_t c = 0; c < collected_num; c++) {
@@ -282,6 +296,11 @@ std::tuple<bool, float>  Timeline::Effect::InReleasePeriod() const {
     return {false, 0.0f};
 }
 
+void Timeline::ProcessEvent()
+{
+    return Process(Span::Event);
+}
+
 void Timeline::ProcessEffect()
 {
     return Process(Span::Effect);
@@ -295,6 +314,11 @@ void Timeline::ProcessDisplay()
 void Timeline::ProcessInterval()
 {
     return Process(Span::Interval);
+}
+
+Timeline::Event &Timeline::TopEvent() const
+{
+    return static_cast<Event&>(Top(Span::Event));
 }
 
 Timeline::Effect &Timeline::TopEffect() const

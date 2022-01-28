@@ -377,7 +377,7 @@ uint32_t RtcGetTimerContext(void) {
 }
 
 uint32_t RtcGetMinimumTimeout(void) {
-    return 1;
+    return (uint32_t)(1000.0 / Timeline::effectRate);
 }
 
 uint32_t RtcMs2Tick(uint32_t milliseconds) {
@@ -396,16 +396,23 @@ void RtcDelayMs(uint32_t delay) {
     }
 }
 
+static Timeline::Event alarmEvent;
+
 void RtcSetAlarm(uint32_t timeout) {
-    // TODO
+    alarmEvent.time = Timeline::instance().SystemTime() + (double(timeout) / 1000.0);
+    alarmEvent.duration = 0.0;
+    if (!Timeline::instance().Scheduled(alarmEvent)) {
+        alarmEvent.startFunc = [=](Timeline::Span &) {
+            TimerIrqHandler();
+        };
+        Timeline::instance().Add(alarmEvent);
+    }
 }
 
 void RtcStopAlarm(void) {
-    // TODO
-}
-
-void RtcStartAlarm(uint32_t timeout) {
-    // TODO
+    if (Timeline::instance().Scheduled(alarmEvent)) {
+        Timeline::instance().Remove(alarmEvent);
+    }
 }
 
 uint32_t RtcGetTimerElapsedTime(void) {
@@ -434,12 +441,37 @@ TimerTime_t RtcTempCompensation(TimerTime_t period, float temperature) {
     return 0;
 }
 
+const size_t loraWanDataAddr = 0x7E000; // 4KB page
+
 LmnStatus_t EepromMcuWriteBuffer(uint16_t addr, uint8_t *buffer, uint16_t size) {
-    LmnStatus_t status = LMN_STATUS_ERROR;
-    return status;
+
+    SYS_UnlockReg();
+    FMC_Open();
+
+    uint32_t *data = reinterpret_cast<uint32_t *>(buffer);
+    for (size_t c = 0; c < ( size / sizeof(uint32_t) ); c += sizeof(uint32_t)) {
+        FMC_Write(loraWanDataAddr + c, *data++);
+    }
+
+    FMC_Close();
+    SYS_LockReg();
+
+    return LMN_STATUS_OK;
 }
 
 LmnStatus_t EepromMcuReadBuffer(uint16_t addr, uint8_t *buffer, uint16_t size) {
+
+    SYS_UnlockReg();
+    FMC_Open();
+
+    uint32_t *oBuf = reinterpret_cast<uint32_t *>(buffer);
+    for (size_t c = 0; c < ( size / sizeof(uint32_t) ); c += sizeof(uint32_t)) {
+        *oBuf++ = FMC_Read(loraWanDataAddr + c);
+    }
+
+    FMC_Close();
+    SYS_LockReg();
+
     return LMN_STATUS_OK;
 }
 
