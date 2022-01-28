@@ -80,8 +80,8 @@ void SDD1306::Clear() {
 }
 
 void SDD1306::Invalidate() {
-    memset(text_buffer_screen, 0xffff, sizeof(text_buffer_cache));
-    memset(text_attr_screen, 0xffff, sizeof(text_attr_cache));
+    memset(text_buffer_screen, 0xff, sizeof(text_buffer_cache));
+    memset(text_attr_screen, 0xff, sizeof(text_attr_cache));
 }
     
 void SDD1306::ClearAttr() {
@@ -101,7 +101,7 @@ void SDD1306::PlaceUTF8String(uint32_t x, uint32_t y, const char *s) {
     
     const uint8_t *str = reinterpret_cast<const uint8_t *>(s);
 
-    static uint8_t trailingBytesForUTF8[256] = {
+    static constexpr uint8_t trailingBytesForUTF8[256] = {
         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

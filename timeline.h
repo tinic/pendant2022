@@ -159,7 +159,7 @@ public:
 private:
     void Process(Span::Type type);
     Span &Top(Span::Type type) const;
-    Span &Below(Span *context, Span::Type type) const;
+    Span &Below(const Span *context, Span::Type type) const;
 
     Span *head = 0;
 

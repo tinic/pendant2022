@@ -240,7 +240,7 @@ Timeline::Span &Timeline::Top(Span::Type type) const {
     return empty;
 }
 
-Timeline::Span &Timeline::Below(Span *context, Span::Type type) const {
+Timeline::Span &Timeline::Below(const Span *context, Span::Type type) const {
     static Timeline::Span empty;
     double time = SystemTime();
     for (Span *i = head; i ; i = i->next) {

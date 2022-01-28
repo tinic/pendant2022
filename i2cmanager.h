@@ -29,6 +29,8 @@ class i2c1 {
 public:
     static i2c1 &instance();
 
+    i2c1() {}
+
     void write(uint8_t peripheralAddr, uint8_t data[], size_t len);
     uint32_t read(uint8_t peripheralAddr, uint8_t data[], size_t len);
 
@@ -56,6 +58,8 @@ private:
 class i2c2 {
 public:
     static i2c2 &instance();
+
+    i2c2() {}
 
     void prepareBatchWrite();
     void queueBatchWrite(uint8_t peripheralAddr, uint8_t data[], size_t len);
@@ -86,7 +90,7 @@ private:
 
     static constexpr uint32_t I2C2_PDMA_TX_CH = 2;
 
-    uint8_t qBufSeq[2048];
+    uint8_t qBufSeq[2048] = { };
     uint8_t *qBufPtr = 0;
     uint8_t *qBufEnd = 0;
     bool pdmaDone = false;

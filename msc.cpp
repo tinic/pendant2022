@@ -735,8 +735,6 @@ void MSC_Write(void)
             if ((g_sCBW.u8OPCode == UFI_WRITE_10) || (g_sCBW.u8OPCode == UFI_WRITE_12))
             {
                 lba = get_be32(&g_sCBW.au8Data[0]);
-                len = g_sCBW.dCBWDataTransferLength;
-
                 len = lba * UDC_SECTOR_SIZE + g_sCBW.dCBWDataTransferLength - g_u32DataFlashStartAddr;
                 if (len)
                     MSC_WriteMedia(g_u32DataFlashStartAddr, len, (const uint8_t *)STORAGE_DATA_BUF);
@@ -750,9 +748,9 @@ void MSC_Write(void)
 
 void MSC_ProcessCmd(void)
 {
-    uint8_t u8Len;
-    uint32_t i;
-    uint32_t Hcount, Dcount;
+    uint8_t u8Len = 0;
+    uint32_t i = 0;
+    uint32_t Hcount = 0, Dcount = 0;
 
     if(g_u8EP3Ready)
     {
@@ -1032,7 +1030,7 @@ void MSC_ProcessCmd(void)
                                 return;
                             }
                         }
-                        else if (Hcount > Dcount)     /* Hi > Dn (Case 4) || Hi > Di (Case 5) */
+                        else /* if (Hcount > Dcount)*/     /* Hi > Dn (Case 4) || Hi > Di (Case 5) */
                         {
                             g_u8Prevent = 1;
                             g_sCSW.bCSWStatus = 0x01;
@@ -1117,7 +1115,7 @@ void MSC_ProcessCmd(void)
                                 return;
                             }
                         }
-                        else if (Hcount > Dcount)     /* Ho > Do (Case 11) */
+                        else /* if (Hcount > Dcount) */     /* Ho > Do (Case 11) */
                         {
                             g_u8Prevent = 1;
                             g_sCSW.dCSWDataResidue = 0;

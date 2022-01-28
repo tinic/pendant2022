@@ -57,13 +57,6 @@ namespace vector {
             this->w = a;
         }
 
-        constexpr float4(float v) {
-            this->x = v;
-            this->y = v;
-            this->z = v;
-            this->w = v;
-        }
-
         constexpr float4(float _x, float _y, float _z, float _w = 0.0f) {
             this->x = _x;
             this->y = _y;

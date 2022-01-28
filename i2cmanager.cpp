@@ -217,7 +217,7 @@ void i2c2::queueBatchWrite(uint8_t peripheralAddr, uint8_t data[], size_t len) {
     }
 
     if (size_t((qBufEnd + len + 2) - qBufSeq) > sizeof(qBufSeq)) {
-        printf("I2C batch buffer too small (wanted at least %d bytes)!\n", ((qBufEnd + len + 2) - qBufSeq));
+        printf("I2C batch buffer too small (wanted at least %d bytes)!\n", int(((qBufEnd + len + 2) - qBufSeq)));
         return;
     }
 

@@ -286,6 +286,9 @@ void Effects::init() {
                     case 2:
                         color_walker();
                     break;
+                    case 3:
+                        brilliance();
+                    break;
                 }
             };
 
