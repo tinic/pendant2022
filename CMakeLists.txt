@@ -34,7 +34,7 @@ set(CC_FLAGS
     -ffunction-sections
     -Wall
     -Wextra
-    -pedantic 
+    -Wpedantic 
     -Wfloat-conversion 
     -Wdouble-promotion
     -Wno-unused-parameter

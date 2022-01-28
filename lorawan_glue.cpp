@@ -66,14 +66,14 @@ void BoardGetUniqueId(uint8_t *id) {
     ID[2] = FMC_ReadUID(1);
     ID[3] = FMC_ReadUID(2);
 
-    id[7] = uint8_t(((ID[0]) + (ID[3])) >> 24);
-    id[6] = uint8_t(((ID[0]) + (ID[3])) >> 16);
-    id[5] = uint8_t(((ID[0]) + (ID[3])) >>  8);
-    id[4] = uint8_t(((ID[0]) + (ID[3])) >>  0);
-    id[3] = uint8_t(((ID[1]) + (ID[4])) >> 24);
-    id[2] = uint8_t(((ID[1]) + (ID[4])) >> 16);
-    id[1] = uint8_t(((ID[1]) + (ID[4])) >>  8);
-    id[0] = uint8_t(((ID[1]) + (ID[4])) >>  0);
+    id[7] = uint8_t(((ID[0]) + (ID[2])) >> 24);
+    id[6] = uint8_t(((ID[0]) + (ID[2])) >> 16);
+    id[5] = uint8_t(((ID[0]) + (ID[2])) >>  8);
+    id[4] = uint8_t(((ID[0]) + (ID[2])) >>  0);
+    id[3] = uint8_t(((ID[1]) + (ID[3])) >> 24);
+    id[2] = uint8_t(((ID[1]) + (ID[3])) >> 16);
+    id[1] = uint8_t(((ID[1]) + (ID[3])) >>  8);
+    id[0] = uint8_t(((ID[1]) + (ID[3])) >>  0);
 }
 
 uint8_t BoardGetBatteryLevel(void) {
