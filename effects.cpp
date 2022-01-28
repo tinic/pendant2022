@@ -259,15 +259,14 @@ void Effects::init() {
 
     static Timeline::Effect mainEffect;
 
-    static uint32_t current_effect = 0;
-    static uint32_t previous_effect = 0;
-    
-    static double switch_time = 0;
-
     if (!Timeline::instance().Scheduled(mainEffect)) {
         mainEffect.time = Timeline::SystemTime();
         mainEffect.duration = std::numeric_limits<double>::infinity();
         mainEffect.calcFunc = [this](Timeline::Span &, Timeline::Span &) {
+
+            static uint32_t current_effect = 0;
+            static uint32_t previous_effect = 0;
+            static double switch_time = 0;
 
             if ( current_effect != Model::instance().Effect() ) {
                 previous_effect = current_effect;

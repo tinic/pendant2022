@@ -465,8 +465,6 @@ void MSC_ReadFormatCapacity(void)
 
 void MSC_Read(void)
 {
-    uint32_t u32Len;
-
     if(USBD_GET_EP_BUF_ADDR(EP2) == g_u32BulkBuf1)
         USBD_SET_EP_BUF_ADDR(EP2, g_u32BulkBuf0);
     else
@@ -495,7 +493,7 @@ void MSC_Read(void)
         }
         else
         {
-            u32Len = g_u32Length;
+            uint32_t u32Len = g_u32Length;
             if(u32Len > STORAGE_BUFFER_SIZE)
                 u32Len = STORAGE_BUFFER_SIZE;
 
@@ -520,8 +518,6 @@ void MSC_Read(void)
 
 void MSC_ReadTrig(void)
 {
-    uint32_t u32Len;
-
     if(g_u32Length)
     {
         if(g_u32BytesInStorageBuf)
@@ -539,7 +535,7 @@ void MSC_ReadTrig(void)
         }
         else
         {
-            u32Len = g_u32Length;
+            uint32_t u32Len = g_u32Length;
             if(u32Len > STORAGE_BUFFER_SIZE)
                 u32Len = STORAGE_BUFFER_SIZE;
 
@@ -691,8 +687,6 @@ void MSC_ModeSense10(void)
 
 void MSC_Write(void)
 {
-    uint32_t lba, len;
-
     if (g_u32OutSkip == 0)
     {
         if (g_u32Length > EP3_MAX_PKT_SIZE)
@@ -734,8 +728,8 @@ void MSC_Write(void)
 
             if ((g_sCBW.u8OPCode == UFI_WRITE_10) || (g_sCBW.u8OPCode == UFI_WRITE_12))
             {
-                lba = get_be32(&g_sCBW.au8Data[0]);
-                len = lba * UDC_SECTOR_SIZE + g_sCBW.dCBWDataTransferLength - g_u32DataFlashStartAddr;
+                uint32_t lba = get_be32(&g_sCBW.au8Data[0]);
+                uint32_t len = lba * UDC_SECTOR_SIZE + g_sCBW.dCBWDataTransferLength - g_u32DataFlashStartAddr;
                 if (len)
                     MSC_WriteMedia(g_u32DataFlashStartAddr, len, (const uint8_t *)STORAGE_DATA_BUF);
             }
@@ -748,17 +742,15 @@ void MSC_Write(void)
 
 void MSC_ProcessCmd(void)
 {
-    uint8_t u8Len = 0;
-    uint32_t i = 0;
-    uint32_t Hcount = 0, Dcount = 0;
-
     if(g_u8EP3Ready)
     {
         g_u8EP3Ready = 0;
 
         if(g_u8BulkState == BULK_CBW)
         {
-            u8Len = uint8_t(USBD_GET_PAYLOAD_LEN(EP3));
+            uint32_t Hcount = 0, Dcount = 0;
+
+            uint8_t u8Len = uint8_t(USBD_GET_PAYLOAD_LEN(EP3));
 
             /* Check Signature & length of CBW */
             /* Bulk Out buffer */
@@ -774,7 +766,7 @@ void MSC_ProcessCmd(void)
             }
 
             /* Get the CBW */
-            for(i = 0; i < u8Len; i++)
+            for(uint32_t i = 0; i < u8Len; i++)
                 *((uint8_t *)(&g_sCBW.dCBWSignature) + i) = *(uint8_t *)((uint32_t)USBD_BUF_BASE + g_u32BulkBuf0 + i);
 
 
@@ -1005,7 +997,6 @@ void MSC_ProcessCmd(void)
                 /* Check if it is a new transfer */
                 if(g_u32Length == 0)
                 {
-
                     Dcount = (get_be32(&g_sCBW.au8Data[4])>>8) * 512;
                     if (g_sCBW.bmCBWFlags == 0x80)      /* IN */
                     {
@@ -1055,7 +1046,7 @@ void MSC_ProcessCmd(void)
                 g_u32Length = g_sCBW.dCBWDataTransferLength;
                 g_u32BytesInStorageBuf = g_u32Length;
 
-                i = g_u32Length;
+                uint32_t i = g_u32Length;
                 if (i > STORAGE_BUFFER_SIZE)
                     i = STORAGE_BUFFER_SIZE;
 

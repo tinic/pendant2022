@@ -353,8 +353,8 @@ static bool backgroundReady = false;
 static bool displayReady = false;
 
 bool Timeline::CheckEffectReadyAndClear() {
-    static size_t frameCount = 0;
     if (effectReady) {
+        static size_t frameCount = 0;
         effectReady = false;
         idleReady = (frameCount % size_t(effectRate * idleRate)) == 0;
         backgroundReady = (frameCount % size_t(effectRate / backgroundRate)) == 0;
