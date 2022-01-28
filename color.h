@@ -36,10 +36,10 @@ namespace color {
 
     template<class T> struct rgba {
 
-        T r;
-        T g;
-        T b;
-        T a;
+        T r = 0;
+        T g = 0;
+        T b = 0;
+        T a = 0;
 
         consteval rgba() :
             r(0),

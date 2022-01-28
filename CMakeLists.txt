@@ -45,6 +45,7 @@ set(CC_FLAGS
     -fallow-store-data-races)
 
 set(CXX_FLAGS 
+    -Weffc++
     -Wsign-conversion
     -Wshadow 
     -Wnon-virtual-dtor

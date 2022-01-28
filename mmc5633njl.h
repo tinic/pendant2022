@@ -76,7 +76,7 @@ private:
 
             uint8_t Tout;
         } fields;
-    } mmc5633njlRegs;
+    } mmc5633njlRegs = { };
 
     void config();
 

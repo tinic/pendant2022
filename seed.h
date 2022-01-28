@@ -40,7 +40,7 @@ private:
     bool initialized = false;
     void init();
 
-    std::array<uint8_t, 256> data;
+    std::array<uint8_t, 256> data = { };
 };
 
 #endif /* SEED_H_ */

@@ -56,10 +56,10 @@ public:
         double time = 0.0;
         double duration = 0.0;
 
-        std::function<void (Span &span)> startFunc;
-        std::function<void (Span &span, Span &below)> calcFunc;
-        std::function<void (Span &span)> commitFunc;
-        std::function<void (Span &span)> doneFunc;
+        std::function<void (Span &span)> startFunc = nullptr;
+        std::function<void (Span &span, Span &below)> calcFunc = nullptr;
+        std::function<void (Span &span)> commitFunc = nullptr;
+        std::function<void (Span &span)> doneFunc = nullptr;
 
         void Start() { if (startFunc) startFunc(*this); }
         void Calc() { if (calcFunc) calcFunc(*this, Timeline::instance().Below(this, type)); }
@@ -72,10 +72,10 @@ public:
 
         enum Type {
             None,
-            Effect,
-            Display,
+            Event,
             Interval,
-            Event
+            Effect,
+            Display
         };
 
         Type type = None;
@@ -120,9 +120,9 @@ public:
 
         Display() : Span() { type = Type::Display; }
 
-        std::function<void (Span &span, bool down)> switch1Func;
-        std::function<void (Span &span, bool down)> switch2Func;
-        std::function<void (Span &span, bool down)> switch3Func;
+        std::function<void (Span &span, bool down)> switch1Func = nullptr;
+        std::function<void (Span &span, bool down)> switch2Func = nullptr;
+        std::function<void (Span &span, bool down)> switch3Func = nullptr;
 
         void ProcessSwitch1(bool down) { if (switch1Func) switch1Func(*this, down); }
         void ProcessSwitch2(bool down) { if (switch2Func) switch2Func(*this, down); }
@@ -166,7 +166,7 @@ private:
     void init();
     bool initialized = false;
 
-    std::mt19937 gen;
+    std::mt19937 gen = std::mt19937();
 };
 
 #endif /* TIMELINE_H_ */

@@ -165,13 +165,13 @@ private:
         uint32_t table[256];
     } lut;
 
-    std::array<std::array<vector::float4, circleLedsN>, sidesN> circleLeds;
-    std::array<std::array<vector::float4, birdLedsN>, sidesN> birdLeds;
+    std::array<std::array<vector::float4, circleLedsN>, sidesN> circleLeds = { };
+    std::array<std::array<vector::float4, birdLedsN>, sidesN> birdLeds = { };
 
     static constexpr size_t bitsPerComponent = 16;
     static constexpr size_t bitsPerLed = bitsPerComponent * 3;
 
-    std::array<std::array<uint32_t, ((birdLedsN + circleLedsN) * bitsPerLed) / 2 / sizeof(uint32_t)>, sidesN> ledsDMABuf __attribute__ ((aligned (16)));
+    std::array<std::array<uint32_t, ((birdLedsN + circleLedsN) * bitsPerLed) / 2 / sizeof(uint32_t)>, sidesN> ledsDMABuf __attribute__ ((aligned (16))) = { };
 
     void transfer();
     void prepare();

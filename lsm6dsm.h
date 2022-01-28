@@ -103,7 +103,7 @@ private:
             uint16_t outYA;
             uint16_t outZA;
         } fields;
-    } lsm6dsmRegs;
+    } lsm6dsmRegs = { };
 
     void config(uint8_t Ascale = AFS_2G, 
                 uint8_t Gscale = GFS_245DPS, 

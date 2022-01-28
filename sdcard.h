@@ -50,7 +50,7 @@ public:
 
 private:
 
-    FATFS FatFs;
+    FATFS FatFs = { };
     bool mounted = false;
 
     bool datafile_present = false;

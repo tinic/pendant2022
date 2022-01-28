@@ -30,6 +30,7 @@ public:
     static Effects &instance();
 
 private:
+
     class pseudo_random {
     public:
         
@@ -60,12 +61,12 @@ private:
         }
 
     private:
-        uint32_t a; 
-        uint32_t b; 
-        uint32_t c; 
-        uint32_t d; 
+        uint32_t a = 0; 
+        uint32_t b = 0; 
+        uint32_t c = 0; 
+        uint32_t d = 0; 
 
-    } random;
+    } random = pseudo_random();
 
     void color_walker();
     void light_walker();

@@ -43,11 +43,11 @@ private:
     static constexpr const char *str_id = "ENS210";
     static bool devicePresent;
 
-    float temperature;
-    float humidity;
+    float temperature = 0.0f;
+    float humidity = 0.0f;
 
-    uint16_t temperatureRaw;
-    uint16_t humidityRaw;
+    uint16_t temperatureRaw = 0;
+    uint16_t humidityRaw = 0;
 
     void reset();
     void read();
