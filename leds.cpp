@@ -46,7 +46,6 @@ struct Leds::Map Leds::map;
 const Leds::lut_table Leds::lut;
 
 void Leds::init() {
-
     // LED_ON
     GPIO_SetMode(PC, BIT7, GPIO_MODE_OUTPUT);
     // Turn Mosfet on
@@ -64,16 +63,16 @@ void Leds::init() {
     PA15 = 0;
 
 #ifdef USE_SPI_DMA
-    PDMA_Open(PDMA,(1UL << SPI1_MASTER_TX_DMA_CH)|(1UL << SPI2_MASTER_TX_DMA_CH));
+    PDMA_Open(PDMA, (1UL << SPI1_MASTER_TX_DMA_CH) | (1UL << SPI2_MASTER_TX_DMA_CH));
 
     PDMA_SetTransferCnt(PDMA, SPI1_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[0].size());
-    PDMA_SetTransferAddr(PDMA, SPI1_MASTER_TX_DMA_CH, (uint32_t)ledsDMABuf[0].data(), PDMA_SAR_INC, (uint32_t)&SPI1->TX, PDMA_DAR_FIX);
+    PDMA_SetTransferAddr(PDMA, SPI1_MASTER_TX_DMA_CH, reinterpret_cast<uintptr_t>(ledsDMABuf[0].data()), PDMA_SAR_INC, reinterpret_cast<uintptr_t>(&SPI1->TX), PDMA_DAR_FIX);
     PDMA_SetTransferMode(PDMA, SPI1_MASTER_TX_DMA_CH, PDMA_SPI1_TX, FALSE, 0);
     PDMA_SetBurstType(PDMA, SPI1_MASTER_TX_DMA_CH, PDMA_REQ_SINGLE, 0);
     PDMA->DSCT[SPI1_MASTER_TX_DMA_CH].CTL |= PDMA_DSCT_CTL_TBINTDIS_Msk;
 
     PDMA_SetTransferCnt(PDMA, SPI2_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[1].size());
-    PDMA_SetTransferAddr(PDMA, SPI2_MASTER_TX_DMA_CH, (uint32_t)ledsDMABuf[1].data(), PDMA_SAR_INC, (uint32_t)&SPI2->TX, PDMA_DAR_FIX);
+    PDMA_SetTransferAddr(PDMA, SPI2_MASTER_TX_DMA_CH, reinterpret_cast<uintptr_t>(ledsDMABuf[1].data()), PDMA_SAR_INC, reinterpret_cast<uintptr_t>(&SPI2->TX), PDMA_DAR_FIX);
     PDMA_SetTransferMode(PDMA, SPI2_MASTER_TX_DMA_CH, PDMA_SPI2_TX, FALSE, 0);
     PDMA_SetBurstType(PDMA, SPI2_MASTER_TX_DMA_CH, PDMA_REQ_SINGLE, 0);
     PDMA->DSCT[SPI2_MASTER_TX_DMA_CH].CTL |= PDMA_DSCT_CTL_TBINTDIS_Msk;
