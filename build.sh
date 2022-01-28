@@ -3,8 +3,12 @@
 export PATH="/opt/gcc-arm-none-eabi-10-2020-q4-major/bin:${PATH}"
 
 set -e
-build_type="Ninja"
+
 mkdir -p build
+mkdir -p build/cppcheck
+cppcheck . -q -i Library/CMSIS/Driver/DriverTemplates/ -i Library/StdDriver/src/retarget.c -i LoRaMac-node/ -f --cppcheck-build-dir=build/cppcheck
+
+build_type="Ninja"
 cd build
 rm -rf pendant2022_*
 mkdir -p pendant2022_bootloader_dgb
