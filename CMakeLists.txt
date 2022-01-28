@@ -159,10 +159,6 @@ target_include_directories(LoRaMac-node PRIVATE
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/mac/region
     ${PROJECT_SOURCE_DIR}/LoRaMac-node/src/peripherals/soft-se)
 
-file(GLOB_RECURSE USB_CORE_SRC ${PROJECT_SOURCE_DIR}/Library/UsbHostLib/src_core/*.c)
-file(GLOB_RECURSE NUVOTON0_SRC ${PROJECT_SOURCE_DIR}/Library/Device/Nuvoton/GCC/*.c)
-file(GLOB_RECURSE NUVOTON1_SRC ${PROJECT_SOURCE_DIR}/Library/Device/Nuvoton/M480/Source/*.c)
-
 add_executable(${PROJECT_NAME}.elf 
     ${PROJECT_SOURCE_DIR}/lorawan_glue.cpp
     ${PROJECT_SOURCE_DIR}/lorawan.cpp
@@ -186,10 +182,10 @@ add_executable(${PROJECT_NAME}.elf
     ${PROJECT_SOURCE_DIR}/seed.cpp
     ${PROJECT_SOURCE_DIR}/stubs.c
     ${PROJECT_SOURCE_DIR}/msc.cpp
+    ${PROJECT_SOURCE_DIR}/main.c
     ${PROJECT_SOURCE_DIR}/fatfs/ff.c
     ${PROJECT_SOURCE_DIR}/fatfs/ffsystem.c
     ${PROJECT_SOURCE_DIR}/fatfs/ffunicode.c
-    ${PROJECT_SOURCE_DIR}/main.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/retarget.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/clk.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/fmc.c
@@ -204,9 +200,14 @@ add_executable(${PROJECT_NAME}.elf
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/epwm.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/usbd.c
     ${PROJECT_SOURCE_DIR}/Library/StdDriver/src/qspi.c
-    ${USB_CORE_SRC}
-    ${NUVOTON0_SRC}
-    ${NUVOTON1_SRC}
+    ${PROJECT_SOURCE_DIR}/Library/UsbHostLib/src_core/hub.c
+    ${PROJECT_SOURCE_DIR}/Library/UsbHostLib/src_core/mem_alloc.c
+    ${PROJECT_SOURCE_DIR}/Library/UsbHostLib/src_core/ohci.c
+    ${PROJECT_SOURCE_DIR}/Library/UsbHostLib/src_core/ehci.c
+    ${PROJECT_SOURCE_DIR}/Library/UsbHostLib/src_core/ehci_iso.c
+    ${PROJECT_SOURCE_DIR}/Library/UsbHostLib/src_core/usb_core.c
+    ${PROJECT_SOURCE_DIR}/Library/Device/Nuvoton/M480/Source/system_M480.c
+    ${PROJECT_SOURCE_DIR}/Library/Device/Nuvoton/M480/Source/GCC/_syscalls.c
     ${PROJECT_SOURCE_DIR}/Library/Device/Nuvoton/M480/Source/GCC/startup_M480.S)
 
 target_include_directories(${PROJECT_NAME}.elf PRIVATE
