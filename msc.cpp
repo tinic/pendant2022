@@ -41,7 +41,7 @@ uint32_t MassBlock[MASS_BUFFER_SIZE / 4];
 uint32_t Storage_Block[STORAGE_BUFFER_SIZE / 4];
 
 uint8_t volatile g_u8SdInitFlag = 0;
-int32_t g_TotalSectors = 0;
+uint32_t g_TotalSectors = 0;
 
 /*--------------------------------------------------------------------------*/
 static uint8_t g_au8InquiryID[36] =
@@ -485,7 +485,7 @@ void MSC_Read(void)
             /* Prepare next data packet */
             g_u8Size = EP2_MAX_PKT_SIZE;
             if(g_u8Size > g_u32Length)
-                g_u8Size = g_u32Length;
+                g_u8Size = uint8_t(g_u32Length);
 
             if(USBD_GET_EP_BUF_ADDR(EP2) == g_u32BulkBuf1)
                 USBD_MemCopy((uint8_t *)((uint32_t)USBD_BUF_BASE + g_u32BulkBuf0), (uint8_t *)g_u32Address, g_u8Size);
@@ -507,7 +507,7 @@ void MSC_Read(void)
             /* Prepare next data packet */
             g_u8Size = EP2_MAX_PKT_SIZE;
             if(g_u8Size > g_u32Length)
-                g_u8Size = g_u32Length;
+                g_u8Size = uint8_t(g_u32Length);
 
             if(USBD_GET_EP_BUF_ADDR(EP2) == g_u32BulkBuf1)
                 USBD_MemCopy((uint8_t *)((uint32_t)USBD_BUF_BASE + g_u32BulkBuf0), (uint8_t *)g_u32Address, g_u8Size);
@@ -529,7 +529,7 @@ void MSC_ReadTrig(void)
             /* Prepare next data packet */
             g_u8Size = EP2_MAX_PKT_SIZE;
             if(g_u8Size > g_u32Length)
-                g_u8Size = g_u32Length;
+                g_u8Size = uint8_t(g_u32Length);
 
             if(USBD_GET_EP_BUF_ADDR(EP2) == g_u32BulkBuf1)
                 USBD_MemCopy((uint8_t *)((uint32_t)USBD_BUF_BASE + g_u32BulkBuf0), (uint8_t *)g_u32Address, g_u8Size);
@@ -551,7 +551,7 @@ void MSC_ReadTrig(void)
             /* Prepare next data packet */
             g_u8Size = EP2_MAX_PKT_SIZE;
             if(g_u8Size > g_u32Length)
-                g_u8Size = g_u32Length;
+                g_u8Size = uint8_t(g_u32Length);
 
             if(USBD_GET_EP_BUF_ADDR(EP2) == g_u32BulkBuf1)
                 USBD_MemCopy((uint8_t *)((uint32_t)USBD_BUF_BASE + g_u32BulkBuf0), (uint8_t *)g_u32Address, g_u8Size);
@@ -638,7 +638,7 @@ void MSC_ModeSense10(void)
 
         NumHead = 2;
         NumSector = 64;
-        NumCyl = g_TotalSectors / 128;
+        NumCyl = uint16_t(g_TotalSectors / 128);
 
         *((uint8_t *)(MassCMD_BUF + 12)) = NumHead;
         *((uint8_t *)(MassCMD_BUF + 13)) = NumSector;
@@ -674,7 +674,7 @@ void MSC_ModeSense10(void)
 
         NumHead = 2;
         NumSector = 64;
-        NumCyl = g_TotalSectors / 128;
+        NumCyl = uint16_t(g_TotalSectors / 128);
 
         *((uint8_t *)(MassCMD_BUF + 24)) = NumHead;
         *((uint8_t *)(MassCMD_BUF + 25)) = NumSector;
@@ -751,7 +751,7 @@ void MSC_Write(void)
 void MSC_ProcessCmd(void)
 {
     uint8_t u8Len;
-    int32_t i;
+    uint32_t i;
     uint32_t Hcount, Dcount;
 
     if(g_u8EP3Ready)
@@ -760,7 +760,7 @@ void MSC_ProcessCmd(void)
 
         if(g_u8BulkState == BULK_CBW)
         {
-            u8Len = USBD_GET_PAYLOAD_LEN(EP3);
+            u8Len = uint8_t(USBD_GET_PAYLOAD_LEN(EP3));
 
             /* Check Signature & length of CBW */
             /* Bulk Out buffer */
@@ -887,7 +887,7 @@ void MSC_ProcessCmd(void)
                     if (g_u32Length > EP2_MAX_PKT_SIZE)
                         g_u8Size = EP2_MAX_PKT_SIZE;
                     else
-                        g_u8Size = g_u32Length;
+                        g_u8Size = uint8_t(g_u32Length);
 
                     /* Bulk IN buffer */
                     USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + g_u32BulkBuf1), (uint8_t *)g_u32Address, g_u8Size);
@@ -913,7 +913,7 @@ void MSC_ProcessCmd(void)
                     if (g_u32Length > EP2_MAX_PKT_SIZE)
                         g_u8Size = EP2_MAX_PKT_SIZE;
                     else
-                        g_u8Size = g_u32Length;
+                        g_u8Size = uint8_t(g_u32Length);
 
                     /* Bulk IN buffer */
                     USBD_MemCopy((uint8_t *)((uint32_t)USBD_BUF_BASE + g_u32BulkBuf1), (uint8_t *)g_u32Address, g_u8Size);
@@ -966,7 +966,7 @@ void MSC_ProcessCmd(void)
                     if(g_u32Length > EP2_MAX_PKT_SIZE)
                         g_u8Size = EP2_MAX_PKT_SIZE;
                     else
-                        g_u8Size = g_u32Length;
+                        g_u8Size = uint8_t(g_u32Length);
                     /* Bulk IN buffer */
                     USBD_MemCopy((uint8_t *)((uint32_t)USBD_BUF_BASE + g_u32BulkBuf1), (uint8_t *)g_u32Address, g_u8Size);
 
@@ -1075,7 +1075,7 @@ void MSC_ProcessCmd(void)
                     if (g_u32BytesInStorageBuf > EP2_MAX_PKT_SIZE)
                         g_u8Size = EP2_MAX_PKT_SIZE;
                     else
-                        g_u8Size = g_u32BytesInStorageBuf;
+                        g_u8Size = uint8_t(g_u32BytesInStorageBuf);
 
                     /* Prepare the first data packet (DATA1) */
                     /* Bulk IN buffer */
@@ -1247,11 +1247,13 @@ void MSC_AckCmd(void)
         case UFI_VERIFY_10:
         case UFI_START_STOP:
         {
-            int32_t tmp;
+            uint32_t tmp;
 
-            tmp = g_sCBW.dCBWDataTransferLength - STORAGE_BUFFER_SIZE;
-            if (tmp < 0)
+            if (g_sCBW.dCBWDataTransferLength < STORAGE_BUFFER_SIZE) {
                 tmp = 0;
+            } else {
+                tmp = g_sCBW.dCBWDataTransferLength - STORAGE_BUFFER_SIZE;
+            }
 
             g_sCSW.dCSWDataResidue = tmp;
             g_sCSW.bCSWStatus = 0;

@@ -228,8 +228,8 @@ void LSM6DSM::config(uint8_t _aScale, uint8_t _gScale, uint8_t _aodr, uint8_t _g
             break;
     }
 
-    i2c1::instance().setReg8(i2c_addr, LSM6DSM_CTRL1_XL, aodr << 4 | aScale << 2);
-    i2c1::instance().setReg8(i2c_addr, LSM6DSM_CTRL2_G, godr << 4 | gScale << 2);
+    i2c1::instance().setReg8(i2c_addr, LSM6DSM_CTRL1_XL, uint8_t(aodr << 4 | aScale << 2));
+    i2c1::instance().setReg8(i2c_addr, LSM6DSM_CTRL2_G, uint8_t(godr << 4 | gScale << 2));
 
     // enable block update (bit 6 = 1), auto-increment registers (bit 2 = 1)
     i2c1::instance().setReg8(i2c_addr, LSM6DSM_CTRL3_C, i2c1::instance().getReg8(i2c_addr, LSM6DSM_CTRL3_C) | 0x40 | 0x04); 

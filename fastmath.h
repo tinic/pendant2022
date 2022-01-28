@@ -47,7 +47,7 @@ static inline float fast_exp2(const float p) {
     const float offset = (p < 0) ? 1.0f : 0.0f;
     const float clipp = (p < -126) ? -126.0f : p;
     const int w = static_cast<int>(clipp);
-    const float z = clipp - w + offset;
+    const float z = clipp - float(w) + offset;
     // No std::bitcast yet
     const union { uint32_t i; float f; } v = {
         static_cast<uint32_t>((1 << 23) * (clipp + 121.2740575f + 27.7280233f / (4.84252568f - z) - 1.49012907f * z))

@@ -51,9 +51,9 @@ namespace vector {
         }
 
         constexpr float4(uint32_t c, float a) {
-            this->x = ((c>>16)&0xFF)*(1.0f/255.0f);
-            this->y = ((c>> 8)&0xFF)*(1.0f/255.0f);
-            this->z = ((c>> 0)&0xFF)*(1.0f/255.0f);
+            this->x = float((c>>16)&0xFF)*(1.0f/255.0f);
+            this->y = float((c>> 8)&0xFF)*(1.0f/255.0f);
+            this->z = float((c>> 0)&0xFF)*(1.0f/255.0f);
             this->w = a;
         }
 

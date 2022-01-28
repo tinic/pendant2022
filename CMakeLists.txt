@@ -45,6 +45,7 @@ set(CC_FLAGS
     -fallow-store-data-races)
 
 set(CXX_FLAGS 
+    -Wsign-conversion
     -Wshadow 
     -Wnon-virtual-dtor
     -Wunused
@@ -55,6 +56,8 @@ set(CXX_FLAGS
     -Wlogical-op
     -Wnull-dereference
     -Wstrict-aliasing 
+    -Wcast-align
+    -Wconversion
     -Wno-volatile
     -Wformat=2 
     -std=c++20 

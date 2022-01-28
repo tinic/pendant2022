@@ -66,14 +66,14 @@ void BoardGetUniqueId(uint8_t *id) {
     ID[2] = FMC_ReadUID(1);
     ID[3] = FMC_ReadUID(2);
 
-    id[7] = ((ID[0]) + (ID[3])) >> 24;
-    id[6] = ((ID[0]) + (ID[3])) >> 16;
-    id[5] = ((ID[0]) + (ID[3])) >>  8;
-    id[4] = ((ID[0]) + (ID[3])) >>  0;
-    id[3] = ((ID[1]) + (ID[4])) >> 24;
-    id[2] = ((ID[1]) + (ID[4])) >> 16;
-    id[1] = ((ID[1]) + (ID[4])) >>  8;
-    id[0] = ((ID[1]) + (ID[4])) >>  0;
+    id[7] = uint8_t(((ID[0]) + (ID[3])) >> 24);
+    id[6] = uint8_t(((ID[0]) + (ID[3])) >> 16);
+    id[5] = uint8_t(((ID[0]) + (ID[3])) >>  8);
+    id[4] = uint8_t(((ID[0]) + (ID[3])) >>  0);
+    id[3] = uint8_t(((ID[1]) + (ID[4])) >> 24);
+    id[2] = uint8_t(((ID[1]) + (ID[4])) >> 16);
+    id[1] = uint8_t(((ID[1]) + (ID[4])) >>  8);
+    id[0] = uint8_t(((ID[1]) + (ID[4])) >>  0);
 }
 
 uint8_t BoardGetBatteryLevel(void) {
@@ -207,12 +207,12 @@ uint8_t SX126xReadCommand(RadioCommands_t command, uint8_t *buffer, uint16_t siz
 
     SPI_WRITE_TX(SPI0, 0);
     while(SPI_IS_BUSY(SPI0));
-    status = SPI_READ_RX(SPI0);
+    status = uint8_t(SPI_READ_RX(SPI0));
 
     for(size_t i = 0; i < (size_t)size; i++) {
         SPI_WRITE_TX(SPI0, 0);
         while(SPI_IS_BUSY(SPI0));
-        buffer[i] = SPI_READ_RX(SPI0);
+        buffer[i] = uint8_t(SPI_READ_RX(SPI0));
     }
 
     // RF_NSS
@@ -270,7 +270,7 @@ void SX126xReadRegisters(uint16_t address, uint8_t *buffer, uint16_t size) {
     for(size_t i = 0; i < (size_t)size; i++) {
         SPI_WRITE_TX(SPI0, 0);
         while(SPI_IS_BUSY(SPI0));
-        buffer[i] = SPI_READ_RX(SPI0);
+        buffer[i] = uint8_t(SPI_READ_RX(SPI0));
     }
 
     // RF_NSS
@@ -323,7 +323,7 @@ void SX126xReadBuffer(uint8_t offset, uint8_t *buffer, uint8_t size) {
     for(size_t i = 0; i < (size_t)size; i++) {
         SPI_WRITE_TX(SPI0, 0);
         while(SPI_IS_BUSY(SPI0));
-        buffer[i] = SPI_READ_RX(SPI0);
+        buffer[i] = uint8_t(SPI_READ_RX(SPI0));
     }
 
     // RF_NSS
@@ -421,7 +421,7 @@ uint32_t RtcGetTimerElapsedTime(void) {
 
 uint32_t RtcGetCalendarTime(uint16_t *milliseconds) {
     double now = Timeline::SystemTime();
-    *milliseconds = uint32_t(now) % 1000;
+    *milliseconds = uint16_t(uint32_t(now) % 1000);
     return uint32_t(now);
 }
 
@@ -448,9 +448,13 @@ LmnStatus_t EepromMcuWriteBuffer(uint16_t addr, uint8_t *buffer, uint16_t size) 
     SYS_UnlockReg();
     FMC_Open();
 
-    uint32_t *data = reinterpret_cast<uint32_t *>(buffer);
     for (size_t c = 0; c < ( size / sizeof(uint32_t) ); c += sizeof(uint32_t)) {
-        FMC_Write(loraWanDataAddr + c, *data++);
+        FMC_Write(loraWanDataAddr + c,
+            uint32_t(buffer[0]) << 24 |
+            uint32_t(buffer[1]) << 16 |
+            uint32_t(buffer[2]) <<  8 |
+            uint32_t(buffer[3]) <<  0);
+        buffer += 4;
     }
 
     FMC_Close();
@@ -464,9 +468,13 @@ LmnStatus_t EepromMcuReadBuffer(uint16_t addr, uint8_t *buffer, uint16_t size) {
     SYS_UnlockReg();
     FMC_Open();
 
-    uint32_t *oBuf = reinterpret_cast<uint32_t *>(buffer);
     for (size_t c = 0; c < ( size / sizeof(uint32_t) ); c += sizeof(uint32_t)) {
-        *oBuf++ = FMC_Read(loraWanDataAddr + c);
+        uint32_t d = FMC_Read(loraWanDataAddr + c);
+        buffer[0] = uint8_t((d >> 24) & 0xFF);
+        buffer[1] = uint8_t((d >> 16) & 0xFF);
+        buffer[2] = uint8_t((d >>  8) & 0xFF);
+        buffer[3] = uint8_t((d >>  0) & 0xFF);
+        buffer += 4;
     }
 
     FMC_Close();

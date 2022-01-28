@@ -101,11 +101,11 @@ void i2c1::write(uint8_t _u8PeripheralAddr, uint8_t data[], size_t _u32wLen) {
     I2C_WriteMultiBytes(I2C1, _u8PeripheralAddr, data, _u32wLen);
 }
 
-uint8_t i2c1::read(uint8_t _u8PeripheralAddr, uint8_t rdata[], size_t _u32rLen) {
+uint32_t i2c1::read(uint8_t _u8PeripheralAddr, uint8_t rdata[], size_t _u32rLen) {
     return I2C_ReadMultiBytes(I2C1, _u8PeripheralAddr, rdata, _u32rLen);
 }
 
-uint8_t i2c1::writeRead(uint8_t _u8PeripheralAddr, uint8_t data[], size_t _u32wLen, uint8_t rdata[], size_t _u32rLen) {
+uint32_t i2c1::writeRead(uint8_t _u8PeripheralAddr, uint8_t data[], size_t _u32wLen, uint8_t rdata[], size_t _u32rLen) {
     I2C_WriteMultiBytes(I2C1, _u8PeripheralAddr, data, _u32wLen);
     return I2C_ReadMultiBytes(I2C1, _u8PeripheralAddr, rdata, _u32rLen);
 }
@@ -126,7 +126,7 @@ void i2c1::setReg8Bits(uint8_t peripheralAddr, uint8_t reg, uint8_t mask) {
 
 void i2c1::clearReg8Bits(uint8_t peripheralAddr, uint8_t reg, uint8_t mask) {
     uint8_t value = getReg8(peripheralAddr, reg);
-    value &= ~mask;
+    value &= uint8_t(~mask);
     setReg8(peripheralAddr, reg, value);
 }
 
@@ -221,7 +221,12 @@ void i2c2::queueBatchWrite(uint8_t peripheralAddr, uint8_t data[], size_t len) {
         return;
     }
 
-    *qBufEnd++ = len;
+    if (len > 255) {
+        printf("i2c2::queueBatchWrite len overflow!\n");
+        return;
+    }
+
+    *qBufEnd++ = uint8_t(len);
     *qBufEnd++ = peripheralAddr << 1;
     memcpy(qBufEnd, data, len);
     qBufEnd += len;
@@ -292,7 +297,7 @@ void i2c2::write(uint8_t _u8PeripheralAddr, uint8_t data[], size_t _u32wLen) {
     I2C_WriteMultiBytes(I2C2, _u8PeripheralAddr, data, _u32wLen);
 }
 
-uint8_t i2c2::read(uint8_t _u8PeripheralAddr, uint8_t rdata[], size_t _u32rLen) {
+uint32_t i2c2::read(uint8_t _u8PeripheralAddr, uint8_t rdata[], size_t _u32rLen) {
     return I2C_ReadMultiBytes(I2C2, _u8PeripheralAddr, rdata, _u32rLen);
 }
 
@@ -312,6 +317,6 @@ void i2c2::setReg8Bits(uint8_t peripheralAddr, uint8_t reg, uint8_t mask) {
 
 void i2c2::clearReg8Bits(uint8_t peripheralAddr, uint8_t reg, uint8_t mask) {
     uint8_t value = getReg8(peripheralAddr, reg);
-    value &= ~mask;
+    value &= uint8_t(~mask);
     setReg8(peripheralAddr, reg, value);
 }

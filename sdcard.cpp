@@ -180,7 +180,7 @@ extern "C" SDH_INFO_T SD0, SD1;
 #define TRIM_INIT (SYS_BASE+0x10C)
 
 extern uint8_t volatile g_u8SdInitFlag;
-extern int32_t g_TotalSectors;
+extern uint32_t g_TotalSectors;
 
 void SDH0_IRQHandler(void)
 {

@@ -66,7 +66,7 @@ public:
 private:
     static bool dirty;
     static bool initialized;
-    static constexpr uint32_t dataAddress = 0x3F000; // Last 4KB page
+    static constexpr uint32_t dataAddress = 0x7F000; // Last 4KB page
 
     void init();
 

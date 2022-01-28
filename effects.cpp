@@ -83,7 +83,7 @@ void Effects::color_walker() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos, float walk)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            float mod_walk = fracf(val_walk + (1.0f - (c * ( 1.0f / static_cast<float>(Leds::circleLedsN)))));
+            float mod_walk = fracf(val_walk + (1.0f - (float(c) * ( 1.0f / static_cast<float>(Leds::circleLedsN)))));
             auto pos = Leds::instance().map.getBird(c);
             auto col = func(pos, mod_walk);
             leds.setCircle(0, c, col);
@@ -112,7 +112,7 @@ void Effects::light_walker() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos, float walk)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            float mod_walk = fracf(val_walk + (1.0f - (c * ( 1.0f / static_cast<float>(Leds::circleLedsN)))));
+            float mod_walk = fracf(val_walk + (1.0f - (float(c) * ( 1.0f / static_cast<float>(Leds::circleLedsN)))));
             auto pos = Leds::instance().map.getBird(c);
             auto col = func(pos, mod_walk);
             leds.setCircle(0, c, col);

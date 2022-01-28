@@ -82,8 +82,8 @@ void ENS210::read() {
     i2c1::instance().write(i2c_addr, (uint8_t *)&th_read, sizeof(th_read));
     i2c1::instance().read(i2c_addr, (uint8_t *)&th_data, sizeof(th_data));
 
-    uint32_t t_val = (th_data[2]<<16) + (th_data[1]<<8) + (th_data[0]<<0);
-    uint32_t h_val = (th_data[5]<<16) + (th_data[4]<<8) + (th_data[3]<<0);
+    uint32_t t_val = (uint32_t(th_data[2])<<16U) + (uint32_t(th_data[1])<<8U) + (uint32_t(th_data[0])<<0U);
+    uint32_t h_val = (uint32_t(th_data[5])<<16U) + (uint32_t(th_data[4])<<8U) + (uint32_t(th_data[3])<<0U);
 
     uint32_t t_data = (t_val>>0 ) & 0xffff;
     float TinK = (float)t_data / 64;

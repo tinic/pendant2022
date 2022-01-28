@@ -30,9 +30,9 @@ public:
     static i2c1 &instance();
 
     void write(uint8_t peripheralAddr, uint8_t data[], size_t len);
-    uint8_t read(uint8_t peripheralAddr, uint8_t data[], size_t len);
+    uint32_t read(uint8_t peripheralAddr, uint8_t data[], size_t len);
 
-    uint8_t writeRead(uint8_t peripheralAddr, uint8_t writeData[], size_t writeLen, uint8_t readData[], size_t readLen);
+    uint32_t writeRead(uint8_t peripheralAddr, uint8_t writeData[], size_t writeLen, uint8_t readData[], size_t readLen);
 
     void setReg8(uint8_t peripheralAddr, uint8_t reg, uint8_t dat);
     uint8_t getReg8(uint8_t peripheralAddr, uint8_t reg);
@@ -62,7 +62,7 @@ public:
     void performBatchWrite();
 
     void write(uint8_t peripheralAddr, uint8_t data[], size_t len);
-    uint8_t read(uint8_t peripheralAddr, uint8_t data[], size_t len);
+    uint32_t read(uint8_t peripheralAddr, uint8_t data[], size_t len);
 
     void setReg8(uint8_t peripheralAddr, uint8_t reg, uint8_t dat);
     uint8_t getReg8(uint8_t peripheralAddr, uint8_t reg);

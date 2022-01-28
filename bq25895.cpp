@@ -57,7 +57,7 @@ void BQ25895::SetMinSystemVoltage (uint32_t voltageMV) {
     if ((voltageMV >= 3000) && (voltageMV <= 3700)) {
         uint32_t codedValue = voltageMV;
         codedValue = (codedValue - 3000) / 100;
-        reg &= ~(0x07 << 1);
+        reg &= uint8_t(~(0x07 << 1));
         reg |= static_cast<uint8_t>((codedValue & 0x07) << 1);
         i2c1::instance().setReg8(i2c_addr, 0x03, reg);
     }
@@ -72,7 +72,7 @@ void BQ25895::SetBoostVoltage (uint32_t voltageMV) {
         if ((voltageMV - 4550) % 64 != 0) {
             codedValue++;
         }
-        reg &= ~(0x0f << 4);
+        reg &= uint8_t(~(0x0f << 4));
         reg |= static_cast<uint8_t>((codedValue & 0x0f) << 4);
         i2c1::instance().setReg8(i2c_addr, 0x0A, reg);
     }

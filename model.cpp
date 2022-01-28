@@ -90,7 +90,7 @@ void Model::save() {
     if (!(((au32Config[0] & 1) == 0) && 
            (au32Config[1] == dataAddress))) {
 
-        au32Config[0] &= ~1;
+        au32Config[0] &= ~1UL;
         au32Config[1]  = dataAddress;
 
         FMC_WriteConfig(au32Config, 2);

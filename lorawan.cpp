@@ -303,7 +303,7 @@ static void OnTxPeriodicityChanged(uint32_t periodicity)
     TxPeriodicity = periodicity;
 
     if(TxPeriodicity == 0) { // Revert to application default periodicity
-        TxPeriodicity = APP_TX_DUTYCYCLE + randr(-APP_TX_DUTYCYCLE_RND, APP_TX_DUTYCYCLE_RND);
+        TxPeriodicity = uint32_t(APP_TX_DUTYCYCLE + randr(-APP_TX_DUTYCYCLE_RND, APP_TX_DUTYCYCLE_RND));
     }
 
     // Update timer periodicity

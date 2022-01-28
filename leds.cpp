@@ -86,8 +86,8 @@ void Leds::prepare() {
 
     float brightness = Model::instance().Brightness();
 
-    uint32_t *ptr0 = reinterpret_cast<uint32_t *>(ledsDMABuf[0].data());
-    uint32_t *ptr1 = reinterpret_cast<uint32_t *>(ledsDMABuf[1].data());
+    uint32_t *ptr0 = ledsDMABuf[0].data();
+    uint32_t *ptr1 = ledsDMABuf[1].data();
     
     for (size_t c = 0; c < circleLedsN; c++) {
         color::rgba<uint16_t> pixel0(color::rgba<uint16_t>(converter.CIELUV2sRGB(circleLeds[0][c]*brightness)).fix_for_ws2816());

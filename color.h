@@ -124,9 +124,9 @@ namespace color {
     }
 
     template<> constexpr rgba<uint16_t>::rgba(uint32_t color) {
-        r = ( color >> 16 ) & 0xFF; r |= r << 8;
-        g = ( color >>  8 ) & 0xFF; g |= g << 8;
-        b = ( color >>  0 ) & 0xFF; b |= b << 8;
+        r = uint16_t(( color >> 16 ) & 0xFF); r |= uint16_t(r << 8);
+        g = uint16_t(( color >>  8 ) & 0xFF); g |= uint16_t(g << 8);
+        b = uint16_t(( color >>  0 ) & 0xFF); b |= uint16_t(b << 8);
     }
     
     template<> __attribute__((always_inline)) inline float rgba<float>::clamp_to_type(float v) {
@@ -134,11 +134,11 @@ namespace color {
     }
 
     template<> __attribute__((always_inline)) inline uint8_t rgba<uint8_t>::clamp_to_type(float v) {
-        return __builtin_arm_usat(uint32_t(v * 255.f), 8);
+        return uint8_t(__builtin_arm_usat(int32_t(v * 255.f), 8));
     }
 
     template<> __attribute__((always_inline)) inline uint16_t rgba<uint16_t>::clamp_to_type(float v) {
-        return __builtin_arm_usat(uint32_t(v * 65535.f), 16);
+        return uint16_t(__builtin_arm_usat(int32_t(v * 65535.f), 16));
     }
 
     class gradient {
@@ -274,7 +274,7 @@ namespace color {
 
         int32_t rd = static_cast<int32_t>( 6.0f * h );
 
-        float f = h * 6.0f - rd;
+        float f = h * 6.0f - float(rd);
         float p = v * (1.0f - s);
         float q = v * (1.0f - f * s);
         float t = v * (1.0f - (1.0f - f) * s);
