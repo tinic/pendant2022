@@ -52,10 +52,10 @@ static int hid_probe(IFACE_T *iface)
 {
     UDEV_T       *udev = iface->udev;
     ALT_IFACE_T  *aif = iface->aif;
-    DESC_IF_T    *ifd;
-    EP_INFO_T    *ep;
-    HID_DEV_T    *hdev, *p;
-    int          i;
+    DESC_IF_T    *ifd = 0;
+    EP_INFO_T    *ep = 0;
+    HID_DEV_T    *hdev = 0, *p = 0;
+    int          i = 0;
 
     ifd = aif->ifd;
 

@@ -566,6 +566,9 @@ int usbh_uac_start_audio_in(UAC_DEV_T *uac, UAC_CB_FUNC *func)
     uint8_t      bAlternateSetting;
     int          i, j, ret;
 
+    if (!asif)
+        return UAC_RET_DEV_NOT_FOUND;
+
     if (!iface)
         return UAC_RET_DEV_NOT_FOUND;
 
@@ -616,6 +619,9 @@ int usbh_uac_start_audio_in(UAC_DEV_T *uac, UAC_CB_FUNC *func)
     UAC_DBGMSG("Activated isochronous-in endpoint =>");
     usbh_dump_ep_info(ep);
 #endif
+
+    if (!ep)
+        return UAC_RET_DEV_NOT_FOUND;
 
     /*------------------------------------------------------------------------------------*/
     /*  Allocate isochronous in buffer                                                    */
@@ -862,6 +868,9 @@ int usbh_uac_start_audio_out(UAC_DEV_T *uac, UAC_CB_FUNC *func)
     usbh_dump_ep_info(ep);
 #endif
 
+    if (!ep)
+        return UAC_RET_DEV_NOT_FOUND;
+        
     /*------------------------------------------------------------------------------------*/
     /*  Allocate isochronous in buffer                                                    */
     /*------------------------------------------------------------------------------------*/

@@ -7,8 +7,8 @@ set -e
 mkdir -p build
 mkdir -p build/cppcheck
 
-#cppcheck . -q -i Library/CMSIS/Driver/DriverTemplates/ -i Library/StdDriver/src/retarget.c -i LoRaMac-node/ -f --cppcheck-build-dir=build/cppcheck
-#cppcheck . --enable=style --suppress=noExplicitConstructor -q -i fatfs/ -i Library/ -i Library/CMSIS/Driver/DriverTemplates/ -i Library/StdDriver/src/retarget.c -i LoRaMac-node/ -f --cppcheck-build-dir=build/cppcheck
+cppcheck . -q -i Library/CMSIS/Driver/DriverTemplates/ -i Library/StdDriver/src/retarget.c -i LoRaMac-node/ -f --cppcheck-build-dir=build/cppcheck
+cppcheck . --enable=style --suppress=noExplicitConstructor -q -i fatfs/ -i Library/ -i Library/CMSIS/Driver/DriverTemplates/ -i Library/StdDriver/src/retarget.c -i LoRaMac-node/ -f --cppcheck-build-dir=build/cppcheck
 
 build_type="Ninja"
 cd build
