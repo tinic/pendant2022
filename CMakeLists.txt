@@ -26,6 +26,9 @@ endif(TESTING)
 set(CC_FLAGS
     -flto
     -mcpu=cortex-m4 
+    -Wformat=2 
+    -Wformat-overflow
+    -Wformat-truncation
     -Wnull-dereference
     -mthumb
     -mfloat-abi=hard
@@ -40,6 +43,9 @@ set(CC_FLAGS
     -Wno-unused-parameter
     -Wno-strict-aliasing 
     -Wno-format
+    -Wstack-usage=4096
+    -fno-common
+    -fstack-usage
     -ffast-math
     -ffat-lto-objects
     -fallow-store-data-races)
@@ -60,7 +66,6 @@ set(CXX_FLAGS
     -Wcast-align
     -Wconversion
     -Wno-volatile
-    -Wformat=2 
     -std=c++20 
     -fno-rtti 
     -fno-exceptions)
@@ -92,12 +97,14 @@ set(DUMP_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.S)
 
 add_compile_definitions(
     ${MAINCPU_DEFINITIONS}
+    ISBEN=1
     NDEBUG 
     ARM_MATH_CM4 
     __FPU_PRESENT 
     REGION_US915
     SOFT_SE
     SECURE_ELEMENT_PRE_PROVISIONED
+    OVER_THE_AIR_ACTIVATION=1
     ACTIVE_REGION=LORAMAC_REGION_US915
     LORAWAN_DEFAULT_CLASS=CLASS_A)
 
