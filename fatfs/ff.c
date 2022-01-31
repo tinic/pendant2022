@@ -3657,8 +3657,8 @@ FRESULT f_open (
 )
 {
 	FRESULT res;
-	DIR dj;
-	FATFS *fs;
+	DIR dj = { 0 };
+	FATFS *fs = 0;
 #if !FF_FS_READONLY
 	DWORD cl, bcs, clst, tm;
 	LBA_t sc;
@@ -4718,7 +4718,7 @@ FRESULT f_stat (
 )
 {
 	FRESULT res;
-	DIR dj;
+	DIR dj = { 0 };
 	DEF_NAMBUF
 
 
@@ -4758,7 +4758,7 @@ FRESULT f_getfree (
 	DWORD nfree, clst, stat;
 	LBA_t sect;
 	UINT i;
-	FFOBJID obj;
+	FFOBJID obj = { 0 };
 
 
 	/* Get logical drive */
@@ -4894,11 +4894,11 @@ FRESULT f_unlink (
 )
 {
 	FRESULT res;
-	DIR dj, sdj;
+	DIR dj = { 0 }, sdj = { 0 };
 	DWORD dclst = 0;
 	FATFS *fs;
 #if FF_FS_EXFAT
-	FFOBJID obj;
+	FFOBJID obj = { 0 };
 #endif
 	DEF_NAMBUF
 
@@ -4988,9 +4988,9 @@ FRESULT f_mkdir (
 )
 {
 	FRESULT res;
-	DIR dj;
-	FFOBJID sobj;
-	FATFS *fs;
+	DIR dj = { 0 };
+	FFOBJID sobj = { 0 };
+	FATFS *fs = 0;
 	DWORD dcl, pcl, tm;
 	DEF_NAMBUF
 
@@ -5073,8 +5073,8 @@ FRESULT f_rename (
 )
 {
 	FRESULT res;
-	DIR djo, djn;
-	FATFS *fs;
+	DIR djo = { 0 }, djn = { 0 };
+	FATFS *fs = 0;
 	BYTE buf[FF_FS_EXFAT ? SZDIRE * 2 : SZDIRE], *dir;
 	LBA_t sect;
 	DEF_NAMBUF
