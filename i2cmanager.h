@@ -93,7 +93,8 @@ private:
     uint8_t qBufSeq[2048] = { };
     uint8_t *qBufPtr = 0;
     uint8_t *qBufEnd = 0;
-    bool pdmaDone = false;
+    
+    volatile bool pdmaDone = false;
 
 };
 
