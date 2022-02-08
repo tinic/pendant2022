@@ -30,17 +30,13 @@ class Seed {
 public:
     static Seed &instance();
 
-    uint32_t seedU32() const { return 
-        (uint32_t(data[0]) << 24) |
-        (uint32_t(data[1]) << 16) |
-        (uint32_t(data[2]) <<  8) |
-        (uint32_t(data[3]) <<  0); }
+    uint32_t seedU32() const { return _seed; }
 
 private:
     bool initialized = false;
     void init();
 
-    std::array<uint8_t, 256> data = { };
+    uint32_t _seed = 0;
 };
 
 #endif /* SEED_H_ */
