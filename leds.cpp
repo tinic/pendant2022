@@ -79,9 +79,6 @@ void Leds::init() {
 #endif  // #ifdef USE_SPI_DMA
 
     printf("Leds initialized.\n");
-
-
-    printf("%d\n", int(ledsDMABuf[0].size() * sizeof(uint32_t)));
 }
 
 void Leds::prepare() {
