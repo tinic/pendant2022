@@ -335,4 +335,6 @@ void Effects::init() {
         };
         Timeline::instance().Add(mainEffect);
     }
+
+    printf("Effects initialized.\n");
 }

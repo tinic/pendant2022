@@ -59,12 +59,12 @@ void Pendant::init() {
     Timeline::instance();
     Leds::instance();
     Effects::instance();
-    SDCard::instance();
-    Input::instance();
-    i2c1::instance();
-    i2c2::instance();
-    UI::instance();
-    LoraWAN::instance();
+//    SDCard::instance();
+//    Input::instance();
+//    i2c1::instance();
+//    i2c2::instance();
+//    UI::instance();
+//    LoraWAN::instance();
 }
 
 void Pendant::Run() {
@@ -72,12 +72,12 @@ void Pendant::Run() {
     while (1) {
         __WFI();
         Timeline::instance().ProcessEvent();
-        SDCard::instance().process();
+        //SDCard::instance().process();
         if (Timeline::instance().CheckIdleReadyAndClear()) {
-            i2c1::instance().update();
-            i2c2::instance().update();
+        //    i2c1::instance().update();
+        //    i2c2::instance().update();
             Model::instance().save();
-            LoraWAN::instance().update();
+        //    LoraWAN::instance().update();
         }
         if (Timeline::instance().CheckEffectReadyAndClear()) {
             Timeline::instance().ProcessInterval();
@@ -87,7 +87,7 @@ void Pendant::Run() {
                 Timeline::instance().TopEffect().Commit();
             }
         }
-        if (SDD1306::instance().IsDisplayOn() && 
+/*        if (SDD1306::instance().IsDisplayOn() && 
             Timeline::instance().CheckDisplayReadyAndClear()) {
             Timeline::instance().ProcessInterval();
             Timeline::instance().ProcessDisplay();
@@ -95,7 +95,7 @@ void Pendant::Run() {
                 Timeline::instance().TopDisplay().Calc();
                 Timeline::instance().TopDisplay().Commit();
             }
-        }
+        }*/
     }
 }
 

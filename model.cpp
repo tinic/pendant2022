@@ -43,6 +43,7 @@ Model &Model::instance() {
 
 void Model::init() {
     load();
+    printf("Model initialized.\n");
 }
 
 void Model::load() {
