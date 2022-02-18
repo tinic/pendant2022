@@ -61,7 +61,7 @@ void GPB_IRQHandler(void)
     if(GPIO_GET_INT_FLAG(PB, BIT9))
     {
         Timeline::instance().TopDisplay().ProcessSwitch1(PB9 ? true : false);
-        if (PB5) Model::instance().IncSwitch1Count();
+        if (PB9) Model::instance().IncSwitch1Count();
         GPIO_CLR_INT_FLAG(PB, BIT9);
     }
 
@@ -69,7 +69,7 @@ void GPB_IRQHandler(void)
     if(GPIO_GET_INT_FLAG(PB, BIT8))
     {
         Timeline::instance().TopDisplay().ProcessSwitch2(PB8 ? true : false);
-        if (PB5) Model::instance().IncSwitch2Count();
+        if (PB8) Model::instance().IncSwitch2Count();
         GPIO_CLR_INT_FLAG(PB, BIT8);
     }
 
@@ -77,7 +77,7 @@ void GPB_IRQHandler(void)
     if(GPIO_GET_INT_FLAG(PB, BIT7))
     {
         Timeline::instance().TopDisplay().ProcessSwitch3(PB7 ? true : false);
-        if (PB5) Model::instance().IncSwitch2Count();
+        if (PB7) Model::instance().IncSwitch2Count();
         GPIO_CLR_INT_FLAG(PB, BIT7);
     }
 }
@@ -104,6 +104,7 @@ Input &Input::instance() {
     if (!input.initialized) {
         input.initialized = true;
         input.init();
+        printf("Input initialized.\n");
     }
     return input;
 }
@@ -133,7 +134,7 @@ void Input::init() {
 
     // SW1
     GPIO_SetMode(PB, BIT9, GPIO_MODE_INPUT);
-    GPIO_SetPullCtl(PF, BIT9, GPIO_PUSEL_PULL_UP);
+    GPIO_SetPullCtl(PB, BIT9, GPIO_PUSEL_PULL_UP);
     GPIO_ENABLE_DEBOUNCE(PB, BIT9);
     GPIO_CLR_INT_FLAG(PB, BIT9);
     GPIO_EnableInt(PB, 9, GPIO_INT_BOTH_EDGE);

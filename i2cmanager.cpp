@@ -36,6 +36,7 @@ template<typename T> void i2c1::checkReady() {
     if (!T::devicePresent) {
         T::devicePresent = I2C_WriteByte(I2C2, T::i2c_addr, 0) == 0;
         if (T::devicePresent) printf("%s is ready.\r\n", T::str_id);
+        else printf("%s is NOT ready.\r\n", T::str_id);
     }
 }
 
@@ -43,6 +44,7 @@ template<class T> void i2c1::checkReadyReprobe() {
     if (!T::devicePresent) {
         T::devicePresent = I2C_WriteByte(I2C2, T::i2c_addr, 0) == 0;
         if (T::devicePresent) printf("%s is is ready on reprobe.\r\n", T::str_id);
+        else printf("%s is is NOT ready on reprobe.\r\n", T::str_id);
     }
 }
 
@@ -143,6 +145,7 @@ template<typename T> void i2c2::checkReady() {
     if (!T::devicePresent) {
         T::devicePresent = I2C_WriteByte(I2C2, T::i2c_addr, 0) == 0;
         if (T::devicePresent) printf("%s is ready.\r\n", T::str_id);
+        else printf("%s is NOT ready.\r\n", T::str_id);
     }
 }
 
@@ -150,6 +153,7 @@ template<class T> void i2c2::checkReadyReprobe() {
     if (!T::devicePresent) {
         T::devicePresent = I2C_WriteByte(I2C2, T::i2c_addr, 0) == 0;
         if (T::devicePresent) printf("%s is is ready on reprobe.\r\n", T::str_id);
+        else printf("%s is is NOT ready on reprobe.\r\n", T::str_id);
     }
 }
 
@@ -170,6 +174,8 @@ i2c2 &i2c2::instance() {
 
 void i2c2::init() {
 
+    printf("i2c2::init 0");
+
     GPIO_SetMode(PA, BIT10, GPIO_MODE_OPEN_DRAIN);
     GPIO_SetMode(PA, BIT11, GPIO_MODE_OPEN_DRAIN);
 
@@ -183,7 +189,9 @@ void i2c2::init() {
     PDMA_EnableInt(PDMA, I2C2_PDMA_TX_CH, 0);
     PDMA_SetBurstType(PDMA, I2C2_PDMA_TX_CH, PDMA_REQ_SINGLE, 0);
 
-    I2C_Open(I2C2, 600000);
+    printf("i2c2::init 1");
+
+    I2C_Open(I2C2, 400000);
 
     uint32_t STCTL = 0;
     uint32_t HTCTL = 2;
@@ -196,6 +204,8 @@ void i2c2::init() {
 
     NVIC_SetPriority(I2C2_IRQn, 3);
     NVIC_EnableIRQ(I2C2_IRQn);
+
+    printf("i2c2::init 2");
 
     checkReady<SDD1306>();
 }

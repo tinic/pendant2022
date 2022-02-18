@@ -5,6 +5,7 @@
         "CMAKE_BUILD_TYPE" : "Debug"
     },
     "files.associations": {
+        "*.cps": "javascript",
         "array": "c",
         "string_view": "c",
         "initializer_list": "c",
@@ -97,6 +98,7 @@
         "nvmdatamgmt.h": "c",
         "lmhpackage.h": "c",
         "lmhpcompliance.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "m480.h": "c"
     }
 }
