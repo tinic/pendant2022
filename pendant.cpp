@@ -61,7 +61,7 @@ void Pendant::init() {
     Effects::instance();
     //SDCard::instance();
     Input::instance();
-//    i2c1::instance();
+    i2c1::instance();
     i2c2::instance();
     UI::instance();
 //    LoraWAN::instance();

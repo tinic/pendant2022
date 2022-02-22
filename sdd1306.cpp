@@ -239,20 +239,19 @@ void SDD1306::init() {
 
     static constexpr uint8_t startup_sequence[] = {
         0xAE,           // Display off
-        0xD5, 0x80,     // Set Display Clock Divide Ratio
-        0xAD, 0x30,     // Internal IREF Setting
-        0xA8, 0x27,     // Set Multiplex Ratio
-        0xD3, 0x00,     // Set Display Offset
-        0x8D, 0x95,     // Enable Charge Pump
+        0xA8, 0x1F,     // Set Multiplex Ratio
         0x40,           // Set Display RAM start
         0xA6,           // Set to normal display (0xA7 == inverse)
         0xA4,           // Force Display From RAM On
         0xA1,           // Set Segment Re-map
         0xC8,           // Set COM Output Scan Direction (flipped)
+        0x81, 0x4F,     // Set Contrast (0x00-0xFF)
+        0xD3, 0x00,     // Set Display Offset
+        0xD5, 0x80,     // Set Display Clock Divide Ratio
+        0xD9, 0x1F,     // Set Pre-Charge period
         0xDA, 0x12,     // Set Pins configuration
-        0x81, 0x80,     // Set Contrast (0x00-0xFF)
-        0xD9, 0x22,     // Set Pre-Charge period
-        0xDB, 0x20,     // Adjust Vcomm regulator output
+        0xDB, 0x40,     // Adjust Vcomm regulator output
+        0x8D, 0x14,     // Enable Charge Pump
         0xAF            // Display on
     };
 
@@ -270,7 +269,7 @@ void SDD1306::DisplayBootScreen() {
     for (size_t y = 0; y < text_y_size; y ++) {
 
         BatchWriteCommand(static_cast<uint8_t>(0xB0+y));
-        size_t xoff = 28;
+        size_t xoff = 32;
         BatchWriteCommand(static_cast<uint8_t>(0x0f&(xoff   )));
         BatchWriteCommand(static_cast<uint8_t>(0x10|(xoff>>4)));
             
@@ -289,7 +288,7 @@ void SDD1306::DisplayCenterFlip() {
     buf[0] = 0x40;
     for (uint32_t y=0; y<text_y_size; y++) {
         BatchWriteCommand(static_cast<uint8_t>(0xB0+y));
-        size_t xoff = 28;
+        size_t xoff = 32;
         BatchWriteCommand(static_cast<uint8_t>(0x0f&(xoff   )));
         BatchWriteCommand(static_cast<uint8_t>(0x10|(xoff>>4)));
         for (uint32_t x = 0; x < (text_x_size*8); x++) {
@@ -318,7 +317,7 @@ void SDD1306::DisplayCenterFlip() {
 }
     
 void SDD1306::DisplayChar(uint32_t x, uint32_t y, uint16_t ch, uint8_t attr) {
-    x = (x * 8) + 28;
+    x = (x * 8) + 32;
 
     BatchWriteCommand(static_cast<uint8_t>(0xB0 + y));
     BatchWriteCommand(static_cast<uint8_t>(0x0f&(x   )));
