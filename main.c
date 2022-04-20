@@ -214,6 +214,8 @@ int main(void)
         "r" GIT_REV_COUNT " (" GIT_SHORT_SHA ") " GIT_COMMIT_DATE);
     printf("--------------------------------------------------------------------------------\n");
 
+    printf("SystemCoreClock (%d Hz) HXT (%d Hz)\n", (int)(SystemCoreClock), (int)__HXT);
+
     FMC_Close();
     SYS_LockReg();
 

@@ -97,6 +97,7 @@ set(DUMP_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.S)
 
 add_compile_definitions(
     ${MAINCPU_DEFINITIONS}
+    __HXT=16000000
     ISBEN=1
     NDEBUG 
     ARM_MATH_CM4 

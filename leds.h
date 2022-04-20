@@ -171,7 +171,7 @@ private:
     static constexpr size_t bitsPerComponent = 16;
     static constexpr size_t bitsPerLed = bitsPerComponent * 3;
 
-    std::array<std::array<uint32_t, ((birdLedsN + circleLedsN) * bitsPerLed) / 2 / sizeof(uint32_t)>, sidesN> ledsDMABuf __attribute__ ((aligned (16))) = { };
+    std::array<std::array<uint32_t, (((birdLedsN + circleLedsN) * bitsPerLed) / 2) / sizeof(uint32_t)>, sidesN> ledsDMABuf __attribute__ ((aligned (16))) = { };
 
     void transfer();
     void prepare();

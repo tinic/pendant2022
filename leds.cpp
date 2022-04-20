@@ -65,19 +65,20 @@ void Leds::init() {
 #ifdef USE_SPI_DMA
     PDMA_Open(PDMA, (1UL << SPI1_MASTER_TX_DMA_CH) | (1UL << SPI2_MASTER_TX_DMA_CH));
 
-    PDMA_SetTransferCnt(PDMA, SPI1_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[0].size());
+    PDMA_SetTransferCnt(PDMA, SPI1_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[0].size() * sizeof(uint32_t));
     PDMA_SetTransferAddr(PDMA, SPI1_MASTER_TX_DMA_CH, reinterpret_cast<uintptr_t>(ledsDMABuf[0].data()), PDMA_SAR_INC, reinterpret_cast<uintptr_t>(&SPI1->TX), PDMA_DAR_FIX);
     PDMA_SetTransferMode(PDMA, SPI1_MASTER_TX_DMA_CH, PDMA_SPI1_TX, FALSE, 0);
     PDMA_SetBurstType(PDMA, SPI1_MASTER_TX_DMA_CH, PDMA_REQ_SINGLE, 0);
     PDMA->DSCT[SPI1_MASTER_TX_DMA_CH].CTL |= PDMA_DSCT_CTL_TBINTDIS_Msk;
 
-    PDMA_SetTransferCnt(PDMA, SPI2_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[1].size());
+    PDMA_SetTransferCnt(PDMA, SPI2_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[1].size() * sizeof(uint32_t));
     PDMA_SetTransferAddr(PDMA, SPI2_MASTER_TX_DMA_CH, reinterpret_cast<uintptr_t>(ledsDMABuf[1].data()), PDMA_SAR_INC, reinterpret_cast<uintptr_t>(&SPI2->TX), PDMA_DAR_FIX);
     PDMA_SetTransferMode(PDMA, SPI2_MASTER_TX_DMA_CH, PDMA_SPI2_TX, FALSE, 0);
     PDMA_SetBurstType(PDMA, SPI2_MASTER_TX_DMA_CH, PDMA_REQ_SINGLE, 0);
     PDMA->DSCT[SPI2_MASTER_TX_DMA_CH].CTL |= PDMA_DSCT_CTL_TBINTDIS_Msk;
 #endif  // #ifdef USE_SPI_DMA
 
+    printf("Leds initialized.\n");
 }
 
 void Leds::prepare() {
@@ -133,24 +134,24 @@ void Leds::transfer() {
 
 #ifdef USE_SPI_DMA
 
-    PDMA_SetTransferCnt(PDMA, SPI1_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[0].size());
+    PDMA_SetTransferCnt(PDMA, SPI1_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[0].size() * sizeof(uint32_t));
     PDMA_SetTransferMode(PDMA, SPI1_MASTER_TX_DMA_CH, PDMA_SPI1_TX, FALSE, 0);
     SPI_TRIGGER_TX_PDMA(SPI1);
 
-    PDMA_SetTransferCnt(PDMA, SPI2_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[1].size());
+    PDMA_SetTransferCnt(PDMA, SPI2_MASTER_TX_DMA_CH, PDMA_WIDTH_8, ledsDMABuf[1].size() * sizeof(uint32_t));
     PDMA_SetTransferMode(PDMA, SPI2_MASTER_TX_DMA_CH, PDMA_SPI2_TX, FALSE, 0);
     SPI_TRIGGER_TX_PDMA(SPI2);
 
 #else  // #ifdef USE_DMA
 
-    for(size_t c = 0; c < ledsDMABuf[0].size(); c++) {
+    for(size_t c = 0; c < ledsDMABuf[0].size() * sizeof(uint32_t); c++) {
         while(SPI_GET_TX_FIFO_FULL_FLAG(SPI1) == 1) {}
-        SPI_WRITE_TX(SPI1, ledsDMABuf[0].data()[c]);
+        SPI_WRITE_TX(SPI1, reinterpret_cast<uint8_t *>(ledsDMABuf[0].data())[c]);
     }
 
-    for(size_t c = 0; c < ledsDMABuf[1].size(); c++) {
+    for(size_t c = 0; c < ledsDMABuf[1].size() * sizeof(uint32_t); c++) {
         while(SPI_GET_TX_FIFO_FULL_FLAG(SPI2) == 1) {}
-        SPI_WRITE_TX(SPI2, ledsDMABuf[1].data()[c]);
+        SPI_WRITE_TX(SPI2, reinterpret_cast<uint8_t *>(ledsDMABuf[1].data())[c]);
     }
 
 #endif  // #ifdef USE_DMA

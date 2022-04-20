@@ -71,8 +71,8 @@ private:
     void WriteCommand(uint8_t v) const;
     void BatchWriteCommand(uint8_t v) const;
 
-    static constexpr int32_t text_x_size = 9;
-    static constexpr int32_t text_y_size = 5;
+    static constexpr int32_t text_x_size = 8;
+    static constexpr int32_t text_y_size = 4;
 
     int8_t center_flip_screen = 0;
     int8_t center_flip_cache = 0;

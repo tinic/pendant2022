@@ -64,18 +64,38 @@ void Seed::init() {
     EADC_CLR_INT_FLAG(EADC, EADC_STATUS2_ADIF0_Msk);
 
     EADC_ENABLE_INT(EADC, BIT0);
-    EADC_ENABLE_SAMPLE_MODULE_INT(EADC, 0, BIT0);
     NVIC_EnableIRQ(EADC00_IRQn);
 
-    EADC_START_CONV(EADC, BIT0);
+    uint32_t h = 0;
 
-    __WFI();
+    for (size_t c = 0; c < 8; c++) {
 
-    EADC_DISABLE_SAMPLE_MODULE_INT(EADC, 0, BIT0);
+        for (volatile int32_t d = 0; d < (1<<16); d++ ) { __NOP(); }
 
-    while(EADC_GET_DATA_VALID_FLAG(EADC, BIT0) != BIT0);
+        EADC_ENABLE_SAMPLE_MODULE_INT(EADC, 0, BIT0);
 
-    printf("Seed::init %d\n", int(EADC_GET_CONV_DATA(EADC, 0)));
+        EADC_START_CONV(EADC, BIT0);
+
+        __WFI();
+
+        EADC_DISABLE_SAMPLE_MODULE_INT(EADC, 0, BIT0);
+
+        while(EADC_GET_DATA_VALID_FLAG(EADC, BIT0) != BIT0);
+
+        uint32_t k = int(EADC_GET_CONV_DATA(EADC, 0));
+
+        k *= 0xcc9e2d51;
+        k = (k << 15) | (k >> 17);
+        k *= 0x1b873593;
+
+        h ^= k;
+        h = (h << 13) | (h >> 19);
+        h = h * 5 + 0xe6546b64;
+    }
+
+    _seed = h;
+
+    printf("Starting Seed: %08x\n", _seed);
 
     NVIC_DisableIRQ(EADC00_IRQn);
     EADC_DISABLE_INT(EADC, BIT0);

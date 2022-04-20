@@ -405,4 +405,6 @@ void Timeline::init() {
     TIMER_Start(TIMER1);
 
     gen.seed(Seed::instance().seedU32());
+
+    printf("Timeline initialized.\n");
 }
