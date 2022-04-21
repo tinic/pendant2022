@@ -358,8 +358,8 @@ uint32_t UUART_Open(UUART_T* uuart, uint32_t u32baudrate)
 
     /* Find best solution */
     u32Min = (uint32_t) - 1;
-    u32MinDSCnt = 0ul;
-    u32MinClkDiv = 0ul;
+    u32MinDSCnt = 1ul;
+    u32MinClkDiv = 1ul;
     u32Tmp = 0ul;
 
     for(u32DSCnt = 6ul; u32DSCnt <= 0x10ul; u32DSCnt++)   /* DSCNT could be 0x5~0xF */
@@ -518,8 +518,8 @@ uint32_t UUART_SetLine_Config(UUART_T* uuart, uint32_t u32baudrate, uint32_t u32
 
         /* Find best solution */
         u32Min = (uint32_t) - 1;
-        u32MinDSCnt = 0ul;
-        u32MinClkDiv = 0ul;
+        u32MinDSCnt = 1ul;
+        u32MinClkDiv = 1ul;
 
         for(u32DSCnt = 6ul; u32DSCnt <= 0x10ul; u32DSCnt++)   /* DSCNT could be 0x5~0xF */
         {

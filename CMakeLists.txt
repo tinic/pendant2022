@@ -45,6 +45,7 @@ set(CC_FLAGS
     -Wno-strict-aliasing 
     -Wno-format
     -Wstack-usage=4096
+    -Wuninitialized
     -fno-common
     -fstack-usage
     -ffast-math
