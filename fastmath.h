@@ -26,58 +26,50 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <stdint.h>
 #include <math.h>
+#include <bit>
 
 __attribute__ ((hot, optimize("Os"), flatten))
-static inline float fast_rcp(const float x ) {
-    // No std::bitcast yet
-    const union { float f; uint32_t i; } u = { x };
-    const union { uint32_t i; float f; } v = { ( 0xbe6eb3beU - u.i ) >> 1 };
-    return v.f * v.f;
+constexpr float fast_rcp(const float x ) {
+    float v = std::bit_cast<float>( ( 0xbe6eb3beU - std::bit_cast<uint32_t>(x) ) >> 1 );
+    return v * v;
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-static inline float fast_rsqrt(const float x) {
-    const union { float f; uint32_t i; } u = { x };
-    const union { uint32_t i; float f; } v = { 0x5f375a86U - ( u.i >> 1 ) };
-    return v.f * (1.5f - ( 0.5f * v.f * v.f ));
+constexpr float fast_rsqrt(const float x) {
+    float v = std::bit_cast<float>( 0x5f375a86U - ( std::bit_cast<uint32_t>(x) >> 1 ) );
+    return v * (1.5f - ( 0.5f * v * v ));
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-static inline float fast_exp2(const float p) {
+constexpr float fast_exp2(const float p) {
     const float offset = (p < 0) ? 1.0f : 0.0f;
     const float clipp = (p < -126) ? -126.0f : p;
-    const int w = static_cast<int>(clipp);
-    const float z = clipp - float(w) + offset;
-    // No std::bitcast yet
-    const union { uint32_t i; float f; } v = {
-        static_cast<uint32_t>((1 << 23) * (clipp + 121.2740575f + 27.7280233f / (4.84252568f - z) - 1.49012907f * z))
-    };
-    return v.f;
+    const float z = clipp - static_cast<float>(static_cast<int32_t>(clipp)) + offset;
+    return std::bit_cast<float>(static_cast<uint32_t>((1 << 23) * (clipp + 121.2740575f + 27.7280233f / (4.84252568f - z) - 1.49012907f * z)));
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-static inline float fast_log2(const float x) {
-    // No std::bitcast yet
-    const union { float f; uint32_t i; } vx = { x };
-    const union { uint32_t i; float f; } mx = { (vx.i & 0x007FFFFF) | 0x3f000000 };
-    const float y = static_cast<float>(vx.i) * 1.1920928955078125e-7f;
+constexpr float fast_log2(const float x) {
+    uint32_t xi = std::bit_cast<uint32_t>(x);
+    float xf = std::bit_cast<float>((xi & 0x007FFFFF) | 0x3f000000);
+    const float y = static_cast<float>(xi) * 1.1920928955078125e-7f;
     return y - 124.22551499f
-             - 1.498030302f * mx.f
-             - 1.72587999f / (0.3520887068f + mx.f);
+             - 1.498030302f * xf
+             - 1.72587999f / (0.3520887068f + xf);
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-static inline float fast_log(const float x) {
+constexpr float fast_log(const float x) {
     return fast_log2(x) * 0.69314718f;
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-static inline float fast_pow(const float x, const float p) {
+constexpr float fast_pow(const float x, const float p) {
     return fast_exp2(p * fast_log2(x));
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-static inline double frac(double v) { // same as fmod(v, 1.0)
+constexpr double frac(double v) { // same as fmod(v, 1.0)
     return v - std::trunc(v);
 }
 
