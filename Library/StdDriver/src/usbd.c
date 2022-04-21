@@ -29,7 +29,7 @@ extern "C"
 */
 
 /* Global variables for Control Pipe */
-uint8_t g_usbd_SetupPacket[8] = {0ul};        /*!< Setup packet buffer */
+static uint8_t g_usbd_SetupPacket[8] = {0ul};        /*!< Setup packet buffer */
 volatile uint8_t g_usbd_RemoteWakeupEn = 0ul; /*!< Remote wake up function enable flag */
 
 /**
@@ -135,7 +135,13 @@ void USBD_ProcessSetupPacket(void)
 {
     g_usbd_CtrlOutToggle = 0;
     /* Get SETUP packet from USB buffer */
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+
     USBD_MemCopy(g_usbd_SetupPacket, (uint8_t *)USBD_BUF_BASE, 8ul);
+
+#pragma GCC diagnostic pop
 
     /* Check the request type */
     switch(g_usbd_SetupPacket[0] & 0x60ul)
