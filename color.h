@@ -129,15 +129,15 @@ namespace color {
         b = uint16_t(( color >>  0 ) & 0xFF); b |= uint16_t(b << 8);
     }
     
-    template<> __attribute__((always_inline)) inline float rgba<float>::clamp_to_type(float v) {
+    template<> __attribute__((always_inline)) constexpr float rgba<float>::clamp_to_type(float v) {
         return v;
     }
 
-    template<> __attribute__((always_inline)) inline uint8_t rgba<uint8_t>::clamp_to_type(float v) {
+    template<> __attribute__((always_inline)) constexpr uint8_t rgba<uint8_t>::clamp_to_type(float v) {
         return uint8_t(__builtin_arm_usat(int32_t(v * 255.f), 8));
     }
 
-    template<> __attribute__((always_inline)) inline uint16_t rgba<uint16_t>::clamp_to_type(float v) {
+    template<> __attribute__((always_inline)) constexpr uint16_t rgba<uint16_t>::clamp_to_type(float v) {
         return uint16_t(__builtin_arm_usat(int32_t(v * 65535.f), 16));
     }
 

@@ -29,19 +29,19 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <bit>
 
 __attribute__ ((hot, optimize("Os"), flatten))
-constexpr float fast_rcp(const float x ) {
+static constexpr float fast_rcp(const float x ) {
     float v = std::bit_cast<float>( ( 0xbe6eb3beU - std::bit_cast<uint32_t>(x) ) >> 1 );
     return v * v;
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-constexpr float fast_rsqrt(const float x) {
+static constexpr float fast_rsqrt(const float x) {
     float v = std::bit_cast<float>( 0x5f375a86U - ( std::bit_cast<uint32_t>(x) >> 1 ) );
     return v * (1.5f - ( 0.5f * v * v ));
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-constexpr float fast_exp2(const float p) {
+static constexpr float fast_exp2(const float p) {
     const float offset = (p < 0) ? 1.0f : 0.0f;
     const float clipp = (p < -126) ? -126.0f : p;
     const float z = clipp - static_cast<float>(static_cast<int32_t>(clipp)) + offset;
@@ -49,7 +49,7 @@ constexpr float fast_exp2(const float p) {
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-constexpr float fast_log2(const float x) {
+static constexpr float fast_log2(const float x) {
     uint32_t xi = std::bit_cast<uint32_t>(x);
     float xf = std::bit_cast<float>((xi & 0x007FFFFF) | 0x3f000000);
     const float y = static_cast<float>(xi) * 1.1920928955078125e-7f;
@@ -59,22 +59,22 @@ constexpr float fast_log2(const float x) {
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-constexpr float fast_log(const float x) {
+static constexpr float fast_log(const float x) {
     return fast_log2(x) * 0.69314718f;
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-constexpr float fast_pow(const float x, const float p) {
+static constexpr float fast_pow(const float x, const float p) {
     return fast_exp2(p * fast_log2(x));
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-constexpr double frac(double v) { // same as fmod(v, 1.0)
+static constexpr double frac(double v) { // same as fmod(v, 1.0)
     return v - std::trunc(v);
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-static inline float fracf(float v) { // same as fmodf(v, 1.0f)
+static constexpr float fracf(float v) { // same as fmodf(v, 1.0f)
     return v - std::truncf(v);
 }
 
