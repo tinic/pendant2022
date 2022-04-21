@@ -94,7 +94,7 @@ namespace color {
         T clamp_to_type(float v);
     };
 
-    template<> inline rgba<uint16_t> rgba<uint16_t>::fix_for_ws2816() {
+    template<> constexpr rgba<uint16_t> rgba<uint16_t>::fix_for_ws2816() {
         auto fix = [](uint16_t f) {
             if (f > 65535 - (256 - 32)) {
                 f = 65535 - (256 - 32);

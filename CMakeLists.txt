@@ -24,6 +24,7 @@ if(TESTING)
 endif(TESTING)
 
 set(CC_FLAGS
+    -fanalyzer
     -flto
     -mcpu=cortex-m4 
     -Wformat=2 
