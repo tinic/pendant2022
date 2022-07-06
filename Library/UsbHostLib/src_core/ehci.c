@@ -570,7 +570,7 @@ static int ehci_ctrl_xfer(UTR_T *utr)
     /*------------------------------------------------------------------------------------*/
     /* prepare DATA stage qTD                                                             */
     /*------------------------------------------------------------------------------------*/
-    if (utr->data_len > 0)
+    if (utr->data_len > 0 && qtd_data)
     {
         qtd_setup->Next_qTD = (uint32_t)qtd_data;
         qtd_data->Next_qTD = (uint32_t)qtd_status;
@@ -938,8 +938,11 @@ static void scan_asynchronous_list()
                 utr = qtd->utr;
                 if (qtd == qh->qtd_list)
                     qh->qtd_list = qtd->next;    /* unlink the qTD from qtd_list          */
-                else
-                    q_pre->next = qtd->next;     /* unlink the qTD from qtd_list          */
+                else {
+                    if (q_pre) {
+                        q_pre->next = qtd->next; /* unlink the qTD from qtd_list          */
+                    }
+                }
 
                 qtd_tmp = qtd;                   /* remember this qTD for freeing later   */
                 qtd = qtd->next;                 /* advance to the next qTD               */

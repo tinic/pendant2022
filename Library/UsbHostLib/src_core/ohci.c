@@ -393,7 +393,7 @@ static int ohci_ctrl_xfer(UTR_T *utr)
     /*------------------------------------------------------------------------------------*/
     /* prepare DATA stage TD                                                              */
     /*------------------------------------------------------------------------------------*/
-    if (utr->data_len > 0)
+    if (utr->data_len > 0 && td_data)
     {
         if ((utr->setup.bmRequestType & 0x80) == REQ_TYPE_OUT)
             info = (TD_CC | TD_R | TD_DP_OUT | TD_T_DATA1 | TD_TYPE_CTRL | TD_CTRL_DATA);

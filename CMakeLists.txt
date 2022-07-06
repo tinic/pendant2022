@@ -24,6 +24,7 @@ if(TESTING)
 endif(TESTING)
 
 set(CC_FLAGS
+    -fanalyzer
     -flto
     -mcpu=cortex-m4 
     -Wformat=2 
@@ -44,6 +45,7 @@ set(CC_FLAGS
     -Wno-strict-aliasing 
     -Wno-format
     -Wstack-usage=4096
+    -Wuninitialized
     -fno-common
     -fstack-usage
     -ffast-math
@@ -66,7 +68,7 @@ set(CXX_FLAGS
     -Wcast-align
     -Wconversion
     -Wno-volatile
-    -std=c++20 
+    -std=c++23
     -fno-rtti 
     -fno-exceptions)
 
