@@ -53,6 +53,9 @@ private:
     void read();
     void init();
     void stats();
+    void status();
+    void readTemp();
+    void readAccel();
 
     void reset();
 

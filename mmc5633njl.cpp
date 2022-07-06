@@ -43,8 +43,8 @@ enum {
     MMC5633NJL_REG_TPH1                     = 0x0B,
     MMC5633NJL_REG_TU                       = 0x0C,
 
-    MMC5633NJL_REG_STATUS_0                 = 0x18,
-    MMC5633NJL_REG_STATUS_1                 = 0x19,
+    MMC5633NJL_REG_STATUS_0                 = 0x19,
+    MMC5633NJL_REG_STATUS_1                 = 0x18,
     MMC5633NJL_REG_ODR                      = 0x1A,
     MMC5633NJL_REG_CTRL_0                   = 0x1B,
     MMC5633NJL_REG_CTRL_1                   = 0x1C,
@@ -69,20 +69,21 @@ enum {
 
     MMC5633NJL_STATUS_0_ACTIVTY_MASK        = 0b11000000,
     MMC5633NJL_STATUS_0_ACTIVTY_POWER_DOWN  = 0b00000000,
+    MMC5633NJL_STATUS_0_ACTIVTY_RESET       = 0b01000000,
     MMC5633NJL_STATUS_0_ACTIVTY_MEASUREMENT = 0b10000000,
 
-    MMC5633NJL_STATUS_1_MEAS_T_DONE         = 0b00000001,
-    MMC5633NJL_STATUS_1_MEAS_M_DONE         = 0b00000010,
-    MMC5633NJL_STATUS_1_SAT_SENSOR          = 0b00000100,
-    MMC5633NJL_STATUS_1_OTP_READ_DONE       = 0b00001000,
-    MMC5633NJL_STATUS_1_ST_FAIL             = 0b00010000,
-    MMC5633NJL_STATUS_1_MDT_FLAG_INT        = 0b00100000,
-    MMC5633NJL_STATUS_1_MEAS_T_DONE_INT     = 0b01000000,
-    MMC5633NJL_STATUS_1_MEAS_M_DONE_INT     = 0b10000000,
+    MMC5633NJL_STATUS_1_MEAS_M_DONE_INT     = 0b00000001,
+    MMC5633NJL_STATUS_1_MEAS_T_DONE_INT     = 0b00000010,
+    MMC5633NJL_STATUS_1_MDT_FLAG_INT        = 0b00000100,
+    MMC5633NJL_STATUS_1_ST_FAIL             = 0b00001000,
+    MMC5633NJL_STATUS_1_OTP_READ_DONE       = 0b00010000,
+    MMC5633NJL_STATUS_1_SAT_SENSOR          = 0b00100000,
+    MMC5633NJL_STATUS_1_MEAS_M_DONE         = 0b01000000,
+    MMC5633NJL_STATUS_1_MEAS_T_DONE         = 0b10000000,
 
     // Control bits
-    MMC5633NJL_CTRL_0_TAKE_MEAS_T           = 0b00000001,
-    MMC5633NJL_CTRL_0_TAKE_MEAS_M           = 0b00000010,
+    MMC5633NJL_CTRL_0_TAKE_MEAS_M           = 0b00000001,
+    MMC5633NJL_CTRL_0_TAKE_MEAS_T           = 0b00000010,
     MMC5633NJL_CTRL_0_START_MDT             = 0b00000100,
     MMC5633NJL_CTRL_0_DO_SET                = 0b00001000,
     MMC5633NJL_CTRL_0_DO_RESET              = 0b00010000,
@@ -148,10 +149,34 @@ void MMC5633NJL::update() {
     reset();
     config();
     read();
+    stats();
+}
+
+void MMC5633NJL::status() {
+    uint8_t status0 = i2c1::instance().getReg8(i2c_addr, MMC5633NJL_REG_STATUS_0);
+    printf("st0 %02x\n", status0);
+    uint8_t status1 = i2c1::instance().getReg8(i2c_addr, MMC5633NJL_REG_STATUS_1);
+    printf("st1 %02x\n", status1);
 }
 
 void MMC5633NJL::init() {
     if (!devicePresent) return;
+
+    i2c1::instance().setReg8(i2c_addr, MMC5633NJL_REG_CTRL_1, MMC5633NJL_CTRL_1_SW_RESET);
+
+    delay_us(20);
+
+    for ( ; ; ) 
+    {
+        // Wait for power down
+        uint8_t status1 = i2c1::instance().getReg8(i2c_addr, MMC5633NJL_REG_STATUS_0);
+        if ( ( status1 & ( MMC5633NJL_STATUS_0_ACTIVTY_MASK ) ) == 
+                         ( MMC5633NJL_STATUS_0_ACTIVTY_POWER_DOWN ) ) {
+            break;
+        }
+        delay_us(20);
+    }
+
     update();
     stats();
 }
@@ -170,75 +195,107 @@ void MMC5633NJL::config() {
     // NOP for now
 }
 
-void MMC5633NJL::read() {
+void MMC5633NJL::readTemp() {
     // Clear old data
     memset(&mmc5633njlRegs.regs, 0, sizeof(mmc5633njlRegs));
 
-    // Measure XYZ and temperature
+    // Measure temperature
     i2c1::instance().setReg8(i2c_addr, MMC5633NJL_REG_CTRL_0, 
-        MMC5633NJL_CTRL_0_TAKE_MEAS_T | MMC5633NJL_CTRL_0_TAKE_MEAS_M | MMC5633NJL_CTRL_0_AUTO_SR_EN);
+        MMC5633NJL_CTRL_0_TAKE_MEAS_T | MMC5633NJL_CTRL_0_AUTO_SR_EN);
 
-    // FIXME! Use interrupt instead of polling here.
     for ( ; ; ) {
         // Wait for measurement
         uint8_t status1 = i2c1::instance().getReg8(i2c_addr, MMC5633NJL_REG_STATUS_1);
-        if ( ( status1 & ( MMC5633NJL_STATUS_1_MEAS_T_DONE | MMC5633NJL_STATUS_1_MEAS_M_DONE) ) == 
-                         ( MMC5633NJL_STATUS_1_MEAS_T_DONE | MMC5633NJL_STATUS_1_MEAS_M_DONE) ) {
+        if ( ( status1 & ( MMC5633NJL_STATUS_1_MEAS_T_DONE ) ) == 
+                         ( MMC5633NJL_STATUS_1_MEAS_T_DONE ) ) {
             break;
         }
         delay_us(10);
     }
 
+    uint8_t *regs = (uint8_t *)&mmc5633njlRegs.regs;
     // Set start offset for read
-    i2c1::instance().getReg8(i2c_addr, MMC5633NJL_REG_XOUT0);
-    // Read all 10 output registers, this includes MMC5633NJL_REG_TOUT
-    i2c1::instance().read(i2c_addr, (uint8_t *)&mmc5633njlRegs.regs, sizeof(mmc5633njlRegs));
+    for (size_t c = 0; c < sizeof(mmc5633njlRegs); c++) {
+        uint8_t val = i2c1::instance().getReg8(i2c_addr, size_t(MMC5633NJL_REG_XOUT0) + c);
+        *regs++ = val;
+    }
+}
+
+void MMC5633NJL::readAccel() {
+    // Clear old data
+    memset(&mmc5633njlRegs.regs, 0, sizeof(mmc5633njlRegs));
+
+    // Measure temperature
+    i2c1::instance().setReg8(i2c_addr, MMC5633NJL_REG_CTRL_0, 
+        MMC5633NJL_CTRL_0_TAKE_MEAS_M | MMC5633NJL_CTRL_0_AUTO_SR_EN);
+
+    for ( ; ; ) {
+        // Wait for measurement
+        uint8_t status1 = i2c1::instance().getReg8(i2c_addr, MMC5633NJL_REG_STATUS_1);
+        if ( ( status1 & ( MMC5633NJL_STATUS_1_MEAS_M_DONE ) ) == 
+                         ( MMC5633NJL_STATUS_1_MEAS_M_DONE ) ) {
+            break;
+        }
+        delay_us(10);
+    }
+
+    uint8_t *regs = (uint8_t *)&mmc5633njlRegs.regs;
+    // Set start offset for read
+    for (size_t c = 0; c < sizeof(mmc5633njlRegs); c++) {
+        uint8_t val = i2c1::instance().getReg8(i2c_addr, size_t(MMC5633NJL_REG_XOUT0) + c);
+        *regs++ = val;
+    }
+}
+
+void MMC5633NJL::read() {
+    readTemp();
+    readAccel();
 }
 
 float MMC5633NJL::X() const {
     return float(
         (uint32_t(mmc5633njlRegs.fields.Xout0) << 12)|
         (uint32_t(mmc5633njlRegs.fields.Xout1) <<  4)|
-        (uint32_t(mmc5633njlRegs.fields.Xout2) <<  0)) * (1.0f/16.0f);
+        (uint32_t(mmc5633njlRegs.fields.Xout2) >>  4)) * (1.0f/16.0f) - 32768.0f;
 }
 
 float MMC5633NJL::Y() const {
     return float(
         (uint32_t(mmc5633njlRegs.fields.Yout0) << 12)|
         (uint32_t(mmc5633njlRegs.fields.Yout1) <<  4)|
-        (uint32_t(mmc5633njlRegs.fields.Yout2) <<  0)) * (1.0f/16.0f);
+        (uint32_t(mmc5633njlRegs.fields.Yout2) >>  4)) * (1.0f/16.0f) - 32768.0f;
 }
 
 float MMC5633NJL::Z() const {
     return float(
         (uint32_t(mmc5633njlRegs.fields.Zout0) << 12)|
         (uint32_t(mmc5633njlRegs.fields.Zout1) <<  4)|
-        (uint32_t(mmc5633njlRegs.fields.Zout2) <<  0)) * (1.0f/16.0f);
+        (uint32_t(mmc5633njlRegs.fields.Zout2) >>  4)) * (1.0f/16.0f) - 32768.0f;
 }
 
 float MMC5633NJL::temperature() const {
-    return (float(mmc5633njlRegs.fields.Tout) * (1.0f/1.25f)) + 75.0f;
+    return (float(mmc5633njlRegs.fields.Tout) * (1.0f/1.25f)) - 75.0f;
 }
 
 uint32_t MMC5633NJL::XGRaw() const {
     return (
         (uint32_t(mmc5633njlRegs.fields.Xout0) << 12)|
         (uint32_t(mmc5633njlRegs.fields.Xout1) <<  4)|
-        (uint32_t(mmc5633njlRegs.fields.Xout2) <<  0));
+        (uint32_t(mmc5633njlRegs.fields.Xout2) >>  4));
 }
 
 uint32_t MMC5633NJL::YGRaw() const {
     return (
         (uint32_t(mmc5633njlRegs.fields.Yout0) << 12)|
         (uint32_t(mmc5633njlRegs.fields.Yout1) <<  4)|
-        (uint32_t(mmc5633njlRegs.fields.Yout2) <<  0));
+        (uint32_t(mmc5633njlRegs.fields.Yout2) >>  4));
 }
 
 uint32_t MMC5633NJL::ZGRaw() const {
     return (
         (uint32_t(mmc5633njlRegs.fields.Zout0) << 12)|
         (uint32_t(mmc5633njlRegs.fields.Zout1) <<  4)|
-        (uint32_t(mmc5633njlRegs.fields.Zout2) <<  0));
+        (uint32_t(mmc5633njlRegs.fields.Zout2) >>  4));
 }
 
 uint8_t MMC5633NJL::temperatureRaw() const {

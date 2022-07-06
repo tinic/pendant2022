@@ -441,14 +441,20 @@ uint32_t SDCard::blocks() const {
 }
 
 void SDCard::init() {
+    printf("SDCard::init 0\n");
     SDH_Open(SDH0, CardDetect_From_GPIO);
+    printf("SDCard::init 1\n");
     if (SDH_Probe(SDH0) != 0) {
+    printf("SDCard::init 1\n");
         g_u8SdInitFlag = 0;
         printf("SDCard::init SD initial fail!!\n");
     }
     else {
+    printf("SDCard::init 2\n");
         g_u8SdInitFlag = 1;
     }
+
+    printf("SDCard::init 3\n");
 
     USBD_Open(&gsInfo, MSC_ClassRequest, NULL);
     USBD_SetConfigCallback(MSC_SetConfig);

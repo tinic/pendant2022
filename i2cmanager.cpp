@@ -83,19 +83,19 @@ void i2c1::init() {
 
     checkReady<BQ25895>();
     checkReady<ENS210>();
-    checkReady<LSM6DSM>();
+//    checkReady<LSM6DSM>();
     checkReady<MMC5633NJL>();
 }
 
 void i2c1::update() {
     checkReadyReprobe<BQ25895>();
     checkReadyReprobe<ENS210>();
-    checkReadyReprobe<LSM6DSM>();
+//    checkReadyReprobe<LSM6DSM>();
     checkReadyReprobe<MMC5633NJL>();
 
     update<BQ25895>();
     update<ENS210>();
-    update<LSM6DSM>();
+//    update<LSM6DSM>();
     update<MMC5633NJL>();
 }
 
@@ -206,6 +206,7 @@ void i2c2::init() {
     NVIC_EnableIRQ(I2C2_IRQn);
 
     checkReady<SDD1306>();
+
 }
 
 void i2c2::update() {
