@@ -72,6 +72,7 @@ private:
     void light_walker();
     void rgb_band();
     void brilliance();
+    void direction();
 
     void standard_bird();
 

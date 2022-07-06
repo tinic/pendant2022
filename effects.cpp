@@ -27,6 +27,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./color.h"
 #include "./fastmath.h"
 #include "./seed.h"
+#include "./mmc5633njl.h"
 
 #include <random>
 #include <array>
@@ -218,6 +219,28 @@ void Effects::rgb_band() {
     rgb_band_b_walk += rgb_band_b_walk_step;
 }
 
+void Effects::direction() {
+    standard_bird();
+
+    MMC5633NJL::instance().update();
+
+    auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
+        Leds &leds(Leds::instance());
+        for (size_t c = 0; c < Leds::circleLedsN; c++) {
+            auto pos = Leds::instance().map.getBird(c);
+            auto col = func(pos);
+            leds.setCircle(0, c, col);
+            leds.setCircle(1, Leds::circleLedsN-1-c, col);
+        }
+    };
+
+    vector::float4 col(gradient_rainbow.repeat((MMC5633NJL::instance().Z()+400.0f) * (1.0f/700.0f)));
+    calc([=](const vector::float4 &pos) {
+        return col;
+    });
+
+}
+
 void Effects::brilliance() {
     standard_bird();
 
@@ -286,6 +309,9 @@ void Effects::init() {
                         color_walker();
                     break;
                     case 3:
+                        direction();
+                    break;
+                    case 4:
                         brilliance();
                     break;
                 }

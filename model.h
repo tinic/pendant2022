@@ -31,7 +31,7 @@ public:
 
     uint32_t Effect() const { return effect; };
     void SetEffect(uint32_t _effect) { effect = _effect % EffectCount(); dirty = true; };
-    uint32_t EffectCount() const { return 3; }
+    uint32_t EffectCount() const { return 4; }
 
     auto BirdColor() const { return bird_color; }
     void SetBirdColor(auto _bird_color) { bird_color = _bird_color; dirty = true; }

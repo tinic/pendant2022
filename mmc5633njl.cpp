@@ -149,7 +149,6 @@ void MMC5633NJL::update() {
     reset();
     config();
     read();
-    stats();
 }
 
 void MMC5633NJL::status() {
