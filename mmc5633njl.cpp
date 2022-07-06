@@ -216,7 +216,7 @@ void MMC5633NJL::readTemp() {
     uint8_t *regs = (uint8_t *)&mmc5633njlRegs.regs;
     // Set start offset for read
     for (size_t c = 0; c < sizeof(mmc5633njlRegs); c++) {
-        uint8_t val = i2c1::instance().getReg8(i2c_addr, size_t(MMC5633NJL_REG_XOUT0) + c);
+        uint8_t val = i2c1::instance().getReg8(i2c_addr, uint8_t(MMC5633NJL_REG_XOUT0 + c));
         *regs++ = val;
     }
 }
@@ -242,7 +242,7 @@ void MMC5633NJL::readAccel() {
     uint8_t *regs = (uint8_t *)&mmc5633njlRegs.regs;
     // Set start offset for read
     for (size_t c = 0; c < sizeof(mmc5633njlRegs); c++) {
-        uint8_t val = i2c1::instance().getReg8(i2c_addr, size_t(MMC5633NJL_REG_XOUT0) + c);
+        uint8_t val = i2c1::instance().getReg8(i2c_addr, uint8_t(MMC5633NJL_REG_XOUT0 + c));
         *regs++ = val;
     }
 }

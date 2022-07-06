@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.10)
 
 # M48x M480 M482 M484SIDAE2U
 
+set(CMAKE_C_COMPILER_WORKS 1 CACHE INTERNAL "")
+set(CMAKE_CXX_COMPILER_WORKS 1 CACHE INTERNAL "")
+
 if(BOOTLOADER)
     set(BASE_ADDRESS 0x00000000)
     project(pendant2022-bootloader C CXX ASM)
@@ -68,7 +71,7 @@ set(CXX_FLAGS
     -Wcast-align
     -Wconversion
     -Wno-volatile
-    -std=c++23
+    -std=c++20
     -fno-rtti 
     -fno-exceptions)
 
