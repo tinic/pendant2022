@@ -130,7 +130,7 @@ void Input::init() {
     // DSEL
     GPIO_SetMode(PB, BIT15, GPIO_MODE_INPUT);
     GPIO_SetPullCtl(PB, BIT15, GPIO_PUSEL_PULL_UP);
-    GPIO_EnableInt(PB, 5, GPIO_INT_BOTH_EDGE);
+    GPIO_EnableInt(PB, 15, GPIO_INT_BOTH_EDGE);
 
     // SW1
     GPIO_SetMode(PB, BIT9, GPIO_MODE_INPUT);
