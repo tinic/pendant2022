@@ -301,4 +301,13 @@ namespace color {
     }
 }
 
+namespace vector {
+    constexpr float4::float4(color::rgba<uint8_t> color) {
+        this->x = float(color.r)*(1.0f/255.0f);
+        this->y = float(color.g)*(1.0f/255.0f);
+        this->z = float(color.b)*(1.0f/255.0f);
+        this->w = 1.0f;
+    }
+}
+
 #endif  // #ifndef _COLOR_H_

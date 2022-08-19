@@ -28,6 +28,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cmath>
 #include <cfloat>
 
+namespace color {
+    template<class T> struct rgba;
+}
+
 namespace vector {
 
     struct float4 {
@@ -63,6 +67,8 @@ namespace vector {
             this->z = _z;
             this->w = _w;
         }
+
+        constexpr float4(color::rgba<uint8_t> color);
 
         constexpr float4 &operator=(const float4& other) = default;
 

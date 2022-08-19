@@ -47,8 +47,8 @@ public:
             float i = - float(std::numbers::pi) * 0.5f;
             float j = 0;
             for (size_t c = 0; c < circleLedsN; c++) {
-                map[c].x =  cosf(i);
-                map[c].y = -sinf(i);
+                map[c].x = -cosf(i);
+                map[c].y = +sinf(i);
                 map[c].z = j;
                 map[c].w = i;
                 i += (2.0f * float(std::numbers::pi)) / float(circleLedsN);
@@ -58,8 +58,8 @@ public:
             i = - float(std::numbers::pi) * 0.5f;
             j = 0;
             for (size_t c = circleLedsN; c < circleLedsN*2; c++) {
-                map[c].x =  cosf(i);
-                map[c].y = -sinf(i);
+                map[c].x = -cosf(i);
+                map[c].y = +sinf(i);
                 map[c].z = j;
                 map[c].w = i;
                 i -= (2.0f * float(std::numbers::pi)) / float(circleLedsN);

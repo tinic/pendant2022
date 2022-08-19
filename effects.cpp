@@ -819,11 +819,11 @@ void Effects::chaser() {
         }
     };
 
-    vector::float4 ring(color::srgb8(Model::instance().RingColor()));
+    vector::float4 ring(Model::instance().RingColor());
 
     calc([=](const vector::float4 &pos) {
         auto p = pos.rotate2d(now);
-        return ring * p.x;
+        return color::srgb8((ring * p.x).clamp());
     });
 }
 
@@ -840,10 +840,10 @@ void Effects::gradient() {
         }
     };
 
-    vector::float4 ring(color::srgb8(Model::instance().RingColor()));
+    vector::float4 ring(Model::instance().RingColor());
 
     calc([=](const vector::float4 &pos) {
-        return (ring * (1.0f - ( (pos.y + 1.0f) * 0.33f ) ));
+        return color::srgb8((ring * (1.0f - ( (pos.y + 1.0f) * 0.50f ) )).clamp());
     });
 }
 
@@ -889,7 +889,7 @@ void Effects::overdrive() {
     calc([=](const vector::float4 &pos) {
         float x = sinf(pos.x + 1.0f + now * 1.77f);
         float y = cosf(pos.y + 1.0f + now * 2.01f);
-        return (g.reflect(x * y) * 8.0f);
+        return (g.reflect(x * y));
     });
 }
 
