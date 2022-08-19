@@ -68,7 +68,7 @@ void Pendant::init() {
 void Pendant::Run() {
     Model::instance().IncBootCount();
     while (1) {
-        __WFI();
+        CLK_Idle();
         Timeline::instance().ProcessEvent();
         if (Timeline::instance().CheckIdleReadyAndClear()) {
             i2c1::instance().update();
@@ -92,8 +92,6 @@ void Pendant::Run() {
                 Timeline::instance().TopDisplay().Commit();
             }
         }
-        CLK_SetPowerDownMode(CLK_PMUCTL_PDMSEL_FWPD);
-        CLK_PowerDown();
     }
 }
 

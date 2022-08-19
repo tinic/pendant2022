@@ -116,6 +116,8 @@ static void SYS_Init(void)
     // Init clocks
     PF->MODE &= ~(GPIO_MODE_MODE2_Msk | GPIO_MODE_MODE3_Msk);
 
+    SYS_SetPowerLevel(SYS_PLCTL_PLSEL_PL1);
+
     CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
