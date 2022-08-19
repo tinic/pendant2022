@@ -90,8 +90,8 @@ void Leds::prepare() {
     uint32_t *ptr1 = ledsDMABuf[1].data();
     
     for (size_t c = 0; c < circleLedsN; c++) {
-        color::rgba<uint16_t> pixel0(color::rgba<uint16_t>(converter.CIELUV2LED(circleLeds[0][c]*brightness)).fix_for_ws2816());
-        color::rgba<uint16_t> pixel1(color::rgba<uint16_t>(converter.CIELUV2LED(circleLeds[1][(c-1)%circleLedsN]*brightness)).fix_for_ws2816());
+        color::rgba<uint16_t> pixel0(color::rgba<uint16_t>(converter.CIELUV2LED(circleLeds[0][c]*brightness).clamp()).fix_for_ws2816());
+        color::rgba<uint16_t> pixel1(color::rgba<uint16_t>(converter.CIELUV2LED(circleLeds[1][(c-1)%circleLedsN]*brightness).clamp()).fix_for_ws2816());
 
         auto convert_to_one_wire_spi = [] (uint32_t *p, uint16_t v) {
             *p++ = lut[(v>>8)&0xFF];
@@ -109,8 +109,8 @@ void Leds::prepare() {
     }
 
     for (size_t c = 0; c < birdLedsN; c++) {
-        color::rgba<uint16_t> pixel0(color::rgba<uint16_t>(converter.CIELUV2LED(birdLeds[0][c]*brightness)).fix_for_ws2816());
-        color::rgba<uint16_t> pixel1(color::rgba<uint16_t>(converter.CIELUV2LED(birdLeds[1][c]*brightness)).fix_for_ws2816());
+        color::rgba<uint16_t> pixel0(color::rgba<uint16_t>(converter.CIELUV2LED(birdLeds[0][c]*brightness).clamp()).fix_for_ws2816());
+        color::rgba<uint16_t> pixel1(color::rgba<uint16_t>(converter.CIELUV2LED(birdLeds[1][c]*brightness).clamp()).fix_for_ws2816());
 
         auto convert_to_one_wire_spi = [] (uint32_t *p, uint16_t v) {
             *p++ = lut[(v>>8)&0xFF];

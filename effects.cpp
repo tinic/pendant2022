@@ -429,7 +429,11 @@ void Effects::brilliance() {
         dir = random.get(0.0f, 3.141f * 2.0f);
     }
 
-    static color::gradient bw;
+    static color::gradient bw({
+        color::srgb8_stop(0x000000, 0.00f),
+        color::srgb8_stop(0x000000, 1.00f)
+    });
+
     static bool bw_init = false;
     if (!bw_init) {
         bw_init = true;
@@ -474,7 +478,10 @@ void Effects::highlight() {
         dir = random.get(0.0f, 3.141f * 2.0f);
     }
 
-    static color::gradient bw;
+    static color::gradient bw({
+        color::srgb8_stop(0x000000, 0.00f),
+        color::srgb8_stop(0x000000, 1.00f)
+    });
     static bool bw_init = false;
     if (!bw_init) {
         bw_init = true;
@@ -547,7 +554,11 @@ void Effects::heartbeat() {
 
     float now = float(Timeline::SystemTime());
 
-    static color::gradient g;
+    static color::gradient g({
+        color::srgb8_stop(0x000000, 0.00f),
+        color::srgb8_stop(0x000000, 1.00f)
+    });
+
     static bool g_init = false;
     if (!g_init) {
         g_init = true;
@@ -602,6 +613,14 @@ void Effects::twinkle() {
 
     float now = float(Timeline::SystemTime());
 
+    static color::gradient g({
+        color::srgb8_stop(0x000000, 0.00f),
+        color::srgb8_stop(0x000000, 1.00f)
+    });
+    
+    static bool g_init = false;
+    static color::rgba<uint8_t> ringColor;
+
     static constexpr size_t many = 8;
     static float next[many] = { -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f };
     static size_t which[many] = { 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -613,18 +632,16 @@ void Effects::twinkle() {
         }
     }
 
-    static color::gradient g;
-    static bool g_init = false;
-    static color::rgba<uint8_t> ringColor;
+
     if (!g_init || ringColor != Model::instance().RingColor()) {
         ringColor = Model::instance().RingColor();
         g_init = true;
         g = color::gradient({
             color::srgb8_stop(0x000000, 0.00f),
-            color::srgb8_stop(ringColor, 0.25f),
+            color::srgb8_stop(Model::instance().RingColor(), 0.25f),
             color::srgb8_stop(0xFFFFFF, 0.50f),
-            color::srgb8_stop(ringColor, 0.75f),
-            color::srgb8_stop(0x000000, 1.00f)
+            color::srgb8_stop(Model::instance().RingColor(), 0.75f),
+            color::srgb8_stop(0x000000, 1.00f),
         });
     }
 
@@ -641,7 +658,7 @@ void Effects::twinkle() {
     calc([=](const vector::float4 &pos, size_t index) {
         for (size_t c = 0; c < many; c++) {
             if (which[c] == index) {
-                return g.clamp(next[c] - now).pow(0.5);
+                return (g.clamp(next[c] - now));
             }
         }
         return vector::float4();
@@ -657,7 +674,11 @@ void Effects::twinkly() {
     static float next[many] = { -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f };
     static size_t which[many] = { 0, 0, 0, 0, 0, 0, 0, 0 };
     
-    static color::gradient g;
+    static color::gradient g({
+        color::srgb8_stop(0x000000, 0.00f),
+        color::srgb8_stop(0x000000, 1.00f)
+    });
+
     static bool g_init = false;
     if (!g_init) {
         g_init = true;
@@ -739,7 +760,11 @@ void Effects::brightchaser() {
 
     float now = float(Timeline::SystemTime());
 
-    static color::gradient g;
+    static color::gradient g({
+        color::srgb8_stop(0x000000, 0.00f),
+        color::srgb8_stop(0x000000, 1.00f)
+    });
+
     static bool g_init = false;
     static color::rgba<uint8_t> ringColor;
     if (!g_init || ringColor != Model::instance().RingColor()) {
@@ -764,7 +789,7 @@ void Effects::brightchaser() {
 
     calc([=](const vector::float4 &pos) {
         auto p = pos.rotate2d(now);
-        return g.clamp(p.x).pow(0.5);
+        return g.clamp(p.x);
     });
 }
 
@@ -816,7 +841,11 @@ void Effects::overdrive() {
 
     float now = float(Timeline::SystemTime());
 
-    static color::gradient g;
+    static color::gradient g({
+        color::srgb8_stop(0x000000, 0.00f),
+        color::srgb8_stop(0x000000, 1.00f)
+    });
+
     static bool g_init = false;
     static color::rgba<uint8_t> ringColor;
     if (!g_init || ringColor != Model::instance().RingColor()) {
@@ -855,7 +884,11 @@ void Effects::ironman() {
 
     float now = float(Timeline::SystemTime());
 
-    static color::gradient g;
+    static color::gradient g({
+        color::srgb8_stop(0x000000, 0.00f),
+        color::srgb8_stop(0x000000, 1.00f)
+    });
+
     static bool g_init = false;
     static color::rgba<uint8_t> ringColor;
     if (!g_init || ringColor != Model::instance().RingColor()) {
@@ -885,7 +918,7 @@ void Effects::ironman() {
 
     calc([=](const vector::float4 &pos) {
         float len = pos.len();
-        return g.clamp(1.0f-((len!=0.0f)?1.0f/len:1000.0f)*(fabsf(sinf(now)))).pow(0.5);
+        return g.clamp(1.0f-((len!=0.0f)?1.0f/len:1000.0f)*(fabsf(sinf(now))));
     });
 }
 
@@ -894,7 +927,11 @@ void Effects::sweep() {
 
     float now = float(Timeline::SystemTime());
 
-    static color::gradient g;
+    static color::gradient g({
+        color::srgb8_stop(0x000000, 0.00f),
+        color::srgb8_stop(0x000000, 1.00f)
+    });
+
     static bool g_init = false;
     static color::rgba<uint8_t> ringColor;
     if (!g_init || ringColor != Model::instance().RingColor()) {
@@ -927,7 +964,11 @@ void Effects::sweephighlight() {
 
     float now = float(Timeline::SystemTime());
 
-    static color::gradient g;
+    static color::gradient g({
+        color::srgb8_stop(0x000000, 0.00f),
+        color::srgb8_stop(0x000000, 1.00f)
+    });
+
     static bool g_init = false;
     static color::rgba<uint8_t> ringColor;
     if (!g_init || ringColor != Model::instance().RingColor()) {
@@ -1001,7 +1042,11 @@ void Effects::rotor() {
 
     float now = float(Timeline::SystemTime());
 
-    static color::gradient g;
+    static color::gradient g({
+        color::srgb8_stop(0x000000, 0.00f),
+        color::srgb8_stop(0x000000, 1.00f)
+    });
+
     static bool g_init = false;
     static color::rgba<uint8_t> ringColor;
     if (!g_init || ringColor != Model::instance().RingColor()) {
@@ -1034,7 +1079,11 @@ void Effects::rotor_sparse() {
 
     float now = float(Timeline::SystemTime());
 
-    static color::gradient g;
+    static color::gradient g({
+        color::srgb8_stop(0x000000, 0.00f),
+        color::srgb8_stop(0x000000, 1.00f)
+    });
+
     static bool g_init = false;
     static color::rgba<uint8_t> ringColor;
     if (!g_init || ringColor != Model::instance().RingColor()) {
