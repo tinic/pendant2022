@@ -79,7 +79,6 @@ void UI::init() {
                 if (Model::instance().BrightnessLevel() >= Model::instance().BrightnessLevelCount()) {
                     Model::instance().SetBrightnessLevel(0);
                 }
-                printf("%f\n",Model::instance().Brightness());
             }
         };
         Timeline::instance().Add(mainUI);

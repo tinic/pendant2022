@@ -245,7 +245,7 @@ void SDD1306::init() {
         0xA4,           // Force Display From RAM On
         0xA1,           // Set Segment Re-map
         0xC8,           // Set COM Output Scan Direction (flipped)
-        0x81, 0x4F,     // Set Contrast (0x00-0xFF)
+        0x81, 0x00,     // Set Contrast (0x00-0xFF)
         0xD3, 0x00,     // Set Display Offset
         0xD5, 0x80,     // Set Display Clock Divide Ratio
         0xD9, 0x1F,     // Set Pre-Charge period
