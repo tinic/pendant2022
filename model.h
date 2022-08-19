@@ -39,8 +39,10 @@ public:
     auto RingColor() const { return ring_color; }
     void SetRingColor(auto _ring_color) { ring_color = _ring_color;  dirty = true; }
 
-    float Brightness() const { return brightness; }
-    void SetBrightness(float _brightness) { brightness = _brightness;  dirty = true; }
+    float Brightness() const { return levels[brightnessLevel%BrightnessLevelCount()]; }
+    size_t BrightnessLevel() const { return brightnessLevel; }
+    void SetBrightnessLevel(size_t _brightnessLevel) { brightnessLevel = _brightnessLevel;  dirty = true; }
+    size_t BrightnessLevelCount() const { return 11; }
 
     size_t Switch1Count() const { return switch1Count; }
     void IncSwitch1Count() { switch1Count++; dirty = true; }
@@ -70,6 +72,20 @@ private:
 
     void init();
 
+    static constexpr float levels[] = {
+        0.0020f,
+        0.0060f,
+        0.0100f,
+        0.0200f,
+        0.0400f,
+        0.0800f,
+        0.1300f,
+        0.2000f,
+        0.3000f,
+        0.4000f,
+        0.5000f,
+    };
+
     uint32_t version = 0;
 
     uint32_t effect = 0;
@@ -77,7 +93,7 @@ private:
     color::rgba<uint8_t> bird_color{0x7f, 0x7f, 0x00};
     color::rgba<uint8_t> ring_color{0x00, 0x17, 0x7F};
 
-    float brightness = 0.1f;
+    size_t brightnessLevel = 3;
 
     size_t switch1Count = 0;
     size_t switch2Count = 0;

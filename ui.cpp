@@ -75,9 +75,11 @@ void UI::init() {
         mainUI.switch3Func = [=](Timeline::Span &, bool up) {
             if (up) { 
                 printf("SW3\n");
-                float brightness = Model::instance().Brightness() * 2.0f;
-                if (brightness > 0.5f) brightness = 1.0f/512.0f;
-                Model::instance().SetBrightness(brightness);
+                Model::instance().SetBrightnessLevel(Model::instance().BrightnessLevel() + 1);
+                if (Model::instance().BrightnessLevel() >= Model::instance().BrightnessLevelCount()) {
+                    Model::instance().SetBrightnessLevel(0);
+                }
+                printf("%f\n",Model::instance().Brightness());
             }
         };
         Timeline::instance().Add(mainUI);
