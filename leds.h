@@ -92,18 +92,6 @@ public:
         }
     }
 
-    void white() {
-        for (size_t c = 0; c < ledsN; c++) {
-            set(c, color::srgb8({0xFF,0xFF,0xFF}, 1.0f));
-        }
-    }
-
-    void half() {
-        for (size_t c = 0; c < ledsN; c++) {
-            set(c, color::srgb8({0x1F,0x1F,0x1F}, 1.0f));
-        }
-    }
-
     void set(size_t index, const vector::float4 &c) {
         get(index) = c;
     }

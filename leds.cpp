@@ -46,12 +46,13 @@ struct Leds::Map Leds::map;
 const Leds::lut_table Leds::lut;
 
 void Leds::init() {
+
     // LED_ON
     GPIO_SetMode(PC, BIT7, GPIO_MODE_OUTPUT);
     // Turn Mosfet on
     PC7 = 0;
 
-    half();
+    black();
 
     SPI_Open(SPI1, SPI_MASTER, SPI_MODE_0, 8, 4000000);
     SPI_Open(SPI2, SPI_MASTER, SPI_MODE_0, 8, 4000000);
