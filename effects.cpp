@@ -832,7 +832,7 @@ void Effects::gradient() {
     vector::float4 ring(color::srgb8(Model::instance().RingColor()));
 
     calc([=](const vector::float4 &pos) {
-        return (ring * (1.0f - ( (pos.y + 1.0f) * 0.33f ) )).clamp();
+        return (ring * (1.0f - ( (pos.y + 1.0f) * 0.33f ) ));
     });
 }
 
@@ -875,7 +875,7 @@ void Effects::overdrive() {
     calc([=](const vector::float4 &pos) {
         float x = sinf(pos.x + 1.0f + now * 1.77f);
         float y = cosf(pos.y + 1.0f + now * 2.01f);
-        return (g.reflect(x * y) * 8.0f).clamp();
+        return (g.reflect(x * y) * 8.0f);
     });
 }
 
@@ -939,7 +939,6 @@ void Effects::sweep() {
         g_init = true;
         g = color::gradient({
             color::srgb8_stop(0xffffff, 0.00f),
-            color::srgb8_stop(ringColor, 0.50f),
             color::srgb8_stop(ringColor, 1.00f),
         });
     }
@@ -975,8 +974,7 @@ void Effects::sweephighlight() {
         ringColor = Model::instance().RingColor();
         g_init = true;
         g = color::gradient({
-            color::srgb8_stop(0xffffff, 0.00f),
-            color::srgb8_stop(ringColor, 0.50f),
+            color::srgb8_stop(0x000000, 0.00f),
             color::srgb8_stop(ringColor, 0.70f),
             color::srgb8_stop(0xffffff, 1.00f),
         });
