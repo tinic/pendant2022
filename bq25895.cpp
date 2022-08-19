@@ -164,7 +164,7 @@ void BQ25895::init() {
     SetBoostVoltage(4550);
     SetMinSystemVoltage(3500);
     SetInputCurrent(250);
-    SetFastChargeCurrent(1600);
+    SetFastChargeCurrent(1200);
     ForceDPDMDetection();
     update();
     stats();

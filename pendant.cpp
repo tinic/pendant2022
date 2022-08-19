@@ -92,6 +92,8 @@ void Pendant::Run() {
                 Timeline::instance().TopDisplay().Commit();
             }
         }
+        CLK_SetPowerDownMode(CLK_PMUCTL_PDMSEL_FWPD);
+        CLK_PowerDown();
     }
 }
 
