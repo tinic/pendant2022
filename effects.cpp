@@ -896,7 +896,7 @@ void Effects::ironman() {
         g_init = true;
         g = color::gradient({
             color::srgb8_stop(0xffffff, 0.00f),
-            color::srgb8_stop(ringColor, 0.10f),
+            color::srgb8_stop(ringColor, 0.40f),
             color::srgb8_stop(0x000000, 1.00f)
         });
     }
@@ -913,11 +913,12 @@ void Effects::ironman() {
             auto pos = Leds::instance().map.getBird(c);
             auto col = func(pos);
             leds.setBird(0, c, col);
+            leds.setBird(1, Leds::birdLedsN-1-c, col);
         }
     };
 
     calc([=](const vector::float4 &pos) {
-        float len = pos.len();
+        float len = pos.xy00().len();
         return g.clamp(1.0f-((len!=0.0f)?1.0f/len:1000.0f)*(fabsf(sinf(now))));
     });
 }

@@ -54,14 +54,14 @@ public:
                 i += (2.0f * float(std::numbers::pi)) / float(circleLedsN);
                 j += 1.0f / float(circleLedsN);
             }
-            map[circleLedsN + 0] = vector::float4(  0.0f,  12.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
-            map[circleLedsN + 1] = vector::float4(-11.0f,   5.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
-            map[circleLedsN + 2] = vector::float4( -7.0f,   0.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
-            map[circleLedsN + 3] = vector::float4(  0.0f,   0.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
-            map[circleLedsN + 4] = vector::float4(  7.0f,   0.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
-            map[circleLedsN + 5] = vector::float4( 11.0f,   5.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
-            map[circleLedsN + 6] = vector::float4(  0.0f,  -8.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
-            map[circleLedsN + 7] = vector::float4(  0.0f,- 16.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
+            map[circleLedsN + 0] = vector::float4(  0.0f,-16.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
+            map[circleLedsN + 1] = vector::float4(  0.0f, -8.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
+            map[circleLedsN + 2] = vector::float4(-11.0f,  5.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
+            map[circleLedsN + 3] = vector::float4( -7.0f,  0.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
+            map[circleLedsN + 4] = vector::float4(  0.0f,  0.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
+            map[circleLedsN + 5] = vector::float4(  7.0f,  0.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
+            map[circleLedsN + 6] = vector::float4( 11.0f,  5.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
+            map[circleLedsN + 7] = vector::float4(  0.0f, 12.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
             for (size_t c = circleLedsN; c < (circleLedsN + birdLedsN); c++) {
                 map[c].w = sqrtf(map[c].x * map[c].x + map[c].y * map[c].y);
             }
