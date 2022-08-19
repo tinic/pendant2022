@@ -83,4 +83,9 @@ static constexpr float constexpr_pow(const float x, const float p) {
     return ::exp2f(p * ::log2f(x));
 }
 
+__attribute__ ((hot, optimize("Os"), flatten))
+static constexpr float signf(float x) {
+	return (x > 0.0f) ? 1.0f : ( (x < 0.0f) ? -1.0f : 1.0f);
+}
+
 #endif  // #ifndef FASTMATH_H_

@@ -80,6 +80,9 @@ namespace color {
 
         rgba<T>& operator=(const rgba<T>& other) = default;
 
+        bool operator!=(const rgba<T>& other) const = default;
+        bool operator==(const rgba<T>& other) const = default;
+
         rgba<T> fix_for_ws2816();
 
         uint8_t *write_rgba_bytes(uint8_t *dst) {
@@ -128,7 +131,7 @@ namespace color {
         g = uint16_t(( color >>  8 ) & 0xFF); g |= uint16_t(g << 8);
         b = uint16_t(( color >>  0 ) & 0xFF); b |= uint16_t(b << 8);
     }
-    
+
     template<> __attribute__((always_inline)) constexpr float rgba<float>::clamp_to_type(float v) {
         return v;
     }
@@ -213,6 +216,7 @@ namespace color {
         }
 
         vector::float4 CIELUV2sRGB(const vector::float4 &) const;
+        vector::float4 CIELUV2LED(const vector::float4 &) const;
 
     private:
         float sRGB2lRGB[256];

@@ -90,4 +90,25 @@ vector::float4 convert::CIELUV2sRGB(const vector::float4 &in) const {
     return vector::float4(sRGBTransfer(r),sRGBTransfer(g),sRGBTransfer(b));
 }
 
+__attribute__ ((hot, optimize("Os"), flatten))
+vector::float4 convert::CIELUV2LED(const vector::float4 &in) const {
+    const float wu = 0.197839825f;
+    const float wv = 0.468336303f;
+
+    float up_13l = in.y + wu * (13.0f * in.x);
+    float vp_13l = in.z + wv * (13.0f * in.x);
+    float vp_13li = 1.0f / vp_13l;
+    
+    float Y = ( in.x + 0.16f ) * (1.0f / 1.16f);
+    float y = ( in.x <= 0.08f ) ? ( in.x * 0.1107056f ) : ( Y * Y * Y );
+    float x = (vp_13l > (1.0f / 65536.0f)) ? ( 2.25f * y * up_13l * vp_13li ) : 0.0f;
+    float z = (vp_13l > (1.0f / 65536.0f)) ? ( y * ( 156.0f * in.x - 3.0f * up_13l - 20.0f * vp_13l ) * (1.0f / 4.0f) * vp_13li ) : 0.0f;
+
+    float r =  3.2404542f * x + -1.5371385f * y + -0.4985314f * z;
+    float g = -0.9692660f * x +  1.8760108f * y +  0.0415560f * z;
+    float b =  0.0556434f * x + -0.2040259f * y +  1.0572252f * z;
+
+    return vector::float4(r,g,b);
+}
+
 }
