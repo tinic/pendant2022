@@ -51,7 +51,7 @@ public:
                 map[c].y = -sinf(i);
                 map[c].z = j;
                 map[c].w = i;
-                i += 2.0f * float(std::numbers::pi) / float(circleLedsN);
+                i += (2.0f * float(std::numbers::pi)) / float(circleLedsN);
                 j += 1.0f / float(circleLedsN);
             }
             map[circleLedsN + 0] = vector::float4(  0.0f,  12.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
