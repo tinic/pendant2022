@@ -87,6 +87,9 @@ private:
     void SetInputCurrent(uint32_t currentMA);
     uint32_t GetInputCurrent();
 
+    void SetFastChargeCurrent(uint32_t currentMA);
+    uint32_t GetFastChargeCurrent();
+
     void SetBoostVoltage (uint32_t voltageMV);
     uint32_t GetBoostVoltage();
 

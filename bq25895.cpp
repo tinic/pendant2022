@@ -97,7 +97,20 @@ void BQ25895::SetInputCurrent(uint32_t currentMA) {
         i2c1::instance().setReg8(i2c_addr,0x00, static_cast<uint8_t>(codedValue));
     }
 }
-     
+
+void BQ25895::SetFastChargeCurrent(uint32_t currentMA) {
+    if (!devicePresent) return;
+    if (currentMA >= 64 && currentMA <= 5056) {
+        uint32_t codedValue = currentMA;
+        codedValue = ((codedValue) / 64);
+        i2c1::instance().setReg8(i2c_addr, 0x04, static_cast<uint8_t>(codedValue));
+    }
+    if (currentMA == 0) {
+        uint32_t codedValue = 0;
+        i2c1::instance().setReg8(i2c_addr, 0x04, static_cast<uint8_t>(codedValue));
+    }
+} 
+
 bool BQ25895::ADCActive() {
     if (!devicePresent) return false;
     return ( i2c1::instance().getReg8(i2c_addr, 0x02) & (1 << 7) ) ? true : false;
@@ -112,6 +125,11 @@ void BQ25895::OneShotADC() {
 uint32_t BQ25895::GetInputCurrent () {
     if (!devicePresent) return 0;
     return ((i2c1::instance().getReg8(i2c_addr, 0x00) & (0x3F)) * 50);
+}
+
+uint32_t BQ25895::GetFastChargeCurrent () {
+    if (!devicePresent) return 0;
+    return ((i2c1::instance().getReg8(i2c_addr, 0x04) & (0x3F)) * 64);
 }
 
 void BQ25895::ForceDPDMDetection() {
@@ -146,6 +164,7 @@ void BQ25895::init() {
     SetBoostVoltage(4550);
     SetMinSystemVoltage(3500);
     SetInputCurrent(1000);
+    SetFastChargeCurrent(1000);
     ForceDPDMDetection();
     update();
     stats();
