@@ -47,7 +47,7 @@ set(CC_FLAGS
     -Wno-unused-parameter
     -Wno-strict-aliasing 
     -Wno-format
-    -Wstack-usage=4096
+    -Wstack-usage=8192
     -Wuninitialized
     -fno-common
     -fstack-usage

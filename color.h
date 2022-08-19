@@ -143,7 +143,9 @@ namespace color {
 
     class gradient {
     public:
-        template<class T, std::size_t N> consteval gradient(const T (&stops)[N]) {
+        gradient() {}
+
+        template<class T, std::size_t N> constexpr gradient(const T (&stops)[N]) {
             for (size_t c = 0; c < colors_n; c++) {
                 float f = static_cast<float>(c) / static_cast<float>(colors_n - 1);
                 vector::float4 a = stops[0];

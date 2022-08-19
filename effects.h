@@ -68,13 +68,41 @@ private:
 
     } random = pseudo_random();
 
+    void standard_bird();
+
     void color_walker();
     void light_walker();
     void rgb_band();
     void brilliance();
     void direction();
-
-    void standard_bird();
+    void black();
+    void static_color();
+    void rgb_glow();
+    void lightning();
+    void lightning_crazy();
+    void sparkle();
+    void rando();
+    void red_green();
+    void highlight();
+    void autumn();
+    void heartbeat();
+    void moving_rainbow();
+    void twinkle();
+    void twinkly();
+    void randomfader();
+    void chaser();
+    void brightchaser();
+    void gradient();
+    void overdrive();
+    void ironman();
+    void sweep();
+    void sweephighlight();
+    void rainbow_circle();
+    void rainbow_grow();
+    void rotor();
+    void rotor_sparse();
+    void fullcolor();
+    void flip_colors();
 
     void init();
     bool initialized = false;
