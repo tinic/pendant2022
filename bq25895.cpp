@@ -163,8 +163,8 @@ void BQ25895::init() {
     OneShotADC();
     SetBoostVoltage(4550);
     SetMinSystemVoltage(3500);
-    SetInputCurrent(1000);
-    SetFastChargeCurrent(1000);
+    SetInputCurrent(250);
+    SetFastChargeCurrent(1600);
     ForceDPDMDetection();
     update();
     stats();
