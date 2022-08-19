@@ -129,7 +129,7 @@ uint32_t BQ25895::GetInputCurrent () {
 
 uint32_t BQ25895::GetFastChargeCurrent () {
     if (!devicePresent) return 0;
-    return ((i2c1::instance().getReg8(i2c_addr, 0x04) & (0x3F)) * 64);
+    return ((i2c1::instance().getReg8(i2c_addr, 0x04) & (0x7F)) * 64);
 }
 
 void BQ25895::ForceDPDMDetection() {
