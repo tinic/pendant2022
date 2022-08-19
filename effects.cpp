@@ -54,11 +54,22 @@ Effects &Effects::instance() {
 }
 
 void Effects::black() {
-/*
-    memset(leds_centr, 0, sizeof(leds_centr));
-    memset(leds_outer, 0, sizeof(leds_outer));
-    memset(leds_inner, 0, sizeof(leds_inner));
-*/
+    auto calc = [](const std::function<vector::float4 ()> &func) {
+        Leds &leds(Leds::instance());
+        for (size_t c = 0; c < Leds::circleLedsN; c++) {
+            auto col = func();
+            leds.setCircle(0, c, col);
+            leds.setCircle(1, c, col);
+        }
+        for (size_t c = 0; c < Leds::birdLedsN; c++) {
+            auto col = func();
+            leds.setBird(0, c, col);
+            leds.setBird(1, c, col);
+        }
+    };
+    calc([=]() {
+        return vector::float4();
+    });
 }
 
 void Effects::standard_bird() {
