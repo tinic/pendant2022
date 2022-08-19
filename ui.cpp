@@ -79,6 +79,11 @@ void UI::init() {
                 if (Model::instance().BrightnessLevel() >= Model::instance().BrightnessLevelCount()) {
                     Model::instance().SetBrightnessLevel(0);
                 }
+                if (Model::instance().BrightnessLevel() < 3) {
+                    SDD1306::instance().DisplayOff();
+                } else {
+                    SDD1306::instance().DisplayOn();
+                }
             }
         };
         Timeline::instance().Add(mainUI);
@@ -153,4 +158,10 @@ void UI::init() {
     };
 
     Timeline::instance().Add(bootScreen);
+
+    if (Model::instance().BrightnessLevel() < 3) {
+        SDD1306::instance().DisplayOff();
+    } else {
+        SDD1306::instance().DisplayOn();
+    }
 }
