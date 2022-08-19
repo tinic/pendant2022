@@ -62,20 +62,19 @@ void Effects::black() {
 }
 
 void Effects::standard_bird() {
-    static float walker = 0.0f;
-    walker += 0.01f;
-    if (walker >= 1.0f) walker = 0.0f;
-    auto calc = [](const std::function<vector::float4 (const vector::float4 &pos, float walk)> &func) {
+    vector::float4 bird(color::srgb8(Model::instance().BirdColor()));
+
+    auto calc = [](const std::function<vector::float4 ()> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::birdLedsN; c++) {
-            auto pos = Leds::instance().map.getBird(c);
-            auto col = func(pos, walker);
+            auto col = func();
             leds.setBird(0,c,col);
             leds.setBird(1,c,col);
         }
     };
-    calc([](const vector::float4 &pos, float walk) {
-        return color::srgb8(Model::instance().BirdColor()) + color::srgb8({0xff,0xff,0xff}) * fast_pow(1.0f - pos.w, 8.0f) * 0.25f * walk;
+
+    calc([=]() {
+        return bird;
     });
 }
 
@@ -334,7 +333,7 @@ void Effects::lightning_crazy() {
     });
 
     Leds &leds(Leds::instance());
-    size_t index = static_cast<size_t>(random.get(static_cast<int32_t>(0),static_cast<int32_t>(Leds::circleLedsN - 1)));
+    size_t index = static_cast<size_t>(random.get(static_cast<int32_t>(0),static_cast<int32_t>(Leds::circleLedsN * 2 - 1)));
     if (index < Leds::circleLedsN) {
         leds.setCircle(0, index, color::srgb(vector::float4::one()));
     } else if (index < Leds::circleLedsN * 2) {
@@ -361,7 +360,7 @@ void Effects::sparkle() {
     });
 
     Leds &leds(Leds::instance());
-    size_t index = static_cast<size_t>(random.get(static_cast<int32_t>(0),static_cast<int32_t>(Leds::circleLedsN - 1)));
+    size_t index = static_cast<size_t>(random.get(static_cast<int32_t>(0),static_cast<int32_t>(Leds::circleLedsN * 2 - 1)));
     vector::float4 col = vector::float4(
         color::srgb({random.get(0.0f,1.0f),
                      random.get(0.0f,1.0f),
@@ -391,8 +390,8 @@ void Effects::rando() {
     calc([this](const vector::float4 &) {
         return vector::float4(
             color::srgb({random.get(0.0f,1.0f),
-                        random.get(0.0f,1.0f),
-                        random.get(0.0f,1.0f)})
+                         random.get(0.0f,1.0f),
+                         random.get(0.0f,1.0f)})
         );
     });
 }
@@ -852,34 +851,6 @@ void Effects::overdrive() {
 }
 
 void Effects::ironman() {
-/*
-    led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
-
-    float now = static_cast<float>(Model::instance().Time());
-
-    static colors::gradient g;
-    static colors::rgb8 col;
-    if (g.check_init() || col != Model::instance().RingColor()) {
-        col = Model::instance().RingColor();
-        const geom::float4 gg[] = {
-            geom::float4(0xffffff, 0.00f),
-            geom::float4(Model::instance().RingColor().hex(), 0.10f),
-            geom::float4(0x000000, 1.00f),
-        };
-        g.init(gg,3);
-    }
-
-    calc_inner([=](geom::float4 pos) {
-        float len = pos.len();
-        return g.clamp(1.0f-((len!=0.0f)?1.0f/len:1000.0f)*(fabsf(sinf(now)))).pow(0.5);
-    });
-
-    calc_outer([=](geom::float4 pos) {
-        float len = pos.len();
-        return g.clamp(1.0f-((len!=0.0f)?1.0f/len:1000.0f)*(fabsf(sinf(now)))).pow(0.5);
-    });
-*/
-
     standard_bird();
 
     float now = float(Timeline::SystemTime());
@@ -952,29 +923,6 @@ void Effects::sweep() {
 }
 
 void Effects::sweephighlight() {
-/*
-    led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
-
-    float now = static_cast<float>(Model::instance().Time());
-
-    static colors::gradient g;
-    static colors::rgb8 col;
-    if (g.check_init() || col != Model::instance().RingColor()) {
-        col = Model::instance().RingColor();
-        const geom::float4 gg[] = {
-            geom::float4(0x000000, 0.00f),
-            geom::float4(Model::instance().RingColor().hex(), 0.7f),
-            geom::float4(0xffffff, 1.00f),
-        };
-        g.init(gg,3);
-    }
-
-    calc_outer([=](geom::float4 pos) {
-        pos = pos.rotate2d(-now * 0.25f);
-        return g.reflect(pos.y - now * 2.0f);
-    });
-*/
-
     standard_bird();
 
     float now = float(Timeline::SystemTime());
@@ -1009,16 +957,6 @@ void Effects::sweephighlight() {
 }
 
 void Effects::rainbow_circle() {
-/*
-    led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
-
-    float now = static_cast<float>(Model::instance().Time());
-
-    calc_outer([=](geom::float4 pos) {
-        return geom::float4(colors::rgb(colors::hsv(fmodf((atan2f(pos.x, pos.y) + 3.14159f) / (3.14159f * 2.0f) + now * 0.5f, 1.0f), 1.0f, 1.0f)));
-    }); 
-*/
-
     standard_bird();
 
     float now = float(Timeline::SystemTime());
@@ -1156,26 +1094,24 @@ void Effects::fullcolor() {
 }
 
 void Effects::flip_colors() {
-/*
-    float now = static_cast<float>(Model::instance().Time());
-    
-    geom::float4 bird(colors::rgb(Model::instance().BirdColor()));
-    geom::float4 ring(colors::rgb(Model::instance().RingColor()));
-
-    calc_inner([=](geom::float4) {
-        return geom::float4::lerp(bird, ring, (sinf(now) + 1.0f) * 0.5f);
-    });
-
-    calc_outer([=](geom::float4) {
-        return geom::float4::lerp(ring, bird, (sinf(now) + 1.0f) * 0.5f);
-    });
-*/
-
     standard_bird();
 
     float now = float(Timeline::SystemTime());
 
-    auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
+    vector::float4 bird(color::srgb8(Model::instance().BirdColor()));
+    vector::float4 ring(color::srgb8(Model::instance().RingColor()));
+
+    auto calc_inner = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
+        Leds &leds(Leds::instance());
+        for (size_t c = 0; c < Leds::birdLedsN; c++) {
+            auto pos = Leds::instance().map.getBird(c);
+            auto col = func(pos);
+            leds.setBird(0, c, col);
+            leds.setBird(1, Leds::birdLedsN-1-c, col);
+        }
+    };
+
+    auto calc_outer = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
             auto pos = Leds::instance().map.getCircle(c);
@@ -1185,8 +1121,12 @@ void Effects::flip_colors() {
         }
     };
 
-    calc([=](const vector::float4 &pos) {
-        return vector::float4::zero();
+    calc_inner([=](const vector::float4 &pos) {
+        return vector::float4::lerp(bird, ring, (sinf(now) + 1.0f) * 0.5f);
+    });
+
+    calc_outer([=](const vector::float4 &pos) {
+        return vector::float4::lerp(ring, bird, (sinf(now) + 1.0f) * 0.5f);
     });
 }
 
