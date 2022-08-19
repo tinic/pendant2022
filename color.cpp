@@ -108,7 +108,7 @@ vector::float4 convert::CIELUV2LED(const vector::float4 &in) const {
     float g = -0.9692660f * x +  1.8760108f * y +  0.0415560f * z;
     float b =  0.0556434f * x + -0.2040259f * y +  1.0572252f * z;
 
-    return vector::float4(r,g,b);
+    return vector::float4(r,g,b).clamp();
 }
 
 }

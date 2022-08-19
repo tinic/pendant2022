@@ -92,7 +92,7 @@ void Effects::color_walker() {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
             float mod_walk = fracf(val_walk + (1.0f - (float(c) * ( 1.0f / static_cast<float>(Leds::circleLedsN)))));
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos, mod_walk);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -121,7 +121,7 @@ void Effects::light_walker() {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
             float mod_walk = fracf(val_walk + (1.0f - (float(c) * ( 1.0f / static_cast<float>(Leds::circleLedsN)))));
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos, mod_walk);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -234,7 +234,7 @@ void Effects::direction() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -254,7 +254,7 @@ void Effects::static_color() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -272,7 +272,7 @@ void Effects::rgb_glow() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -295,7 +295,7 @@ void Effects::lightning() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -321,7 +321,7 @@ void Effects::lightning_crazy() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -348,7 +348,7 @@ void Effects::sparkle() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -380,7 +380,7 @@ void Effects::rando() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -404,7 +404,7 @@ void Effects::red_green() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -449,7 +449,7 @@ void Effects::brilliance() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -497,7 +497,7 @@ void Effects::highlight() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -531,7 +531,7 @@ void Effects::autumn() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -570,7 +570,7 @@ void Effects::heartbeat() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -590,7 +590,7 @@ void Effects::moving_rainbow() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -648,7 +648,7 @@ void Effects::twinkle() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos, size_t index)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos, c);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -699,7 +699,7 @@ void Effects::twinkly() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos, size_t index)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos, c);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -741,7 +741,7 @@ void Effects::randomfader() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -749,7 +749,7 @@ void Effects::randomfader() {
     };
 
     calc([=](const vector::float4 &pos) {
-        float dist = pos.dist(Leds::instance().map.getCircle(which)) * (next - now);
+        float dist = pos.dist(Leds::instance().map.getCircle(0, which)) * (next - now);
         if (dist > 1.0f) dist = 1.0f;
         return vector::float4::lerp(color, prev_color, dist);
     });
@@ -780,7 +780,7 @@ void Effects::brightchaser() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -801,7 +801,7 @@ void Effects::chaser() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -822,7 +822,7 @@ void Effects::gradient() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -860,15 +860,18 @@ void Effects::overdrive() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
         }
         for (size_t c = 0; c < Leds::birdLedsN; c++) {
-            auto pos = Leds::instance().map.getBird(c);
+            auto pos = Leds::instance().map.getBird(0, c);
             auto col = func(pos);
             leds.setBird(0, c, col);
+            pos = Leds::instance().map.getBird(1, c);
+            col = func(pos);
+            leds.setBird(1, c, col);
         }
     };
 
@@ -904,16 +907,18 @@ void Effects::ironman() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
         }
         for (size_t c = 0; c < Leds::birdLedsN; c++) {
-            auto pos = Leds::instance().map.getBird(c);
+            auto pos = Leds::instance().map.getBird(0,c);
             auto col = func(pos);
             leds.setBird(0, c, col);
-            leds.setBird(1, Leds::birdLedsN-1-c, col);
+            pos = Leds::instance().map.getBird(1,c);
+            col = func(pos);
+            leds.setBird(1, c, col);
         }
     };
 
@@ -947,7 +952,7 @@ void Effects::sweep() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -984,7 +989,7 @@ void Effects::sweephighlight() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -1004,7 +1009,7 @@ void Effects::rainbow_circle() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -1024,7 +1029,7 @@ void Effects::rainbow_grow() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -1061,7 +1066,7 @@ void Effects::rotor() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -1099,7 +1104,7 @@ void Effects::rotor_sparse() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -1125,7 +1130,7 @@ void Effects::fullcolor() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
@@ -1152,17 +1157,19 @@ void Effects::flip_colors() {
     auto calc_inner = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::birdLedsN; c++) {
-            auto pos = Leds::instance().map.getBird(c);
+            auto pos = Leds::instance().map.getBird(0,c);
             auto col = func(pos);
             leds.setBird(0, c, col);
-            leds.setBird(1, Leds::birdLedsN-1-c, col);
+            pos = Leds::instance().map.getBird(1,c);
+            col = func(pos);
+            leds.setBird(1, c, col);
         }
     };
 
     auto calc_outer = [=](const std::function<vector::float4 (const vector::float4 &pos)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            auto pos = Leds::instance().map.getCircle(c);
+            auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos);
             leds.setCircle(0, c, col);
             leds.setCircle(1, Leds::circleLedsN-1-c, col);
