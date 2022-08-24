@@ -23,11 +23,15 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef UI_H_
 #define UI_H_
 
+#include "./timeline.h"
+
 class UI {
 public:
     static UI &instance();
 
 private:
+    void FlipAnimation(Timeline::Span *parent);
+    void enterColorPrefs(Timeline::Span &);
     void init();
     bool initialized = false;
 };
