@@ -48,10 +48,12 @@ void Model::init() {
     bool doSave = false;
     if (Model::instance().Effect() >= Model::instance().EffectCount()) {
         Model::instance().SetEffect(3);
+        Model::instance().SetBrightnessLevel(9);
         doSave = true;
     }
 
     if (Model::instance().BrightnessLevel() >= Model::instance().BrightnessLevelCount()) {
+        Model::instance().SetEffect(3);
         Model::instance().SetBrightnessLevel(9);
         doSave = true;
     }
