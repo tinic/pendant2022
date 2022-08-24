@@ -44,6 +44,21 @@ Model &Model::instance() {
 void Model::init() {
     load();
     printf("Model initialized.\n");
+
+    bool doSave = false;
+    if (Model::instance().Effect() >= Model::instance().EffectCount()) {
+        Model::instance().SetEffect(3);
+        doSave = true;
+    }
+
+    if (Model::instance().BrightnessLevel() >= Model::instance().BrightnessLevelCount()) {
+        Model::instance().SetBrightnessLevel(9);
+        doSave = true;
+    }
+
+    if (doSave) {
+        save();
+    }
 }
 
 void Model::load() {
