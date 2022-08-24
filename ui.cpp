@@ -46,17 +46,31 @@ void UI::init() {
 
         mainUI.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
             SDD1306::instance().ClearChar();
+
+            SDD1306::instance().PlaceCustomChar(0,0,0xC0);
+            SDD1306::instance().PlaceCustomChar(1,0,0xC1);
+            SDD1306::instance().PlaceCustomChar(2,0,0xC2);
+            SDD1306::instance().PlaceCustomChar(3,0,0xC3);
+            SDD1306::instance().PlaceCustomChar(4,0,0xC4);
+            SDD1306::instance().PlaceCustomChar(5,0,0xC5);
+            SDD1306::instance().PlaceCustomChar(6,0,0xC6);
+            SDD1306::instance().PlaceCustomChar(7,0,0xC7);
+
+            SDD1306::instance().PlaceCustomChar(0,1,0xD0);
+            float brightnessLevel = float(Model::instance().BrightnessLevel())/float(Model::instance().BrightnessLevelCount()-1);
+            SDD1306::instance().PlaceBar(1,1,7,uint8_t(brightnessLevel*13),1);
+
+            float batteryLevel = ( BQ25895::instance().BatteryVoltage() - BQ25895::instance().MinBatteryVoltage() ) / 
+                                 ( BQ25895::instance().MaxBatteryVoltage() - BQ25895::instance().MinBatteryVoltage() );
+            batteryLevel = std::max(0.0f, std::min(1.0f, batteryLevel));
+
+            SDD1306::instance().PlaceCustomChar(0,2,0xCF);
+            SDD1306::instance().PlaceBar(1,2,7,uint8_t(batteryLevel*13),1);
+
+            SDD1306::instance().PlaceCustomChar(0,3,0xCE);
             char str[32];
-            sprintf(str,"B:      |");
-            SDD1306::instance().PlaceUTF8String(0,0,str);
-            sprintf(str,"D:%fs", Timeline::SystemTime());
-            SDD1306::instance().PlaceUTF8String(0,1,str);
-            sprintf(str,"T:%6.1fC", double(ENS210::instance().Temperature()));
-            SDD1306::instance().PlaceUTF8String(0,2,str);
-            sprintf(str,"H:%6.1f%%", double(ENS210::instance().Humidity()));
-            SDD1306::instance().PlaceUTF8String(0,3,str);
-            sprintf(str,"V:%6.1fV", double(BQ25895::instance().SystemVoltage()));
-            SDD1306::instance().PlaceUTF8String(0,4,str);
+            sprintf(str, "[%02d|%02d]", Model::instance().Effect(), Model::instance().EffectCount());
+            SDD1306::instance().PlaceUTF8String(1,3,str);
         };
         mainUI.commitFunc = [=](Timeline::Span &) {
             SDD1306::instance().Display();

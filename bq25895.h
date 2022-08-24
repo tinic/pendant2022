@@ -39,6 +39,9 @@ public:
     float VBUSVoltage() const { return 2.6f + ( static_cast<float>(vbusVoltageRaw) * 12.7f ) * ( 1.0f / 127.0f); }
     float ChargeCurrent() const { return ( static_cast<float>(chargeCurrentRaw) * 6350.0f ) * ( 1.0f / 127.0f); }
 
+    static constexpr float MinBatteryVoltage() { return 3.5f; }
+    static constexpr float MaxBatteryVoltage() { return 4.2f; }
+
     enum {
         VBUS_NO_INPUT       = 0b000,
         VBUS_USB_SDP        = 0b001,

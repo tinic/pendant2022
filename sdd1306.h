@@ -37,9 +37,12 @@ public:
     void ClearChar();
     void Invalidate();
 
+    void PlaceCustomChar(uint32_t x, uint32_t y, uint16_t code);
+    void PlaceBar(uint8_t x, uint8_t y, uint8_t w, uint8_t val, uint8_t range);
     void PlaceUTF8String(uint32_t x, uint32_t y, const char *str);
     void SetAttr(uint32_t x, uint32_t y, uint8_t attr);
     void SetAsciiScrollMessage(const char *str, int32_t offset);
+
 
     void Display();
 
