@@ -52,7 +52,7 @@ public:
                 map[c].z = j;
                 map[c].w = i;
                 i += (2.0f * float(std::numbers::pi)) / float(circleLedsN);
-                j += 1.0f / float(circleLedsN);
+                j += fast_rcp(float(circleLedsN));
             }
 
             i = - float(std::numbers::pi) * 0.5f;
@@ -63,7 +63,7 @@ public:
                 map[c].z = j;
                 map[c].w = i;
                 i -= (2.0f * float(std::numbers::pi)) / float(circleLedsN);
-                j += 1.0f / float(circleLedsN);
+                j += fast_rcp(float(circleLedsN));
             }
 
             map[circleLedsN * 2 +  0] = vector::float4(  0.0f,-16.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);

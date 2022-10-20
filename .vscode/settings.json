@@ -99,6 +99,7 @@
         "lmhpackage.h": "c",
         "lmhpcompliance.h": "c",
         "stdlib.h": "c",
-        "m480.h": "c"
+        "m480.h": "c",
+        "iostream": "cpp"
     }
 }

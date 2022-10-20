@@ -102,7 +102,7 @@ void Effects::color_walker() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos, float walk)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            float mod_walk = fracf(val_walk + (1.0f - (float(c) * ( 1.0f / static_cast<float>(Leds::circleLedsN)))));
+            float mod_walk = fracf(val_walk + (1.0f - (float(c) * ( fast_rcp(static_cast<float>(Leds::circleLedsN))))));
             auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos, mod_walk);
             leds.setCircle(0, c, col);
@@ -131,7 +131,7 @@ void Effects::light_walker() {
     auto calc = [=](const std::function<vector::float4 (const vector::float4 &pos, float walk)> &func) {
         Leds &leds(Leds::instance());
         for (size_t c = 0; c < Leds::circleLedsN; c++) {
-            float mod_walk = fracf(val_walk + (1.0f - (float(c) * ( 1.0f / static_cast<float>(Leds::circleLedsN)))));
+            float mod_walk = fracf(val_walk + (1.0f - (float(c) * ( fast_rcp(static_cast<float>(Leds::circleLedsN))))));
             auto pos = Leds::instance().map.getCircle(0, c);
             auto col = func(pos, mod_walk);
             leds.setCircle(0, c, col);
@@ -159,7 +159,7 @@ template<const std::size_t n> static void band_mapper(std::array<float, n> &stop
     end = fmodf(end, 2.0f) + 0.5f;
 
     float stop_step = static_cast<float>(stops.size());
-    float stop_stepi = 1.0f / static_cast<float>(stops.size());
+    float stop_stepi = fast_rcp(static_cast<float>(stops.size()));
 
     float stop_stt = -stop_stepi * 0.5f + 0.5f;
     float stop_end = +stop_stepi * 0.5f + 0.5f;
@@ -1337,7 +1337,7 @@ void Effects::init() {
                 auto circleLedsNext = leds.getCircle();
                 auto birdsLedsNext = leds.getBird();
 
-                float blend = static_cast<float>(now - switch_time) * (1.0f / static_cast<float>(blend_duration));
+                float blend = static_cast<float>(now - switch_time) * (fast_rcp(static_cast<float>(blend_duration)));
 
                 for (size_t c = 0; c < circleLedsNext.size(); c++) {
                     for (size_t d = 0; d < circleLedsNext[c].size(); d++) {

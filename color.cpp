@@ -64,7 +64,7 @@ vector::float4 convert::CIELUV2sRGB(const vector::float4 &in) const {
 
     float up_13l = in.y + wu * (13.0f * in.x);
     float vp_13l = in.z + wv * (13.0f * in.x);
-    float vp_13li = 1.0f / vp_13l;
+    float vp_13li = fast_rcp(vp_13l);
     
     float Y = ( in.x + 0.16f ) * (1.0f / 1.16f);
     float y = ( in.x <= 0.08f ) ? ( in.x * 0.1107056f ) : ( Y * Y * Y );
@@ -92,12 +92,58 @@ vector::float4 convert::CIELUV2sRGB(const vector::float4 &in) const {
 
 __attribute__ ((hot, optimize("Os"), flatten))
 vector::float4 convert::CIELUV2LED(const vector::float4 &in) const {
+    float l_ = in.x + 0.3963377774f * in.y + 0.2158037573f * in.z;
+    float m_ = in.x - 0.1055613458f * in.y - 0.0638541728f * in.z;
+    float s_ = in.x - 0.0894841775f * in.y - 1.2914855480f * in.z;
+
+    float l = l_*l_*l_;
+    float m = m_*m_*m_;
+    float s = s_*s_*s_;
+
+	float r = +4.0767416621f * l - 3.3077115913f * m + 0.2309699292f * s;
+	float g = -1.2684380046f * l + 2.6097574011f * m - 0.3413193965f * s;
+	float b = -0.0041960863f * l - 0.7034186147f * m + 1.7076147010f * s;
+
+    return vector::float4(r,g,b).clamp();
+}
+
+__attribute__ ((hot, optimize("Os"), flatten))
+vector::float4 convert::OKLAB2sRGB(const vector::float4 &in) const {
+    float l_ = in.x + 0.3963377774f * in.y + 0.2158037573f * in.z;
+    float m_ = in.x - 0.1055613458f * in.y - 0.0638541728f * in.z;
+    float s_ = in.x - 0.0894841775f * in.y - 1.2914855480f * in.z;
+
+    float l = l_*l_*l_;
+    float m = m_*m_*m_;
+    float s = s_*s_*s_;
+
+	float r = +4.0767416621f * l - 3.3077115913f * m + 0.2309699292f * s;
+	float g = -1.2684380046f * l + 2.6097574011f * m - 0.3413193965f * s;
+	float b = -0.0041960863f * l - 0.7034186147f * m + 1.7076147010f * s;
+
+    auto sRGBTransfer = [] (float a) {
+        if (a <= 0.0f) {
+            return 0.0f;
+        } else if (a < 0.0031308f) {
+            return a * 12.92f;
+        } else if ( a < 0.999982f ) {
+            return fast_pow(a, 1.0f / 2.4f) * 1.055f - 0.055f;
+        } else {
+            return 1.0f;
+        }
+    };
+
+    return vector::float4(sRGBTransfer(r),sRGBTransfer(g),sRGBTransfer(b));
+}
+
+__attribute__ ((hot, optimize("Os"), flatten))
+vector::float4 convert::OKLAB2LED(const vector::float4 &in) const {
     const float wu = 0.197839825f;
     const float wv = 0.468336303f;
 
     float up_13l = in.y + wu * (13.0f * in.x);
     float vp_13l = in.z + wv * (13.0f * in.x);
-    float vp_13li = 1.0f / vp_13l;
+    float vp_13li = fast_rcp(vp_13l);
     
     float Y = ( in.x + 0.16f ) * (1.0f / 1.16f);
     float y = ( in.x <= 0.08f ) ? ( in.x * 0.1107056f ) : ( Y * Y * Y );

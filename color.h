@@ -190,15 +190,38 @@ namespace color {
 
             float l = ( Y <= 0.008856452f ) ? ( 9.03296296296f * Y) : ( 1.16f * constexpr_pow(Y, 1.0f / 3.0f) - 0.16f);
             float d = X + 15.f * Y + 3.0f * Z;
-            float di = 1.0f / d;
+            float di = fast_rcp(d);
 
             return vector::float4(l,
                 (d > (1.0f / 65536.0f)) ? 13.0f * l * ( ( 4.0f * X * di ) - wu ) : 0.0f,
                 (d > (1.0f / 65536.0f)) ? 13.0f * l * ( ( 9.0f * Y * di ) - wv ) : 0.0f);
         }
 
+        constexpr vector::float4 sRGB2OKLAB(const rgba<uint8_t> &in) const  {
+            float r = sRGB2lRGB[in.r];
+            float g = sRGB2lRGB[in.g];
+            float b = sRGB2lRGB[in.b];
+
+            float l = 0.4122214708f * r + 0.5363325363f * g + 0.0514459929f * b;
+            float m = 0.2119034982f * r + 0.6806995451f * g + 0.1073969566f * b;
+            float s = 0.0883024619f * r + 0.2817188376f * g + 0.6299787005f * b;
+
+            float l_ = fast_cbrtf(l);
+            float m_ = fast_cbrtf(m);
+            float s_ = fast_cbrtf(s);
+
+            return vector::float4(
+                0.2104542553f*l_ + 0.7936177850f*m_ - 0.0040720468f*s_,
+                1.9779984951f*l_ - 2.4285922050f*m_ + 0.4505937099f*s_,
+                0.0259040371f*l_ + 0.7827717662f*m_ - 0.8086757660f*s_
+            );
+        }
+
         vector::float4 CIELUV2sRGB(const vector::float4 &) const;
         vector::float4 CIELUV2LED(const vector::float4 &) const;
+
+        vector::float4 OKLAB2sRGB(const vector::float4 &) const;
+        vector::float4 OKLAB2LED(const vector::float4 &) const;
 
     private:
         float sRGB2lRGB[256];
@@ -218,7 +241,7 @@ namespace color {
 
         float l = ( Y <= 0.008856452f ) ? ( 9.03296296296f * Y) : ( 1.16f * constexpr_pow(Y, 1.0f / 3.0f) - 0.16f);
         float d = X + 15.f * Y + 3.0f * Z;
-        float di = 1.0f / d;
+        float di = fast_rcp(d);
 
         return vector::float4(l,
             (d > (1.0f / 65536.0f)) ? 13.0f * l * ( ( 4.0f * X * di ) - wu ) : 0.0f,
@@ -248,11 +271,60 @@ namespace color {
 
         float l = ( Y <= 0.008856452f ) ? ( 9.03296296296f * Y) : ( 1.16f * constexpr_pow(Y, 1.0f / 3.0f) - 0.16f);
         float d = X + 15.f * Y + 3.0f * Z;
-        float di = 1.0f / d;
+        float di = fast_rcp(d);
 
         return vector::float4(l,
             (d > (1.0f / 65536.0f)) ? 13.0f * l * ( ( 4.0f * X * di ) - wu ) : 0.0f,
             (d > (1.0f / 65536.0f)) ? 13.0f * l * ( ( 9.0f * Y * di ) - wv ) : 0.0f, in.w);
+    }
+
+    constexpr vector::float4 lRGB2OKLAB(const vector::float4 &in) {
+        float r = in.x;
+        float g = in.y;
+        float b = in.z;
+
+        float l = 0.4122214708f * r + 0.5363325363f * g + 0.0514459929f * b;
+        float m = 0.2119034982f * r + 0.6806995451f * g + 0.1073969566f * b;
+        float s = 0.0883024619f * r + 0.2817188376f * g + 0.6299787005f * b;
+
+        float l_ = fast_cbrtf(l);
+        float m_ = fast_cbrtf(m);
+        float s_ = fast_cbrtf(s);
+
+        return vector::float4(
+            0.2104542553f*l_ + 0.7936177850f*m_ - 0.0040720468f*s_,
+            1.9779984951f*l_ - 2.4285922050f*m_ + 0.4505937099f*s_,
+            0.0259040371f*l_ + 0.7827717662f*m_ - 0.8086757660f*s_
+        );
+    }
+
+    constexpr vector::float4 sRGB2OKLAB(const vector::float4 &in) {
+
+        auto sRGB2lRGB = [](float v) {
+            if (v > 0.04045f) {
+                return constexpr_pow( (v + 0.055f) / 1.055f, 2.4f);
+            } else {
+                return v * ( 25.0f / 323.0f );
+            };
+        };
+
+        float r = sRGB2lRGB(in.x);
+        float g = sRGB2lRGB(in.y);
+        float b = sRGB2lRGB(in.z);
+
+        float l = 0.4122214708f * r + 0.5363325363f * g + 0.0514459929f * b;
+        float m = 0.2119034982f * r + 0.6806995451f * g + 0.1073969566f * b;
+        float s = 0.0883024619f * r + 0.2817188376f * g + 0.6299787005f * b;
+
+        float l_ = fast_cbrtf(l);
+        float m_ = fast_cbrtf(m);
+        float s_ = fast_cbrtf(s);
+
+        return vector::float4(
+            0.2104542553f*l_ + 0.7936177850f*m_ - 0.0040720468f*s_,
+            1.9779984951f*l_ - 2.4285922050f*m_ + 0.4505937099f*s_,
+            0.0259040371f*l_ + 0.7827717662f*m_ - 0.8086757660f*s_
+        );
     }
 
     constexpr vector::float4 hsv(const vector::float4 &hsv) {
@@ -281,23 +353,23 @@ namespace color {
             case 5: r = v; g = p; b = q; break;
         }
 
-        return vector::float4(lRGB2CIELUV(vector::float4(r,g,b,hsv.w)));
+        return vector::float4(lRGB2OKLAB(vector::float4(r,g,b,hsv.w)));
     }
 
     constexpr vector::float4 srgb(const vector::float4 &color, float alpha = 1.0f) {
-        return vector::float4(sRGB2CIELUV(color), alpha);
+        return vector::float4(sRGB2OKLAB(color), alpha);
     }
 
     constexpr vector::float4 srgb8(const rgba<uint8_t> &color, float alpha = 1.0f) {
-        return vector::float4(convert().sRGB2CIELUV(color), alpha);
+        return vector::float4(convert().sRGB2OKLAB(color), alpha);
     }
 
     constexpr vector::float4 srgb8_stop(const rgba<uint8_t> &color, float stop) {
-        return vector::float4(convert().sRGB2CIELUV(color), stop);
+        return vector::float4(convert().sRGB2OKLAB(color), stop);
     }
 
     constexpr vector::float4 srgb8_stop(uint32_t color, float stop) {
-        return vector::float4(convert().sRGB2CIELUV(rgba<uint8_t>(color)), stop);
+        return vector::float4(convert().sRGB2OKLAB(rgba<uint8_t>(color)), stop);
     }
 }
 

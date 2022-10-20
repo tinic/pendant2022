@@ -29,15 +29,25 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <bit>
 
 __attribute__ ((hot, optimize("Os"), flatten))
-static constexpr float fast_rcp(const float x ) {
+static constexpr float fastest_rcp(const float x ) { // 8bits of accuracy
     float v = std::bit_cast<float>( ( 0xbe6eb3beU - std::bit_cast<uint32_t>(x) ) >> 1 );
     return v * v;
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-static constexpr float fast_rsqrt(const float x) {
+static constexpr float fastest_rsqrt(const float x) { // 8bits of accuracy
     float v = std::bit_cast<float>( 0x5f375a86U - ( std::bit_cast<uint32_t>(x) >> 1 ) );
     return v * (1.5f - ( 0.5f * v * v ));
+}
+
+__attribute__ ((hot, optimize("Os"), flatten))
+static constexpr float fast_rcp(const float x) { // 23.8bits of accuracy
+    int32_t i = std::bit_cast<int>(x);
+    i = 0x7eb53567 - i;
+    float y = std::bit_cast<float>(i);
+    y = 1.9395974f * y * ( 1.436142f + y * -x);
+    y = y + y * (1.0f + y * -x);
+    return y;
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
@@ -56,6 +66,31 @@ static constexpr float fast_log2(const float x) {
     return y - 124.22551499f
              - 1.498030302f * xf
              - 1.72587999f / (0.3520887068f + xf);
+}
+
+__attribute__ ((hot, optimize("Os"), flatten))
+static constexpr float fast_cbrtf(const float x) { // 21bits of accuracy
+    float k1 = 1.7523196760f;
+    float k2 = 1.2509524245f;
+    float k3 = 0.5093818292f;
+    int32_t i = std::bit_cast<int>(x);
+    i = 0x548c2b4b - i / 3;
+    float y = std::bit_cast<float>(i);
+    float c = x * y * y * y;
+    y = y * (k1 - c * (k2 - k3 * c));
+    c = 1.0f - x * y * y * y;
+    y = y * (1.0f + 0.333333333333f * c);
+    return fast_rcp(y);
+}
+
+__attribute__ ((hot, optimize("Os"), flatten))
+static constexpr float fastest_cbrtf(const float x) { // 10bits of accuracy
+    int32_t i = std::bit_cast<int>(x);
+    i = 0x548c39cb - i / 3;
+    float y = std::bit_cast<float>(i);
+    y = y * (1.5015480449f - 0.534850249f * x * y * y * y);
+    y = y * (1.3333339850f - 0.333333330f * x * y * y * y);;
+    return fast_rcp(y);
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
