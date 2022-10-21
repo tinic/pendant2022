@@ -29,18 +29,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <bit>
 
 __attribute__ ((hot, optimize("Os"), flatten))
-static constexpr float fastest_rcp(const float x ) { // 8bits of accuracy
-    float v = std::bit_cast<float>( ( 0xbe6eb3beU - std::bit_cast<uint32_t>(x) ) >> 1 );
-    return v * v;
-}
-
-__attribute__ ((hot, optimize("Os"), flatten))
-static constexpr float fastest_rsqrt(const float x) { // 8bits of accuracy
-    float v = std::bit_cast<float>( 0x5f375a86U - ( std::bit_cast<uint32_t>(x) >> 1 ) );
-    return v * (1.5f - ( 0.5f * v * v ));
-}
-
-__attribute__ ((hot, optimize("Os"), flatten))
 static constexpr float fast_rcp(const float x) { // 23.8bits of accuracy
     int32_t i = std::bit_cast<int>(x);
     i = 0x7eb53567 - i;
@@ -48,6 +36,12 @@ static constexpr float fast_rcp(const float x) { // 23.8bits of accuracy
     y = 1.9395974f * y * ( 1.436142f + y * -x);
     y = y + y * (1.0f + y * -x);
     return y;
+}
+
+__attribute__ ((hot, optimize("Os"), flatten))
+static constexpr float fastest_rcp(const float x ) { // 8bits of accuracy
+    float v = std::bit_cast<float>( ( 0xbe6eb3beU - std::bit_cast<uint32_t>(x) ) >> 1 );
+    return v * v;
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
@@ -70,6 +64,36 @@ static constexpr float fast_log2(const float x) {
 
 __attribute__ ((hot, optimize("Os"), flatten))
 static constexpr float fast_cbrtf(const float x) { // 21bits of accuracy
+    int32_t ix = std::bit_cast<int32_t>(x);
+    ix = (ix >> 2) + (ix >> 4);
+    ix = ix + (ix >> 4);
+    ix = ix + (ix >> 8);
+    ix = 0x2a5137a0 + ix;
+    float v = std::bit_cast<float>(ix);
+    v = (1.0f / 3.0f) * (2.0f * v + fabs(x) / (v * v));
+    v = (1.0f / 3.0f) * (2.0f * v + fabs(x) / (v * v));
+    v = (1.0f / 3.0f) * (2.0f * v + fabs(x) / (v * v));
+    ix = std::bit_cast<int32_t>(v);
+    ix |= ( v < 0 ) ? int32_t(0x80000000U) : int32_t(0x00000000U);
+    return std::bit_cast<float>(ix);
+}
+
+__attribute__ ((hot, optimize("Os"), flatten))
+static constexpr float fastest_cbrtf(const float x) { // 10bits of accuracy
+    int32_t ix = std::bit_cast<int32_t>(x);
+    ix = (ix >> 2) + (ix >> 4);
+    ix = ix + (ix >> 4);
+    ix = ix + (ix >> 8);
+    ix = 0x2a5137a0 + ix;
+    float v = std::bit_cast<float>(ix);
+    v = (1.0f / 3.0f) * (2.0f * v + fabs(x) / (v * v));
+    ix = std::bit_cast<int32_t>(v);
+    ix |= ( v < 0 ) ? int32_t(0x80000000U) : int32_t(0x00000000U);
+    return std::bit_cast<float>(ix);
+}
+
+__attribute__ ((hot, optimize("Os"), flatten))
+static constexpr float fast_rcbrtf(const float x) { // 21bits of accuracy
     float k1 = 1.7523196760f;
     float k2 = 1.2509524245f;
     float k3 = 0.5093818292f;
@@ -80,17 +104,7 @@ static constexpr float fast_cbrtf(const float x) { // 21bits of accuracy
     y = y * (k1 - c * (k2 - k3 * c));
     c = 1.0f - x * y * y * y;
     y = y * (1.0f + 0.333333333333f * c);
-    return fast_rcp(y);
-}
-
-__attribute__ ((hot, optimize("Os"), flatten))
-static constexpr float fastest_cbrtf(const float x) { // 10bits of accuracy
-    int32_t i = std::bit_cast<int>(x);
-    i = 0x548c39cb - i / 3;
-    float y = std::bit_cast<float>(i);
-    y = y * (1.5015480449f - 0.534850249f * x * y * y * y);
-    y = y * (1.3333339850f - 0.333333330f * x * y * y * y);;
-    return fast_rcp(y);
+    return y;
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
