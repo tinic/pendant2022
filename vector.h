@@ -28,6 +28,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cmath>
 #include <cfloat>
 
+#include "fastmath.h"
+
 namespace color {
     template<class T> struct rgba;
 }
