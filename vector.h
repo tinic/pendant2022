@@ -237,25 +237,25 @@ namespace vector {
         }
 
         constexpr float len() const {
-            return sqrtf(x*x + y*y + z*z);
+            return fast_sqrtf(x*x + y*y + z*z);
         }
 
         static constexpr float len(const float4 &a) {
-            return sqrtf(a.x*a.x + a.y*a.y + a.z*a.z);
+            return fast_sqrtf(a.x*a.x + a.y*a.y + a.z*a.z);
         }
 
         constexpr float dist(const float4 &b) const {
             float xd = fabsf(this->x - b.x);
             float yd = fabsf(this->y - b.y);
             float zd = fabsf(this->z - b.z);
-            return sqrtf(xd*xd + yd*yd + zd*zd);
+            return fast_sqrtf(xd*xd + yd*yd + zd*zd);
         }
 
         static constexpr float dist(const float4 &a, const float4 &b) {
             float xd = fabsf(a.x - b.x);
             float yd = fabsf(a.y - b.y);
             float zd = fabsf(a.z - b.z);
-            return sqrtf(xd*xd + yd*yd + zd*zd);
+            return fast_sqrtf(xd*xd + yd*yd + zd*zd);
         }
 
         constexpr float4 min(const float4 &b) const {
@@ -356,17 +356,17 @@ namespace vector {
         }
 
         constexpr float4 sqrt() const {
-            return float4(sqrtf(this->x),
-                          sqrtf(this->y),
-                          sqrtf(this->z),
-                          sqrtf(this->w));
+            return float4(fast_sqrtf(this->x),
+                          fast_sqrtf(this->y),
+                          fast_sqrtf(this->z),
+                          fast_sqrtf(this->w));
         }
 
         static constexpr float4 sqrt(const float4 &a) {
-            return float4(sqrtf(a.x),
-                          sqrtf(a.y),
-                          sqrtf(a.z),
-                          sqrtf(a.w));
+            return float4(fast_sqrtf(a.x),
+                          fast_sqrtf(a.y),
+                          fast_sqrtf(a.z),
+                          fast_sqrtf(a.w));
         }
 
         constexpr float4 rotate2d(float angle) const {
@@ -386,17 +386,17 @@ namespace vector {
         }
 
         constexpr float4 rsqrt() const {
-            return float4((this->x != 0.0f) ? (1.0f/sqrtf(this->x)) : 0.0f,
-                          (this->y != 0.0f) ? (1.0f/sqrtf(this->y)) : 0.0f,
-                          (this->z != 0.0f) ? (1.0f/sqrtf(this->z)) : 0.0f,
-                          (this->w != 0.0f) ? (1.0f/sqrtf(this->w)) : 0.0f);
+            return float4((this->x != 0.0f) ? (fast_rsqrtf(this->x)) : 0.0f,
+                          (this->y != 0.0f) ? (fast_rsqrtf(this->y)) : 0.0f,
+                          (this->z != 0.0f) ? (fast_rsqrtf(this->z)) : 0.0f,
+                          (this->w != 0.0f) ? (fast_rsqrtf(this->w)) : 0.0f);
         }
 
         static constexpr float4 rsqrt(const float4 &a) {
-            return float4((a.x != 0.0f) ? (1.0f/sqrtf(a.x)) : 0.0f,
-                          (a.y != 0.0f) ? (1.0f/sqrtf(a.y)) : 0.0f,
-                          (a.z != 0.0f) ? (1.0f/sqrtf(a.z)) : 0.0f,
-                          (a.w != 0.0f) ? (1.0f/sqrtf(a.w)) : 0.0f);
+            return float4((a.x != 0.0f) ? (fast_rsqrtf(a.x)) : 0.0f,
+                          (a.y != 0.0f) ? (fast_rsqrtf(a.y)) : 0.0f,
+                          (a.z != 0.0f) ? (fast_rsqrtf(a.z)) : 0.0f,
+                          (a.w != 0.0f) ? (fast_rsqrtf(a.w)) : 0.0f);
         }
 
         constexpr float4 rcp() const {

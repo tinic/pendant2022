@@ -30,18 +30,90 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 __attribute__ ((hot, optimize("Os"), flatten))
 static constexpr float fast_rcp(const float x) { // 23.8bits of accuracy
+    // https://ieeexplore.ieee.org/document/8525803
     int32_t i = std::bit_cast<int>(x);
     i = 0x7eb53567 - i;
     float y = std::bit_cast<float>(i);
-    y = 1.9395974f * y * ( 1.436142f + y * -x);
-    y = y + y * (1.0f + y * -x);
+    y = 1.9395974f * y * fmaf(y, -x, 1.436142f);
+    float r = fmaf(y, -x, 1.0f);
+    y = fmaf(y, r, y);
     return y;
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
-static constexpr float fastest_rcp(const float x ) { // 8bits of accuracy
-    float v = std::bit_cast<float>( ( 0xbe6eb3beU - std::bit_cast<uint32_t>(x) ) >> 1 );
-    return v * v;
+static constexpr float fast_cbrtf(const float x) { // 22.84bits of accuracy
+    // https://www.mdpi.com/1996-1073/14/4/1058=
+    float k1 = 1.7523196760f;
+    float k2 = 1.2509524245f;
+    float k3 = 0.5093818292f;
+    int32_t i = std::bit_cast<int>(x);
+    i = 0x548c2b4b - i / 3;
+    float y = std::bit_cast<float>(i);
+    float c = x * y * y * y;
+    y = y * (k1 - c * (k2 - k3 * c));
+    float d = x * y * y;
+    c = fmaf(-d, y, 1.0f);
+    y = d * fmaf(1.0f / 3.0f, c, 1.0f);
+    return y;
+}
+
+__attribute__ ((hot, optimize("Os"), flatten)) 
+static constexpr float fast_rcbrtf(const float x) { // 22.84bits of accuracy
+    // https://www.mdpi.com/1996-1073/14/4/1058=
+    float k1 = 1.7523196760f;
+    float k2 = 1.2509524245f;
+    float k3 = 0.5093818292f;
+    int32_t i = std::bit_cast<int>(x);
+    i = 0x548c2b4b - i / 3;
+    float y = std::bit_cast<float>(i);
+    float c = x * y * y * y;
+    y = y * (k1 - c * (k2 - k3 * c));
+    c = 1.0f - x * y * y * y;
+    y = y * fmaf(1.0f / 3.0f, c, 1.0f);
+    return y;
+}
+
+
+__attribute__ ((hot, optimize("Os"), flatten))
+static constexpr float fast_sqrtf(const float x) { // 23.62bits of accuracy
+    // https://www.mdpi.com/2079-3197/9/2/21
+    int32_t i = std::bit_cast<int>(x);
+    int k = i & 0x00800000;
+    float y;
+    if (k != 0) {
+        i = 0x5ed9d098 - (i >> 1);
+        y = std::bit_cast<float>(i);
+        y = 2.33139729f * y * fmaf(-x, y * y, 1.07492042f);
+    } else {
+        i = 0x5f19d352 - (i >> 1);
+        y = std::bit_cast<float>(i);
+        y = 0.82420468f * y * fmaf(-x, y * y, 2.14996147f);
+    }
+    float c = x * y;
+    float r = fmaf(y, -c, 1.0f);
+    y = fmaf(0.5f * c, r, c);
+    return y;
+}
+
+__attribute__ ((hot, optimize("Os"), flatten))
+static constexpr float fast_rsqrtf(const float x) { // 23.40bits of accuracy
+    // https://www.mdpi.com/2079-3197/9/2/21
+    int32_t i = std::bit_cast<int>(x);
+    int k = i & 0x00800000;
+    float y;
+    if (k != 0) {
+        i = 0x5ed9dbc6 - (i >> 1);
+        y = std::bit_cast<float>(i);
+        y = 2.33124018f * y * fmaf(-x, y * y, 1.07497406f);
+    } else {
+        i = 0x5f19d200 - (i >> 1);
+        y = std::bit_cast<float>(i);
+        y = 0.824212492f * y * fmaf(-x, y * y, 2.14996147f);
+    }
+    float c = x * y;
+    float r = fmaf(y, -c, 1.0f);
+    y = fmaf(0.5f * y, r, y);
+    return y;
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
@@ -60,81 +132,6 @@ static constexpr float fast_log2(const float x) {
     return y - 124.22551499f
              - 1.498030302f * xf
              - 1.72587999f / (0.3520887068f + xf);
-}
-
-__attribute__ ((hot, optimize("Os"), flatten))
-static constexpr float fast_cbrtf(const float x) { // 21bits of accuracy
-#if 1
-    float k1 = 1.7523196760f;
-    float k2 = 1.2509524245f;
-    float k3 = 0.5093818292f;
-    int32_t i = std::bit_cast<int>(x);
-    i = 0x548c2b4b - i / 3;
-    float y = std::bit_cast<float>(i);
-    float c = x * y * y * y;
-    y = y * (k1 - c * (k2 - k3 * c));
-    c = 1.0f - x * y * y * y;
-    y = y * (1.0f + 0.333333333333f * c);
-    return fast_rcp(y);
-#else
-    // Only if hardware division available
-    int32_t ix = std::bit_cast<int32_t>(x);
-    ix = (ix >> 2) + (ix >> 4);
-    ix = ix + (ix >> 4);
-    ix = ix + (ix >> 8);
-    ix = 0x2a5137a0 + ix;
-    float v = std::bit_cast<float>(ix);
-    v = (1.0f / 3.0f) * (2.0f * v + fabs(x) / (v * v));
-    v = (1.0f / 3.0f) * (2.0f * v + fabs(x) / (v * v));
-    v = (1.0f / 3.0f) * (2.0f * v + fabs(x) / (v * v));
-    ix = std::bit_cast<int32_t>(v);
-    ix |= ( v < 0 ) ? int32_t(0x80000000U) : int32_t(0x00000000U);
-    return std::bit_cast<float>(ix);
-#endif
-}
-
-__attribute__ ((hot, optimize("Os"), flatten))
-static constexpr float fastest_cbrtf(const float x) { // 10bits of accuracy
-#if 1
-    float k1 = 1.7523196760f;
-    float k2 = 1.2509524245f;
-    float k3 = 0.5093818292f;
-    int32_t i = std::bit_cast<int>(x);
-    i = 0x548c2b4b - i / 3;
-    float y = std::bit_cast<float>(i);
-    float c = x * y * y * y;
-    y = y * (k1 - c * (k2 - k3 * c));
-    c = 1.0f - x * y * y * y;
-    y = y * (1.0f + 0.333333333333f * c);
-    return fast_rcp(y);
-#else
-    // Only if hardware division available
-    int32_t ix = std::bit_cast<int32_t>(x);
-    ix = (ix >> 2) + (ix >> 4);
-    ix = ix + (ix >> 4);
-    ix = ix + (ix >> 8);
-    ix = 0x2a5137a0 + ix;
-    float v = std::bit_cast<float>(ix);
-    v = (1.0f / 3.0f) * (2.0f * v + fabs(x) / (v * v));
-    ix = std::bit_cast<int32_t>(v);
-    ix |= ( v < 0 ) ? int32_t(0x80000000U) : int32_t(0x00000000U);
-    return std::bit_cast<float>(ix);
-#endif
-}
-
-__attribute__ ((hot, optimize("Os"), flatten))
-static constexpr float fast_rcbrtf(const float x) { // 21bits of accuracy
-    float k1 = 1.7523196760f;
-    float k2 = 1.2509524245f;
-    float k3 = 0.5093818292f;
-    int32_t i = std::bit_cast<int>(x);
-    i = 0x548c2b4b - i / 3;
-    float y = std::bit_cast<float>(i);
-    float c = x * y * y * y;
-    y = y * (k1 - c * (k2 - k3 * c));
-    c = 1.0f - x * y * y * y;
-    y = y * (1.0f + 0.333333333333f * c);
-    return y;
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
