@@ -64,6 +64,20 @@ static constexpr float fast_log2(const float x) {
 
 __attribute__ ((hot, optimize("Os"), flatten))
 static constexpr float fast_cbrtf(const float x) { // 21bits of accuracy
+#if 1
+    float k1 = 1.7523196760f;
+    float k2 = 1.2509524245f;
+    float k3 = 0.5093818292f;
+    int32_t i = std::bit_cast<int>(x);
+    i = 0x548c2b4b - i / 3;
+    float y = std::bit_cast<float>(i);
+    float c = x * y * y * y;
+    y = y * (k1 - c * (k2 - k3 * c));
+    c = 1.0f - x * y * y * y;
+    y = y * (1.0f + 0.333333333333f * c);
+    return fast_rcp(y);
+#else
+    // Only if hardware division available
     int32_t ix = std::bit_cast<int32_t>(x);
     ix = (ix >> 2) + (ix >> 4);
     ix = ix + (ix >> 4);
@@ -76,10 +90,25 @@ static constexpr float fast_cbrtf(const float x) { // 21bits of accuracy
     ix = std::bit_cast<int32_t>(v);
     ix |= ( v < 0 ) ? int32_t(0x80000000U) : int32_t(0x00000000U);
     return std::bit_cast<float>(ix);
+#endif
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
 static constexpr float fastest_cbrtf(const float x) { // 10bits of accuracy
+#if 1
+    float k1 = 1.7523196760f;
+    float k2 = 1.2509524245f;
+    float k3 = 0.5093818292f;
+    int32_t i = std::bit_cast<int>(x);
+    i = 0x548c2b4b - i / 3;
+    float y = std::bit_cast<float>(i);
+    float c = x * y * y * y;
+    y = y * (k1 - c * (k2 - k3 * c));
+    c = 1.0f - x * y * y * y;
+    y = y * (1.0f + 0.333333333333f * c);
+    return fast_rcp(y);
+#else
+    // Only if hardware division available
     int32_t ix = std::bit_cast<int32_t>(x);
     ix = (ix >> 2) + (ix >> 4);
     ix = ix + (ix >> 4);
@@ -90,6 +119,8 @@ static constexpr float fastest_cbrtf(const float x) { // 10bits of accuracy
     ix = std::bit_cast<int32_t>(v);
     ix |= ( v < 0 ) ? int32_t(0x80000000U) : int32_t(0x00000000U);
     return std::bit_cast<float>(ix);
+    // Fast division available
+#endif
 }
 
 __attribute__ ((hot, optimize("Os"), flatten))
