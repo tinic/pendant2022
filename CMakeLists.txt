@@ -28,7 +28,7 @@ endif(TESTING)
 
 set(CC_FLAGS
 #    -fanalyzer
-    -flto
+    -flto=auto
     -mcpu=cortex-m4 
     -Wformat=2 
     -Wformat-overflow
@@ -77,7 +77,7 @@ set(CXX_FLAGS
 
 set(LD_FLAGS
     -T${MAINMCU_LD_SCRIPT}
-    -flto
+    -flto=auto
     -mcpu=cortex-m4
     -mthumb
     -mfloat-abi=hard

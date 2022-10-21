@@ -119,7 +119,6 @@ static constexpr float fastest_cbrtf(const float x) { // 10bits of accuracy
     ix = std::bit_cast<int32_t>(v);
     ix |= ( v < 0 ) ? int32_t(0x80000000U) : int32_t(0x00000000U);
     return std::bit_cast<float>(ix);
-    // Fast division available
 #endif
 }
 
