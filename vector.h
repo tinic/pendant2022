@@ -239,25 +239,25 @@ namespace vector {
         }
 
         constexpr float len() const {
-            return fast_sqrtf(x*x + y*y + z*z);
+            return sqrtf(x*x + y*y + z*z);
         }
 
         static constexpr float len(const float4 &a) {
-            return fast_sqrtf(a.x*a.x + a.y*a.y + a.z*a.z);
+            return sqrtf(a.x*a.x + a.y*a.y + a.z*a.z);
         }
 
         constexpr float dist(const float4 &b) const {
             float xd = fabsf(this->x - b.x);
             float yd = fabsf(this->y - b.y);
             float zd = fabsf(this->z - b.z);
-            return fast_sqrtf(xd*xd + yd*yd + zd*zd);
+            return sqrtf(xd*xd + yd*yd + zd*zd);
         }
 
         static constexpr float dist(const float4 &a, const float4 &b) {
             float xd = fabsf(a.x - b.x);
             float yd = fabsf(a.y - b.y);
             float zd = fabsf(a.z - b.z);
-            return fast_sqrtf(xd*xd + yd*yd + zd*zd);
+            return sqrtf(xd*xd + yd*yd + zd*zd);
         }
 
         constexpr float4 min(const float4 &b) const {
@@ -358,17 +358,17 @@ namespace vector {
         }
 
         constexpr float4 sqrt() const {
-            return float4(fast_sqrtf(this->x),
-                          fast_sqrtf(this->y),
-                          fast_sqrtf(this->z),
-                          fast_sqrtf(this->w));
+            return float4(sqrtf(this->x),
+                          sqrtf(this->y),
+                          sqrtf(this->z),
+                          sqrtf(this->w));
         }
 
         static constexpr float4 sqrt(const float4 &a) {
-            return float4(fast_sqrtf(a.x),
-                          fast_sqrtf(a.y),
-                          fast_sqrtf(a.z),
-                          fast_sqrtf(a.w));
+            return float4(sqrtf(a.x),
+                          sqrtf(a.y),
+                          sqrtf(a.z),
+                          sqrtf(a.w));
         }
 
         constexpr float4 rotate2d(float angle) const {

@@ -28,8 +28,13 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <math.h>
 #include <bit>
 
-__attribute__ ((hot, optimize("Os"), flatten))
+#include "M480.h"
+
+__attribute__ ((hot, optimize("Os"), flatten, always_inline))
 static constexpr float fast_rcp(const float x) { // 23.8bits of accuracy
+#if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
+	return 1.0f / x;
+#else  // #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
     // https://ieeexplore.ieee.org/document/8525803
     int32_t i = std::bit_cast<int>(x);
     i = 0x7eb53567 - i;
@@ -38,9 +43,10 @@ static constexpr float fast_rcp(const float x) { // 23.8bits of accuracy
     float r = fmaf(y, -x, 1.0f);
     y = fmaf(y, r, y);
     return y;
+#endif  // #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
 }
 
-__attribute__ ((hot, optimize("Os"), flatten))
+__attribute__ ((hot, optimize("Os"), flatten, always_inline))
 static constexpr float fast_cbrtf(const float x) { // 22.84bits of accuracy
     // https://www.mdpi.com/1996-1073/14/4/1058=
     float k1 = 1.7523196760f;
@@ -57,7 +63,7 @@ static constexpr float fast_cbrtf(const float x) { // 22.84bits of accuracy
     return y;
 }
 
-__attribute__ ((hot, optimize("Os"), flatten)) 
+__attribute__ ((hot, optimize("Os"), flatten, always_inline)) 
 static constexpr float fast_rcbrtf(const float x) { // 22.84bits of accuracy
     // https://www.mdpi.com/1996-1073/14/4/1058=
     float k1 = 1.7523196760f;
@@ -74,8 +80,11 @@ static constexpr float fast_rcbrtf(const float x) { // 22.84bits of accuracy
 }
 
 
-__attribute__ ((hot, optimize("Os"), flatten))
+__attribute__ ((hot, optimize("Os"), flatten, always_inline))
 static constexpr float fast_sqrtf(const float x) { // 23.62bits of accuracy
+#if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
+	return __builtin_sqrtf(x);
+#else  // #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
     // https://www.mdpi.com/2079-3197/9/2/21
     int32_t i = std::bit_cast<int>(x);
     int k = i & 0x00800000;
@@ -93,9 +102,10 @@ static constexpr float fast_sqrtf(const float x) { // 23.62bits of accuracy
     float r = fmaf(y, -c, 1.0f);
     y = fmaf(0.5f * c, r, c);
     return y;
+#endif  // #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
 }
 
-__attribute__ ((hot, optimize("Os"), flatten))
+__attribute__ ((hot, optimize("Os"), flatten, always_inline))
 static constexpr float fast_rsqrtf(const float x) { // 23.40bits of accuracy
     // https://www.mdpi.com/2079-3197/9/2/21
     int32_t i = std::bit_cast<int>(x);
@@ -116,7 +126,7 @@ static constexpr float fast_rsqrtf(const float x) { // 23.40bits of accuracy
     return y;
 }
 
-__attribute__ ((hot, optimize("Os"), flatten))
+__attribute__ ((hot, optimize("Os"), flatten, always_inline))
 static constexpr float fast_exp2(const float p) {
     const float offset = (p < 0) ? 1.0f : 0.0f;
     const float clipp = (p < -126) ? -126.0f : p;
@@ -124,7 +134,7 @@ static constexpr float fast_exp2(const float p) {
     return std::bit_cast<float>(static_cast<uint32_t>((1 << 23) * (clipp + 121.2740575f + 27.7280233f / (4.84252568f - z) - 1.49012907f * z)));
 }
 
-__attribute__ ((hot, optimize("Os"), flatten))
+__attribute__ ((hot, optimize("Os"), flatten, always_inline))
 static constexpr float fast_log2(const float x) {
     uint32_t xi = std::bit_cast<uint32_t>(x);
     float xf = std::bit_cast<float>((xi & 0x007FFFFF) | 0x3f000000);
@@ -134,32 +144,32 @@ static constexpr float fast_log2(const float x) {
              - 1.72587999f / (0.3520887068f + xf);
 }
 
-__attribute__ ((hot, optimize("Os"), flatten))
+__attribute__ ((hot, optimize("Os"), flatten, always_inline))
 static constexpr float fast_log(const float x) {
     return fast_log2(x) * 0.69314718f;
 }
 
-__attribute__ ((hot, optimize("Os"), flatten))
+__attribute__ ((hot, optimize("Os"), flatten, always_inline))
 static constexpr float fast_pow(const float x, const float p) {
     return fast_exp2(p * fast_log2(x));
 }
 
-__attribute__ ((hot, optimize("Os"), flatten))
+__attribute__ ((hot, optimize("Os"), flatten, always_inline))
 static constexpr double frac(double v) { // same as fmod(v, 1.0)
     return v - std::trunc(v);
 }
 
-__attribute__ ((hot, optimize("Os"), flatten))
+__attribute__ ((hot, optimize("Os"), flatten, always_inline))
 static constexpr float fracf(float v) { // same as fmodf(v, 1.0f)
     return v - std::truncf(v);
 }
 
-__attribute__ ((hot, optimize("Os"), flatten))
+__attribute__ ((hot, optimize("Os"), flatten, always_inline))
 static constexpr float constexpr_pow(const float x, const float p) {
     return ::exp2f(p * ::log2f(x));
 }
 
-__attribute__ ((hot, optimize("Os"), flatten))
+__attribute__ ((hot, optimize("Os"), flatten, always_inline))
 static constexpr float signf(float x) {
 	return (x > 0.0f) ? 1.0f : ( (x < 0.0f) ? -1.0f : 1.0f);
 }

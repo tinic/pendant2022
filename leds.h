@@ -85,7 +85,7 @@ public:
             map[circleLedsN * 2 + 15] = vector::float4(  0.0f, 12.0f, 0.0f, 0.0f ) * (1.0f / 25.0f);
 
             for (size_t c = circleLedsN; c < (circleLedsN + birdLedsN); c++) {
-                map[c].w = fast_sqrtf(map[c].x * map[c].x + map[c].y * map[c].y);
+                map[c].w = sqrtf(map[c].x * map[c].x + map[c].y * map[c].y);
             }
         }
 
